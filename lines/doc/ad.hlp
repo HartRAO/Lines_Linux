@@ -1,0 +1,13 @@
+
+AD [index of first point] [index of last point] [new value] [memory]
+
+   Alter data in the specified memory.
+
+   If the parameters are not specified the user is prompted for them.
+
+   LD can be used to list the data first, if needed.
+
+   example:
+   
+   ad 12 12 0.0
+   

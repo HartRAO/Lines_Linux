@@ -1,0 +1,376 @@
+*************************
+      SUBROUTINE ASCFILIN (ERROR)
+*************************
+*     set up multiple reads from ascii file and spectra averaging
+*
+*     CMDP command parameters used:
+*     1 = command mnemonic RA
+*     2 = ascii spectra file to read from
+*     3 = number of first spectrum to read
+*     4 = number of last spectrum to read
+*     3/4/5/6/7 = "new" or "add" to current average if present
+*     3/4/5/6/7 = "plot" to plot incoming spectrum 
+*     5/6/7 = memory to add spectrum to, default to set memory
+*
+*     called by:
+*     cmdselct
+*
+*     other subroutines called:
+*     memav, memclr, memcopy, nchar, rdascfil, upcase
+*
+      IMPLICIT NONE
+*
+      LOGICAL   ADDTOAV         ! local add to average?
+      LOGICAL   ADDTOAVIN       ! local input add to average?
+      LOGICAL   EXISTS          ! local file exists?
+      LOGICAL   NEWAV           ! local start a new average spectrum?
+      LOGICAL   NEWAVIN         ! local input start a new average spectrum?
+      LOGICAL   PLOTNEW         ! local plot new spectrum being read in?
+*
+      INTEGER   ERROR           ! output file error code
+      INTEGER   FIRSTWANTED     ! local first wanted spectrum
+      INTEGER   I               ! local loop index
+      INTEGER   II              ! local loop index
+      INTEGER   J               ! local loop index
+      INTEGER   IFCHAR          ! local number of characters in buffer
+      INTEGER   IOS             ! local read error code
+      INTEGER   IPCHAR          ! local number of characters in buffer
+      INTEGER   LASTWANTED      ! local first wanted spectrum
+      INTEGER   MEM             ! local memory to store average in
+      INTEGER   MEMLOCAL        ! local memory to read to 
+      INTEGER   NCHAR           ! external function
+*
+      INCLUDE 'lines.inc'
+*
+*     get the needed parameters, from runstring or user enquiry
+*
+      IF (DB) PRINT *,'in ASCFILIN'
+      ERROR = 0
+      IF (DB) PRINT *, 'NCMD = ',NCMD
+      IF (DB) THEN
+          DO I = 1, NCMD
+              PRINT *, 'CMDP',I,' = ',CMDP(I)
+          END DO
+      END IF
+*
+      IF (NCMD .GE. 2) THEN
+          ASCRDFILE = CMDP(2)
+      ELSE
+          IPCHAR = NCHAR(PREVAFILE)
+          PRINT '(3A,$)',' ASCII spectra file to read from (/=',
+     &        PREVAFILE(1:IPCHAR),') ? '
+          READ  '(A)', ASCRDFILE
+      END IF
+*
+      IFCHAR = NCHAR(ASCRDFILE)
+      IF (ASCRDFILE(1:1) .EQ. '/' .AND. IFCHAR .EQ. 1) THEN
+          WRITE (ASCRDFILE,'(A)') PREVAFILE
+          IFCHAR = NCHAR(ASCRDFILE)
+      END IF
+*
+      IF (DB) PRINT *,'ASCRDFILE=',ASCRDFILE(1:IFCHAR)
+      INQUIRE (FILE=ASCRDFILE,EXIST=EXISTS)
+*
+      IF (.NOT. EXISTS) THEN
+          CALL ER_EXIST (ASCRDFILE)
+          ERROR = 1
+          RETURN
+      END IF
+*
+c      PRINT *,'read ASCII data file ',ASCRDFILE(1:IFCHAR)
+*
+*     make remaining string parameters upper case for string comparisons
+*
+      IF (DB) PRINT *, 'Make parms uppercase'
+      DO II = 3, 7
+          CALL UPCASE(CMDP(II))
+      END DO
+      IF (DB) PRINT *, 'Parms made uppercase'
+*
+      FIRSTWANTED = 0 
+      IF (NCMD .GE. 3) THEN
+          READ (CMDP(3),*,IOSTAT=IOS,ERR=110) FIRSTWANTED
+  110     IF (IOS .NE. 0) THEN
+              FIRSTWANTED = 0
+              PRINT 2005, CMDP(3)(1:NCHAR(CMDP(3)))
+          END IF
+      END IF
+      IF (FIRSTWANTED .EQ. 0) THEN
+          PRINT '(A,$)',' first spectrum number to read ? '
+          READ '(A)', CMDP(3)
+          READ (CMDP(3),*,IOSTAT=IOS,ERR=120) FIRSTWANTED
+  120     IF (IOS .NE. 0) THEN
+              PRINT 2005, CMDP(3)(1:NCHAR(CMDP(3)))
+              ERROR = IOS
+              RETURN
+          END IF
+      END IF
+      IF (FIRSTWANTED .LT. 1) THEN
+          ERROR = 1
+          RETURN
+      END IF
+      IF (DB) PRINT *,'FIRSTWANTED=',FIRSTWANTED
+*
+      LASTWANTED = 0
+      IF (NCMD .EQ. 3) LASTWANTED = FIRSTWANTED
+      IF (NCMD .GE. 4) THEN
+          READ (CMDP(4),*,IOSTAT=IOS,ERR=140) LASTWANTED
+  140     IF (IOS .NE. 0) THEN
+              LASTWANTED = 0
+              PRINT 2005, CMDP(4)(1:NCHAR(CMDP(4)))
+          END IF
+      END IF
+      IF (LASTWANTED .EQ. 0) THEN
+          PRINT '(A,$)',' last spectrum number to read ? '
+          READ '(A)', CMDP(4)
+          READ (CMDP(4),*,IOSTAT=IOS,ERR=150) LASTWANTED
+  150     IF (IOS .NE. 0) THEN
+              PRINT 2005, CMDP(4)(1:NCHAR(CMDP(4)))
+              ERROR = IOS
+              RETURN
+          END IF
+      END IF
+      IF (LASTWANTED .LT. FIRSTWANTED) LASTWANTED = FIRSTWANTED
+      IF (DB) PRINT *,'LASTWANTED=',LASTWANTED
+*
+      ADDTOAVIN = .FALSE.
+      NEWAVIN = .FALSE.
+      PLOTNEW = .FALSE.
+      DO II = 3, NCMD
+          IF (CMDP(II)(1:3) .EQ. 'ADD') THEN
+              ADDTOAVIN = .TRUE.
+              IF (DB) PRINT *,'ADDTOAVIN=',ADDTOAVIN
+          END IF
+*
+          IF (CMDP(II)(1:3) .EQ. 'NEW') THEN
+              NEWAVIN = .TRUE.
+*             allow any existing average to be over-written by MEMCOPY
+*             prevent asking to add to an existing average spectrum
+              IF (DB) PRINT *,'NEWAVIN=',NEWAVIN
+c              IF (DB) PRINT *,'MEM=',MEM, 'WAS SETTING NAXIS(MEM)=0'
+C              MEM was not initialised, causing program to crash 2011-01-29
+c              NAXIS(MEM) = 0
+          END IF
+*
+          IF (CMDP(II)(1:4) .EQ. 'PLOT') THEN
+              PLOTNEW = .TRUE.
+              IF (DB) PRINT *,'PLOTNEW=',PLOTNEW
+          END IF
+      END DO
+*
+      IF (DB) PRINT *,'Set output memory'
+      MEM = MEMSET
+      MEMLOCAL = 0
+      IF (NCMD .GE. 5) THEN
+          DO J = 5, NCMD
+              IF (DB) PRINT *,'READ PARM ',J
+              READ (CMDP(J),*,IOSTAT=IOS,ERR=170) MEMLOCAL
+  170         IF (IOS .EQ. 0) MEM = MEMLOCAL
+          END DO
+      END IF
+      IF (DB) PRINT *,'MEM=',MEM
+      IF (MEM .EQ. 0) THEN
+          PRINT '(A,$)',' store in which memory ? '
+          READ '(A)',CMDP(7)
+          READ (CMDP(7),*,IOSTAT=IOS,ERR=180) MEM
+  180     IF (IOS .NE. 0 .OR. MEM .LT. 1 .OR. MEM .GT. MAXMEM .OR.
+     &        MEM .EQ. MEMRD) MEM = MEMSET
+      END IF    
+*
+      IF (DB) PRINT *,'read from ',FIRSTWANTED,
+     &                ' to ',LASTWANTED
+*
+      WRITE (BUF,*) 'read ',ASCRDFILE(1:IFCHAR),' from ',
+     &    FIRSTWANTED,' to ',LASTWANTED,' in mem ',MEM,' add=',ADDTOAV
+      PRINT *,BUF(1:NCHAR(BUF))
+      IF (WRITELOG) WRITE (LOGWRTUNIT,*) BUF(1:NCHAR(BUF))
+*
+*     read in and process the required spectra
+*
+      DO ASCWANTED = FIRSTWANTED, LASTWANTED
+*
+*         return NEW / ADD flags to state as read in
+          NEWAV = NEWAVIN
+          ADDTOAV = ADDTOAVIN
+*
+*         clear the memory being read into completely
+*         but preset non-essential housekeeping in case not present
+          WRITE (CMDP(2),*) MEMRD
+          IF (NCMD .LT. 2) NCMD = 2
+          CALL MEMCLR (ERROR)
+*
+*         read spectra from ascii format file
+*
+          CALL RDASCFL (ERROR)
+*
+*         check for errors from the file read
+          IF (ERROR .EQ. 5) THEN
+*             end of file was encountered, so return
+              RETURN
+          END IF
+*
+*         check if user wants plot of incoming spectrum
+          IF (PLOTNEW) THEN
+              IF (DB) PRINT *, ' RA plot, MEMRD = ',MEMRD
+              WRITE (CMDP(2),*) MEMRD
+              WRITE (CMDP(3),*) MEMRD
+              WRITE (CMDP(4),*) MEMRD
+              CALL PLSETUP (ERROR)
+              IF (ERROR .NE. 0) PRINT *,'PLSETUP error ',ERROR
+          END IF
+*
+*         summarise the spectrum housekeeping
+          WRITE (CMDP(2),*) MEMRD
+          WRITE (CMDP(3),*) MEMRD
+          CALL LISTMEM (ERROR)
+*
+          IF (DB) PRINT *,'READFILE: NAXIS(MEM) = ',NAXIS(MEM),
+     &        ' ASCWANTED = ',ASCWANTED,' ERROR = ',ERROR,
+     &        ' ADDTOAV = ',ADDTOAV
+*
+          IF (.NOT. NEWAV .AND.
+     &        .NOT. ADDTOAV .AND.
+     &        NAXIS(MEM) .GT. 0 .AND.
+     &        ERROR .EQ. 0) THEN
+*
+              BUF (1:20) = 'compare           : '
+              WRITE (BUF(21:),*) 'new spectrum'
+              WRITE (BUF(41:),*) 'current average spectrum'
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'object            : '
+              WRITE (BUF(21:),*) OBJECT(MEMRD)(1:20)
+              WRITE (BUF(41:),*) OBJECT(MEM)(1:20)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'spectra averaged  : '
+              WRITE (BUF(21:),*) ADDED(MEMRD)
+              WRITE (BUF(41:),*) ADDED(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'scan number       : '
+              WRITE (BUF(21:),*) SCAN(MEMRD)
+              WRITE (BUF(41:),*) SCAN(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'brightness units  : '
+              WRITE (BUF(21:),*) BUNIT(MEMRD)
+              WRITE (BUF(41:),*) BUNIT(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'reference pixel   : '
+              WRITE (BUF(21:),*) CRPIX1(MEMRD)
+              WRITE (BUF(41:),*) CRPIX1(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'ref pixel velocity: '
+              WRITE (BUF(21:),*) CRVAL1(MEMRD)
+              WRITE (BUF(41:),*) CRVAL1(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'pixel spacing     : '
+              WRITE (BUF(21:),*) CDELT1(MEMRD)
+              WRITE (BUF(41:),*) CDELT1(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'folded            : '
+              WRITE (BUF(21:),*) FOLDED(MEMRD)
+              WRITE (BUF(41:),*) FOLDED(MEM)
+              PRINT *,BUF(1:NCHAR(BUF))
+*
+              BUF (1:20) = 'Tsys, error       : '
+              WRITE (BUF(21:),'(F8.2,A2,F6.2,A,A,F5.1,A)') 
+     &             TSYS(MEMRD),'+-', DTSYS(MEMRD), 
+     &             BUNIT(MEMRD)(1:NCHAR(BUNIT(MEMRD))), 
+     &             ' at HA ', HA(MEMRD), 'deg'
+              PRINT *,BUF(1:NCHAR(BUF))
+          END IF
+*
+*
+          IF (DB) THEN
+              DO I = 1, 6
+                  PRINT *, 'CMDP',I,' = ',CMDP(I)
+              END DO
+              PRINT *,'ASCWANTED = ',ASCWANTED
+              PRINT *,'FIRSTWANTED = ',FIRSTWANTED
+              PRINT *,'NAXIS(MEM) = ',NAXIS(MEM)
+          END IF
+*
+*         2000/12/14: start change
+*         ask the user even if the wanted spectra are the same
+*         and the destination memory is not empty
+          IF (.NOT. NEWAV .AND.
+     &        .NOT. ADDTOAV .AND.
+     &        NAXIS(MEM) .GT. 0) THEN
+*             2000/12/14: end change
+*
+*          original: start 
+*          ask the user even if the wanted spectra are the same
+C          IF (CMDP(5)(1:3) .NE. 'NEW' .AND.
+C     &        CMDP(5)(1:3) .NE. 'ADD' .AND.
+C     &        ASCWANTED .NE. FIRSTWANTED) THEN
+*              original: end
+*
+              ADDTOAV = .FALSE.
+              PRINT '(/A,$)',' Add new spectrum to average (enter=no)?'
+              READ  '(A)',CMDP(8)
+              CALL UPCASE (CMDP(8))
+              IF (CMDP(8)(1:1) .EQ. 'Y') ADDTOAV = .TRUE.
+          END IF
+*
+*
+*         2000/12/21: start change
+*         ask the user even if the wanted spectra are the same
+*         and even if the destination memory is empty
+          IF (.NOT. NEWAV .AND. .NOT. ADDTOAV) THEN
+*             2000/12/21: end change
+*
+*          original: start 
+C          IF (CMDP(5)(1:3) .NE. 'NEW' .AND. .NOT. ADDTOAV .AND.
+C     &        NAXIS(MEM) .GT. 0) THEN
+*              original: end
+*
+              PRINT '(/A,$)',' start a new average spectrum (enter=no)?'
+              READ  '(A)',CMDP(8)
+              CALL UPCASE (CMDP(8))
+              IF (CMDP(8)(1:1) .EQ. 'Y') THEN
+                  NEWAV = .TRUE.
+              END IF
+          END IF
+*
+*         add spectrum to the existing average spectrum
+*
+          IF (ADDTOAV .AND. NAXIS(MEM) .GT. 0 .AND. ERROR .EQ. 0) THEN
+              WRITE (BUF,*) 'combine mem ',MEMRD,
+     &                      ' with average in mem ',MEM
+              PRINT *,BUF(1:NCHAR(BUF))
+              IF (WRITELOG) WRITE (LOGWRTUNIT,*) BUF(1:NCHAR(BUF))
+*
+              WRITE (CMDP(2),*) MEMRD
+              WRITE (CMDP(3),*) MEM
+              IF (NCMD .LT. 3) NCMD = 3
+              CALL MEMAV (ERROR)
+          END IF
+*
+*         start a new average spectrum
+*
+          IF ((NEWAV .OR. (ADDTOAV .AND. NAXIS(MEM) .EQ. 0))
+     &       .AND. ERROR .EQ. 0) THEN
+*             allow any existing average to be over-written by MEMCOPY
+              NAXIS(MEM) = 0
+*             no spectrum in average array - copy 
+              WRITE (BUF,*) 'start new average spectrum in mem ',MEM
+              PRINT *,BUF(1:NCHAR(BUF))
+              IF (WRITELOG) WRITE (LOGWRTUNIT,*) BUF(1:NCHAR(BUF))
+              IF (DB) PRINT *,'copy from ',MEMRD,' to mem ',MEM
+*
+              WRITE (CMDP(2),*) MEMRD
+              WRITE (CMDP(3),*) MEM
+              IF (NCMD .LT. 3) NCMD = 3
+              CALL MEMCOPY (ERROR)
+          END IF
+      END DO
+      RETURN
+ 2005 FORMAT ('illegal :',A)
+      END
+*********      

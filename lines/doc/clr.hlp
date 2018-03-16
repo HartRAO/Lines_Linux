@@ -1,0 +1,13 @@
+
+CLR [memory or ALL]
+
+   Clear the contents of a memory, or all memories
+
+   If no memory is specified, the default memory = set memory is cleared.
+
+   examples:
+   
+   clr 3
+   
+   clr all
+   

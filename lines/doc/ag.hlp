@@ -1,0 +1,9 @@
+AG Alter data by Graphically replacing data between points with a line
+
+Plot the data on screen using pl and then use ag.
+
+Follow the directions given by ag -
+ mark pairs of points by left clicking,
+ to exit right click within the graph.
+
+To see the effect of changes afterwards, replot using pl.

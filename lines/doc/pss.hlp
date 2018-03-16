@@ -1,0 +1,32 @@
+
+PSS [memory]
+
+Convert the spectrum intensity from antenna temperatures in Kelvins to flux
+densities in Janskys, or change the K to Jy conversion factor (Point Source
+Sensitivity, in units of Jy/K) that was previously appled.
+
+PSSF must first be used to read in from a file the PSS values appropriate
+for the data for the period.
+
+If the memory is not given as a parameter, the set memory is used.
+
+Note that the command 'JY' will also convert from K to JY , but using a
+value for the PSS as a parameter for the command.  This is useful when
+working with a few spectra, but for converting many spectra, using PSSF
+followed by PSS will be quicker.
+
+example:
+   
+pss 			(uses the default working memory)
+
+pss 3			(uses memory 3)
+
+This function would commonly be used inside a do loop, to convert a series
+of spectra from K to Jy, for example:
+
+pssf spectra_pss.txt 3 4
+do 1 1 1000
+ra spectra_file_in_K.asc i i new
+pss
+wa spectra_file_in_Jy.asc
+end

@@ -1,0 +1,67 @@
+<pre>
+
+MC [constant] [memory]
+
+   Multiply a spectrum in memory by a constant, 
+   or by the pointing correction determined by PCA
+
+   If the constant is not given, the user is prompted for it, 
+   if the first parameter is not PC and the pointing correction has been
+   calculated.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+
+   Examples:
+   
+   The first example is the straightforward use of MC:
+   
+   mc 1.067 12
+   
+   
+   The second example shows how to scale the spectrum by the pointing
+   correction:
+   
+   set plotdev off
+   lf dd9620.asc
+   # procedure assumes sequence NS EW ON ON ON ON
+   pause
+   set plotdev /xw
+   clr all
+   pb clear
+   pb  -3         -2.2
+   pb  0.2         1.0
+   pb  2.0         2.7
+   pb  4.4         5.5
+   pb  7.9         8.7
+   pb  9.7        10.5
+   pb 12.1        12.5
+   do i 1 3 1
+     ra dd9620.asc i i new i
+     hm i
+     pl i
+     pause
+     po pb 1 i
+   end
+   pca 1.254				! determine pointing correction
+   clr
+   do i 3 6
+     ra dd9620.asc i i plot
+   end
+   mc pc 				! multiply by pointing correction
+   sf 
+   pl
+   pause
+   pb clear
+   pb  -3      -2.2
+   pb   0.2     1.0
+   pb   2.0     2.7
+   pb   4.4     4.8
+   po pb
+   pl
+   pause
+   sy rm g9620-av.asc
+   wa    g9620-av.asc
+               
+</pre>
+   

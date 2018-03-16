@@ -1,0 +1,403 @@
+ lines.log     opened 2007-10-25T12:50:44 
+  Input from reduce_pointing
+#sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.586526451Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d258_14h13m02s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.592900692Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.586526451 now   0.586526451Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d258_14h14m57s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.581170775Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d258_14h16m57s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.575606183Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.581170775 now   0.581170775Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d258_14h18m52s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.579477997Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.57762966Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.579477997 now   0.579477997Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  1  2   0.0 Ke
+   2 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  1  2   0.0 Ke
+   3 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 1  1  2   0.0 Ke
+   4 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  1  2   0.0 Ke
+   5 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  1  2   0.0 Ke
+  11 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+pl 1
+pl 2
+pl 3
+pgc
+pca2 95.54
+  automated PC:
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+      -9.7    -9.7    -9.7         0.8    -0.2     1.8      115.
+  Use NORTH + SOUTH  =     -9.7 mdeg
+  Use EAST + WEST    =      0.8 mdeg
+ G025.709+0.043                                                    
+  Amplitude correction =  1.019856
+  peak intensity if corrected = 53.457710
+  If beam offsets are in error:
+    New HA  offset = old + -0.001 deg
+    New Dec offset = old +  0.010 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+ G025.709+0.043      2007-09-15 14.314   0.000  -6.404  -0.001   0.010 1.019856
+  If source position is in error:
+  pointing-corrected coordinates for G025.709+0.043      2000.0
+     H  M  S      D  M  S       RA       DEC       LII      BII
+    18 38  2.9   -6 23 40.1    279.512   -6.394  G 25.718    0.049
+ Pointing-for-Object    DateObs           PCHAmdeg PCDCmdeg PointCor
+ G025.709+0.043      2007-09-15T14:18:52    9.670   -0.846  1.020937
+lh 3
+lm 4
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   4 G025.709+0.043      2007-09-15     0  6668 1.00   0   0 0 0  1  2   0.0 Ke
+lh 5
+lh 7
+quit
+ lines.log     opened 2007-10-25T13:38:17 
+quit
+ lines.log     opened 2007-10-25T13:38:28 
+ls
+db
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+QUIT
+ lines.log     opened 2007-10-25T13:43:55 
+LS
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2007-10-25T15:20:27 
+ls
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2007-10-25T15:26:58 
+db
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2007-10-25T15:30:38 
+db
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+QUIT
+ lines.log     opened 2007-10-25T15:36:27 
+db
+ls
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+QUIT
+ lines.log     opened 2007-10-25T15:43:43 
+ls
+db
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+QUIT
+ lines.log     opened 2007-10-25T15:47:50 
+ls
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2007-10-25T15:52:23 
+ls
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2007-10-29T12:22:26 
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2008-02-20T12:09:32 
+ls
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  warning: TELLONG=  27.6849995 but TELESCOP=
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+clr all
+  cleared mem ALL
+ls
+db
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  warning: TELLONG=  27.6849995 but TELESCOP=
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+QUIT
+ lines.log     opened 2008-02-20T12:18:09 
+ls
+db
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2008-02-20T12:21:20 
+ls
+db
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+db
+quit
+ lines.log     opened 2008-02-20T12:38:13 
+LS
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2008-02-20T12:40:45 
+ls
+db
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2008-02-20T12:43:36 
+ls
+db
+rncsv 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h20m32s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000118625707
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+wa
+  mem 12 write to test.asc as spectrum  1
+quit
+ lines.log     opened 2008-02-20T13:53:59 
+ls
+rncsv 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h11m07s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G025.709+0.043      2007-09-15     0  6668 1.00   0 -44 0 0  0  1   0.0 Ke
+  12 G025.709+0.043      2007-09-15     0  6668 1.00   0 -44 0 0  0  1   0.0 Ke
+  13 G025.709+0.043      2007-09-15     0  6668 1.00   0 -44 0 0  0  1   0.0 Ke
+  10 of  13 memories are empty
+wa test1.asc 12
+  mem 12 write to test1.asc as spectrum  1
+wa test1r.asc 13
+  mem 13 write to test1r.asc as spectrum  1
+sy mv test1.asc test1l.asc
+ls
+rncsv 2007d258_14h26m42s_Spec_mike_G025.709+0.043.csv
+  read NCCS csv file 2007d258_14h26m42s_Spec_mike_G025.709+0.043.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00023520896
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+wa test2l.asc 12
+  mem 12 write to test2l.asc as spectrum  1
+wa test2r.asc 13
+  mem 13 write to test2r.asc as spectrum  1
+lh
+clr all
+  cleared mem ALL
+ls
+ra test1l.asc 1 1 new
+  read test1l.asc from  1 to  1 in mem  12 add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G025.709+0.043      2007-09-15     0  6668 1.00   0 -44 0 0  0  1   0.0 Ke
+  start new average spectrum in mem  12
+  mem  11 copied to  12
+lh
+ls
+sy less test1l.asc
+quit

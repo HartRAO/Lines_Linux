@@ -1,0 +1,44 @@
+<html>
+<head>
+ <title>'lines' Example: OH/IR spectra</title>
+</head>
+
+
+<h2>'lines' Example: analysis of OHIR monitoring spectra</h2>
+
+These spectra were obtained on the HP1000.
+
+<p>Use TSHA to recalculate system temperature at the middle of the
+observation, for the whole file, in a do loop.
+
+<p>Use TS to add correct the system temperature if needed, and add the error
+estimate in the system temperature for spectra prior to 1990 day 399 = JD
+2448230.
+
+<p>Use RAV for all the spectra to produce a high signal to noise ratio
+spectrum to see where to set baseline blocks for polynomial fitting.
+
+<p>Use PO to fit polynomials to the baselines, in a do loop
+
+<p>Use FD to fix "down" spectra prior to 1990 day 338 = JD 2448229, on the
+whole file, in a do loop.  Note that the spectrum baseline must have been
+made flat using PO prior to running FD.  FD, OHJY and ATM could all be done
+in the same do loop.
+
+<p>Use OHJY to convert spectra from K to Jy using the point source sensitivity
+of the period, in a do loop.
+
+<p>Use ATM to correct the spectrum for atmospheric absorption, in a do loop. 
+Keep the output file - this is the last file with unaveraged spectra, so
+that bad single spectra can be edited out if needed.
+
+<p>Use RAV with a 1 day interval to add together sets of spectra recorded on
+the same day.  Keep the output file.
+
+<p>Use SF to shift and fold frequency-shifted spectra, in a do loop.  Keep
+the output file.
+
+<p>Use TMV and TMW to output light curves for each selected range of
+channels.
+
+</html>

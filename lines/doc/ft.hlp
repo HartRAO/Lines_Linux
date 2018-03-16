@@ -1,0 +1,14 @@
+
+FT [memory]
+
+   Fourier transform the data in the specified memory.
+
+   The number of points to be tranformed must be 2**N,
+   i.e. the spectrum must not have been windowed.
+
+   Faulty autocorrelation spectrometer channels can then be set to zero
+   using the AD (alter data) function.  A second FT operation then returns
+   the cleaned spectrum.
+
+   If the memory is not given as a parameter, the set memory is used.
+

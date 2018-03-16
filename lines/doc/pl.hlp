@@ -1,0 +1,52 @@
+
+PL [ADD] [CAP] [memory]
+
+   Plot data, optionally ADD to previous plot, use set CAPtion
+   The optional parameters can be given in any order.
+
+   If the memory is not given as a parameter, the set memory is used if no
+   other memories have been used, otherwise the user is prompted for the
+   memory to use.
+
+   If add or ADD is given as a parameter, the data are plotted
+   on the previous graph.
+
+   If cap or CAP is given as a parameter, the set caption is used for
+   the plot top label in place of the default caption.
+
+   If ADDTSYS has been SET True, the system temperature and its error will
+   be printed below the caption.
+
+   If no interactive device has been set and the PL command is given, the
+   user is prompted for one.  SET PLOTDEV selects the interactive plot
+   device.  For X windows, such as on Linux, /xwin is normally selected.
+
+   Hardcopy plots are to a disc file, not direct to a printer.  Postscript
+   format is usually used, hence the name PLOTPS.  However other formats are
+   possible.
+
+   SET PLOTPS selects the output file name and the layout option
+   for the plot to disc file.
+
+   examples:
+   SET PLOTDEV /device               selects the interactive plot device,
+                                     eg the user's screen
+
+   SET PLOTDEV /null or off          turns off plotting to screen
+
+   SET PLOTPS filename.ps/option     turns on hardcopy in postscript 
+                                     format to file "filename.ps",
+				     layout options, must be specified:
+                                     /ps   = landscape, monochrome
+                                     /cps  = landscape, colour
+                                     /vps  = portrait,  monochrome
+                                     /vcps = portrait,  colour
+
+   SET PLOTPS off                    turns off hardcopy
+
+   Plots can be customized in many ways:
+   see SET.
+
+   Graphics are implemented using PGPLOT.
+   For more information see http://astro.caltech.edu/~tjp/pgplot
+

@@ -1,0 +1,12 @@
+
+SY [system command]
+
+   Pass a system command to the operating system.
+
+   Any valid command can be given.
+   
+   examples:
+
+   sy joe cmd			! edit a command input file
+   sy gs plotfile.ps            ! view figures in (closed) plotfile
+

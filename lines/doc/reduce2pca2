@@ -1,0 +1,136 @@
+sy rm g962_122_lcp.asc
+sy rm g962_122_rcp.asc
+sy rm g962_122_l+rcp.asc
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+#do i 1 1000
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+av 12 13
+cp 13 2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+av 12 13
+cp 13 3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+# subtract 1st order polynomial to baseline, then plot
+pb clear
+pb -10.0 -4.0
+pb +7.0 +20.0
+pb +30.0 +40.0
+po pb 1 1
+pl 1
+pause
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+av 12 13
+cp 13 3
+# read spectrum at HPW LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+av 12 13
+cp 13 4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+# subtract 1st order polynomial to baseline, then plot
+po pb 1 2
+pl 2
+pause
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+av 12 13
+cp 13 4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+av 12 13
+cp 13 5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+# subtract 1st order polynomial to baseline, then plot
+pb clear
+pb -10.0 -3.3
+pb +7.0 +14.8
+po pb 1 3
+pl 3
+pause
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+pca2 +1.267
+pause
+#
+# read first full length on-source spectrum, LCP to mem 1, RCP to mem 2
+rncsv nextfile
+cp 12 1
+cp 13 2
+# read second full length on-source spectrum, LCP to mem 3, rcp to mem 4
+rncsv nextfile
+cp 12 3
+cp 13 4
+# combine the LCP bandpasses to get the LCP spectrum
+cmb 1 3 5
+# combine the RCP bandpasses to get the RCP spectrum
+cmb 2 4 6
+# subtract 1st order polynomials to baselines, then plot
+po pb 1 5
+po pb 1 6
+set colour 2
+pl 5
+pause
+set colour 3
+pl 6 
+pause
+# scale spectra up by the pointing correction
+mc pc 5
+mc pc 6
+# apply Kelvins to Jy conversion for each polarization
+jy 5.286 5
+jy 5.195 6
+cp 5 7
+# add the LCP and RCP spectra to get total intensity:
+op 7 + 6
+set colour 1
+pl 7
+pause
+wa g962_122_lcp.asc 5
+wa g962_122_rcp.asc 6
+wa g962_122_l+rcp.asc 7
+#
+# read third full length on-source spectrum, LCP to mem 1, RCP to mem 2
+rncsv nextfile
+cp 12 1
+cp 13 2
+# read fourth full length on-source spectrum, LCP to mem 3, rcp to mem 4
+rncsv nextfile
+cp 12 3
+cp 13 4
+# combine the LCP bandpasses to get the LCP spectrum
+cmb 1 3 5
+# combine the RCP bandpasses to get the RCP spectrum
+cmb 2 4 6
+# subtract 1st order polynomials to baselines, then plot
+po pb 1 5
+po pb 1 6
+set colour 2
+pl 5
+pause
+set colour 3
+pl 6 
+pause
+# scale spectra up by the pointing correction
+mc pc 5
+mc pc 6
+# apply Kelvins to Jy conversion for each polarization
+jy 5.286 5
+jy 5.195 6
+cp 5 7
+# add the LCP and RCP spectra to get total intensity:
+op 7 + 6
+set colour 1
+pl 7
+pause
+wa g962_122_lcp.asc 5
+wa g962_122_rcp.asc 6
+wa g962_122_l+rcp.asc 7
+#end
+nfclose

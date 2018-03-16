@@ -1,0 +1,30 @@
+lines.o : lines.f
+	$FCOMPL) -c $(FFLAGD) lines.f
+err_close.o : err_close.f
+	$FCOMPL) -c $(FFLAGD) err_close.f
+err_eof.o : err_eof.f
+	$FCOMPL) -c $(FFLAGD) err_eof.f
+err_open.o : err_open.f
+	$FCOMPL) -c $(FFLAGD) err_open.f
+err_read.o : err_read.f
+	$FCOMPL) -c $(FFLAGD) err_read.f
+err_write.o : err_write.f
+	$FCOMPL) -c $(FFLAGD) err_write.f
+getdate.o : getdate.f
+	$FCOMPL) -c $(FFLAGD) getdate.f
+help.o : help.f
+	$FCOMPL) -c $(FFLAGD) help.f
+listdat.o : listdat.f
+	$FCOMPL) -c $(FFLAGD) listdat.f
+listdir.o : listdir.f
+	$FCOMPL) -c $(FFLAGD) listdir.f
+listhkeep.o : listhkeep.f
+	$FCOMPL) -c $(FFLAGD) listhkeep.f
+nchar.o : nchar.f
+	$FCOMPL) -c $(FFLAGD) nchar.f
+rdascfile.o : rdascfile.f
+	$FCOMPL) -c $(FFLAGD) rdascfile.f
+upcase.o : upcase.f
+	$FCOMPL) -c $(FFLAGD) upcase.f
+wrtascfile.o : wrtascfile.f
+	$FCOMPL) -c $(FFLAGD) wrtascfile.f

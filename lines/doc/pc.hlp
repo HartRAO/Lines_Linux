@@ -1,0 +1,68 @@
+
+PC [intensity north] [south] [east] [west] [on source] [hpbw] [memory]
+
+   Calculate the pointing correction to the on-source intensity from
+   the intensities at the half power points of the beam and on-source.
+
+   If the intensities are not given, the user is prompted for them.
+
+   The units of the halfpower beamwidth are decimal degrees.
+
+   If the halfpower beamwidth is not given then it is computed from the rest
+   frequency for the specified memory - the antenna is assumed to be 26m
+   diameter Hartbeesthoek telescope.
+
+   If the memory is not specified, the set memory is used.
+
+   If the memory is specified as 0 (zero) then the pointing correction
+   calculation does not use any data in the memories, only what has been
+   entered in calling the routine.
+
+   The pointing correction is calculated preferentially from the values 
+   at the half power points in each direction.  If one of these is too weak 
+   then the on source intensity and larger half power point value is used.
+
+   If the beam offsets used for the observations were inaccurate, 
+   the user is shown how to correct them.
+
+   If the measurements were made to find the position of an unknown source,
+   the coordinates for the location of the source are calculated. (Only
+   where the source coordinates are available in memory).
+
+   To apply the pointing correction for the amplitude to the spectrum,
+   use the MC command.  This is not done automatically.  The command:
+   MC PC applies the pointing correction
+
+
+   An example of the output from the PC command is shown below:
+
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+       5.7     8.9     2.5         5.5     5.8     5.2      115.
+  Use NORTH + SOUTH  =      5.7 mdeg
+  Use EAST + WEST    =      5.5 mdeg
+ G309.92+0.48                                                      
+  Amplitude correction =  1.013006
+  peak intensity if corrected = 48.890485
+  If beam offsets are in error:
+    New HA  offset = old + -0.005 deg
+    New Dec offset = old + -0.006 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+ G309.92+0.48        1999-01-20  7.918  60.816 -61.339  -0.005  -0.006 1.013006
+  If source position is in error:
+  pointing-corrected coordinates for G309.92+0.48        1950.0
+     H  M  S      D  M  S       RA       DEC       LII      BII
+    13 47  9.3  -61 20 40.8    206.789  -61.345  G309.914    0.474
+
+
+   The corrections are shown in tabular form in the two lines starting
+
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+ G309.92+0.48        1999-01-20  7.918  60.816 -61.339  -0.005  -0.006 1.013006
+
+   so that they can easily be cut-and-pasted into a spreadsheet for further
+   analysis.
+
+   example:
+   
+   pc 0.65 0.44 0.52 0.67 1.12
+   

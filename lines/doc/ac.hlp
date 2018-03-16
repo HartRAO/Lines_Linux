@@ -1,0 +1,19 @@
+<pre>
+
+AC [constant] [memory]
+
+   Add a constant to the spectrum in the specified memory.
+
+   If the constant is not specified, the user is prompted for it.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+   This function can be used plot a set of spectra on one page:
+   add an offset each spectrum,
+   set XPMIN and XPMAX to cover the full range of the data with offsets
+   PL add to add the spectra successively to the plot of the first.
+
+   example:
+   
+   ac 2.0 3
+</pre>      

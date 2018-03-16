@@ -1,0 +1,23 @@
+lf sg0096.asc
+pause
+clr all
+pb clear
+pb -4.637      -0.647
+pb  6.153       9.637
+do i 1 5 1
+  ra sg0096.asc i i new i
+  po pb 3 i
+end
+pca 1.22
+clr 
+ra sg0096.asc 5 6 add 
+mc pc 
+pl
+pause
+po pb
+pl
+pause
+wa g0096-av.asc
+wa ../g0096.asc
+sy rm g0096.dat
+wmca g0096.dat

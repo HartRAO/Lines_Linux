@@ -1,0 +1,390 @@
+FTN77,S
+$FILES 0,3
+      PROGRAM SPHOUSE
+C     ================           MJG <960404.0737>
+C     Batch type program to
+C     fix selected items of housekeeping
+C     from spectra in a binary disc file.
+C     See /MIKE/PROGS/FIXPROGS.DOC
+C
+C     Julian Date calculation added March 14 1996
+  
+      PARAMETER (IRECSIZE=700)
+C
+      CHARACTER INFILE*40, OUTFILE*40, FILEOPT*1, NAME*20, PCOEFF*40,
+     &          CDATE*30, CUNIT*2, ANSWER*1
+      LOGICAL   EXISTS, NOTLAST, DOHEADER, DATAOKAY, KEEP
+      INTEGER*2 IDATA(IRECSIZE), LARGEBUF(IRECSIZE), IDATE(15)
+      REAL*4    RDATA(IRECSIZE/2)
+      REAL*8    DDATA(IRECSIZE/4), POLYCOEFF(10),
+     &          SYNRF, SYNRFIN
+C
+      EQUIVALENCE (IDATA,RDATA), (IDATA,DDATA),  (IDATE,CDATE),
+     &            (NAME,   IDATA(517)),
+     &            (CUNIT,  IDATA(538))
+C
+C     assign print and read devices
+      CALL FSYSU (1,1)
+C     set up the buffer required for large record file I/O
+      CALL LGBUF (LARGEBUF,IRECSIZE)
+c
+      CALL FTIME(IDATE)
+      PRINT *,'  SPHOUSE :  ',CDATE
+      PRINT *,'  Input spectra file for fixing housekeeping ? _'
+      READ  '(A)', INFILE
+C
+   10 PRINT *,'  First and last records to use (/ = all) ? _'
+      IFIRST = 1
+      ILAST  = 32767
+      READ (1,*,ERR = 10) IFIRST, ILAST
+C
+      PRINT *,'  Name for the output spectra file ? _'
+      READ  '(A)', OUTFILE
+      CALL UPCASE (OUTFILE)
+      IOUTCHAR = NCHAR (OUTFILE)
+C
+      INQUIRE (FILE=INFILE, EXIST=EXISTS)
+      IF (.NOT. EXISTS) STOP 'INPUT FILE DOES NOT EXIST'
+C
+      INQUIRE (FILE=OUTFILE, EXIST=EXISTS)
+C
+      IF (EXISTS) THEN
+          PRINT *,'Output file already exists :'
+          PRINT *,'  Quit (Q), Overwrite (O), or Append (A)',
+     &            ' to output file ? _'
+          READ  '(A)',FILEOPT
+          CALL UPCASE (FILEOPT)
+C
+          IF (FILEOPT .EQ. 'O') THEN
+              PRINT *,'  OKAY TO OVERWRITE OUTPUT FILE (O) ? _'
+              READ '(A)',FILEOPT
+              CALL UPCASE (FILEOPT)
+          END IF
+      ELSE
+C         new output file
+          FILEOPT = 'N'
+      END IF
+C
+      IF (FILEOPT .EQ. 'Q') STOP 'BYE'
+C
+      OPEN (100, FILE=INFILE,  STATUS='OLD', IOSTAT=IOS, ERR=900)
+      OPEN (101, FILE=OUTFILE, IOSTAT=IOS, ERR=900)
+C
+      IF (FILEOPT .EQ. 'A') THEN
+C         advance to the end of the output file
+          IRECOUT = 0
+          DO WHILE (.TRUE.)
+              READ (101,IOSTAT=IOS,ERR=900,END=100) JUNK
+              IRECOUT = IRECOUT + 1
+          END DO
+      END IF
+  100 CONTINUE
+C
+C     Read in polynomial co-effs. for Tsys end-cal correction
+C
+      PRINT *,' '
+      PRINT *,' Read in poly. co-eff. file for Tsys End-Cal Corr.:'
+      PRINT *,' NB !!!  Only needed for data prior to 1990 day 353'
+      PRINT *,' (Pad poly. co-eff. file with zeros up to 10)'
+      PRINT *,' '
+      PRINT *,' Polynomial co-efficient file ? (CR for no corr.) _'
+      READ '(A)',PCOEFF
+C
+C     Only read the file if it was typed in
+      IF ((NCHAR (PCOEFF)) .GT. 1) THEN
+          INQUIRE (FILE=PCOEFF, EXIST=EXISTS)
+          IF (.NOT. EXISTS) STOP 'INPUT FILE DOES NOT EXIST'
+C
+          OPEN (102, FILE=PCOEFF, STATUS='OLD', IOSTAT=IOS, ERR=900)
+          PRINT *,' '
+          PRINT *,' Polymomial Coefficeints : '
+          DO I = 1,10
+              READ (102, *, IOSTAT=IOS, ERR=900, END=150) POLYCOEFF(I)
+              PRINT *, POLYCOEFF(I)
+          END DO
+      ELSE
+          PRINT *, ' No Tsys End-Cal Correction'
+          DO I = 1,10
+              POLYCOEFF(I) = 0D0
+          END DO
+      END IF
+  150 CONTINUE
+C
+      IRECIN = 0
+      NOTLAST = .TRUE.
+C
+      DO WHILE (NOTLAST)
+          READ (100,IOSTAT=IOS,ERR=900,END=200)
+     &         (IDATA(I),I=1,IRECSIZE)
+          IRECIN = IRECIN + 1
+C
+          IF (IRECIN .GE. IFIRST .AND. IRECIN .LE. ILAST) THEN
+C
+C             use records in the specified range
+              PRINT *,'  '
+              PRINT *,INFILE
+              PRINT *,'RECORD',IRECIN,' :  ',NAME,
+     &                ' Observation',IDATA(533),
+     &                ' of ',IDATA(527),' day ',IDATA(528)
+C
+              SYNRFIN = DDATA(164) / DDATA(165) * 1E6
+              PRINT 1001,RDATA(293),RDATA(310),
+     &                   RDATA(304),DDATA(165),SYNRFIN,
+     &                   RDATA(316),RDATA(317)
+C
+              PRINT *,'Keep this spectrum ',
+     &                '(CR = yes, N = no, Q quits) ? _'
+              READ  '(A)', ANSWER
+              CALL UPCASE (ANSWER)
+              IF (ANSWER .EQ. 'Q') STOP 'bye !'
+C
+              IF (ANSWER .NE. 'N' .AND. ANSWER .NE. 'F') THEN
+C                 keep this spectrum :
+                  DATAOKAY = .FALSE.
+                  DO WHILE (.NOT. DATAOKAY)
+C                     fix up various housekeeping parameters
+                      PRINT *,'Change housekeeping as required :'
+                      CALL FIXDATA (IDATA,RDATA,DDATA,SYNRF,POLYCOEFF)
+C
+C                     is fixed up data okay ?
+                      PRINT *,'New values : _'
+                      PRINT 1001,RDATA(293),RDATA(310),
+     &                           RDATA(304),DDATA(165),SYNRF,
+     &                           RDATA(316),RDATA(317)
+                      PRINT *,'Are the new values okay :'
+                      PRINT *,
+     &                  'CR = Yes, N = No, D = Discard, Q = Quit ? _'
+                      READ '(A)',ANSWER
+                      CALL UPCASE (ANSWER)
+                      IF (ANSWER .EQ. 'Q') STOP 'BYE'
+                      IF (ANSWER .NE. 'N' .AND. ANSWER .NE. 'F') THEN
+C                         must be true to get out of the do while loop
+                          DATAOKAY = .TRUE.
+                      END IF
+                      IF (ANSWER .EQ. 'D') THEN
+C                         throw this spectrum away
+                          KEEP = .FALSE.
+                      ELSE
+                          KEEP = .TRUE.
+                      END IF
+                  END DO
+C
+                  IF (KEEP) THEN
+C                     write corrected spectrum to output file
+                      WRITE (101,IOSTAT=IOS,ERR=900)
+     &                      (IDATA(I),I=1,IRECSIZE)
+C
+                      IRECOUT = IRECOUT + 1
+                      PRINT *,'Output :  Record ',IRECOUT,' in ',
+     &                     OUTFILE(1:IOUTCHAR)
+                  END IF
+              END IF
+         END IF
+         IF (IRECIN .EQ. ILAST) NOTLAST = .FALSE.
+      END DO
+C
+  200 CLOSE (100)
+      CLOSE (101)
+      STOP 'done'
+C
+ 1001 FORMAT (/3X,'Tsys (K)',5X,'H A (deg)',5X,'XMC',
+     &         3X,'Spectrum B offset (Hz)',
+     &         3X,'Rad Tsys (K)'
+     &        /F6.1,'+-',F5.1,3X,F8.3,I8,3X,F16.3,6X,F7.1,'+-',F5.1/)
+C
+  900 PRINT *,'ERROR ',IOS,' IN FILE I/O'
+      END
+************************
+      SUBROUTINE FIXDATA (IDATA,RDATA,DDATA,SYNRF,POLYCOEFF)
+************************
+C     correct the housekeeping for the spectrum
+      CHARACTER   NUMBUF*20
+      INTEGER*2   IDATA(*), IT(5)
+      REAL*4      RDATA(*), RAPRC, DECPRC, HAMID
+      REAL*8      DDATA(*), SYNRF, SYNRFSTD, STFROMUT, DTR, XRA, XDEC,
+     &            DELR, DELD, DC, STSTART, STMID, STEND, TOBS,
+     &            POLYCOEFF(10)
+C
+C calculate Julian date from UT if not present
+C
+      IF (DDATA(166) .EQ. 0D0) THEN
+          PRINT *,' Calculating Julian Date... _'
+          IT(1) = 0                       ! 10s of milliseconds
+          IT(2) = IDATA(531)              ! seconds
+          IT(3) = IDATA(530)              ! minutes
+          IT(4) = IDATA(529)              ! hours
+          IT(5) = IDATA(528)              ! days
+          CALL JD (IDATA(527),IT,DDATA(166))
+          PRINT *,DDATA(166)
+      END IF
+C
+C fix system temperature and error & rescale the spectrum
+C
+   10 OLDTSYS = RDATA(293)
+      PRINT *,'Tsys =',RDATA(293),' K.'
+      PRINT *,'   CR = okay, or enter new value : _'
+      READ '(A)', NUMBUF
+      NUMBUF (19:19) = '/'
+      READ (NUMBUF,*,ERR=10) RDATA(293)
+C
+C     scale the spectrum by the ratio of new to old Tsys
+      IF (IDATA(535) .LE. 1) PRINT *,'N < 1, SPECTRUM NOT RESCALED !'
+      DO I = 1, IDATA(535)
+          RDATA(I) = RDATA(I) * RDATA(293) / OLDTSYS
+      END DO
+C
+   20 PRINT *,'Error in Tsys =',RDATA(310),' K.'
+      PRINT *,'   CR = okay, or enter new value : _'
+      READ '(A)', NUMBUF
+      NUMBUF (19:19) = '/'
+      READ (NUMBUF,*,ERR=20) RDATA(310)
+C
+      IF (RDATA(294) .EQ. 0.0) RDATA(294) = RDATA(293)
+      IF (RDATA(311) .EQ. 0.0) RDATA(311) = RDATA(310)
+C
+C radiometer Tsys and error - ensure it is recorded separately
+C
+C     spectra prior to 1988 d131 - Tsys RAD calibration only
+C
+C     UT of 1st OH-MON spectrum to have VID CAL:
+C     1988 day 131 @ 7H 32M = JD : 2447291.814
+C
+C     Assign same Tsys to both RAD & VID prior to this date
+C
+      IF (DDATA(166) .LT. 2447291.814D0) THEN
+          RDATA(316) = RDATA(293)
+          RDATA(317) = RDATA(310)
+C
+C     spectra between 1988 d131 and 1993 d237 - Tsys RAD not recorded
+C
+C     UT of 1st OH-MON spectrum to have Tsys VID & NOT Tsys RAD recorded:
+C     1988 day 131 @ 7H 32M = JD : 2447291.814
+C
+C     UT of 1st OH-MON spectrum to have BOTH Tsys VID & Tsys RAD recorded:
+C     1993 day 237 @ 3H 27M = JD : 2449224.644
+C
+C     Allow for reading in of Tsys RAD during period it was NOT recorded
+C
+      ELSE IF (DDATA(166) .GT. 2447291.814D0 .AND.
+     &         DDATA(166) .LT. 2449224.644D0) THEN
+C         read in radiometer Tsys and error
+   21     PRINT *,'Enter Rad cal Tsys : _'
+          READ '(A)', NUMBUF
+          NUMBUF (19:19) = '/'
+          READ (NUMBUF,*,ERR=21) RDATA(316)
+C
+   22     PRINT *,'Enter error in Rad cal Tsys : _'
+          READ '(A)', NUMBUF
+          NUMBUF (19:19) = '/'
+          READ (NUMBUF,*,ERR=22) RDATA(317)
+C
+C     correction of Tsys RAD and error - recorded separately after 1993 d237
+C
+C     UT of 1st OH-MON spectrum to have BOTH Tsys VID & Tsys RAD recorded:
+C     1993 day 237 @ 3H 27M = JD : 2449224.644
+C
+C     Allow for correction of recorded Tsys RAD
+C
+      ELSE IF (DDATA(166) .GT. 2449224.644D0) THEN
+   23     PRINT *,'RAD Tsys =',RDATA(316),' K.'
+          PRINT *,'   CR = okay, or enter new value : _'
+          READ '(A)', NUMBUF
+          NUMBUF (19:19) = '/'
+          READ (NUMBUF,*,ERR=23) RDATA(316)
+C
+   24     PRINT *,'Error in RAD Tsys =',RDATA(317),' K.'
+          PRINT *,'   CR = okay, or enter new value : _'
+          READ '(A)', NUMBUF
+          NUMBUF (19:19) = '/'
+          READ (NUMBUF,*,ERR=24) RDATA(317)
+C
+      END IF
+C
+C local oscillator multiplication factor for frequency synthesizer
+C
+   50 XMC = DDATA(165)
+      PRINT *,'LO multiplication =',XMC
+      PRINT *,'   CR = ',XMCSTD,' or enter new value : _'
+      READ '(A)', NUMBUF
+      NUMBUF (19:19) = '/'
+      XMC = XMCSTD
+      READ (NUMBUF,*,ERR=50) XMC
+      XMCSTD = XMC
+      DDATA(165) = XMC
+      IF (DDATA(165) .EQ. 0D0) THEN
+          PRINT *,'CANNOT BE ZERO'
+          GO TO 50
+      END IF
+C
+C frequency offset for spectrum B if frequency-switched observation
+C
+   60 SYNRFIN = DDATA(164) / DDATA(165) * 1D6
+      PRINT *,'Spectrum B synth offset = ',SYNRFIN,' Hz'
+      PRINT *,'   CR = ',SYNRFSTD,' Hz, or enter new value : _'
+      READ '(A)', NUMBUF
+      NUMBUF (19:19) = '/'
+      SYNRF = SYNRFSTD
+      READ (NUMBUF,*,ERR=60) SYNRF
+      SYNRFSTD = SYNRF
+      DDATA(164) = SYNRF * DDATA(165) / 1D6
+      IF (SYNRF .EQ. 0D0) THEN
+          PRINT *,'This spectrum cannot be folded.'
+      END IF
+C
+C recalculate the system temperature
+      CALL ARMS (IDATA,RDATA)
+C
+      RETURN
+      END
+*********************
+      SUBROUTINE ARMS (IDATA,DATA)
+*********************
+*  Calculates theoretical spectrum noise levels
+*     IDATA = DATA      input spectrum
+*     TRMS = DATA(297)  output theoretical rms noise
+*
+      logical   folded
+      character tunit*2
+      integer*2 idata(1), iunit, ifolded
+      real*4    data(1), sbw(0:3)
+      equivalence (tunit,iunit), (folded,ifolded)
+  
+*     noise bandwidth RECT  TRNG  HANN  HAMM smoothing
+      data  sbw     / 1.00, 1.33, 1.50, 1.36 /
+*
+*  Quantization loss factor for 3*3 level = 1.235
+*  noise in difference spectrum = root2 (1.414) * pass band noise
+*  1.0E6 converts bandwidth (data(291)) from MHz to Hz.
+*  on source system temperature is data(293)
+*  bandwidth = data(291)
+*  correlator channels = idata(535)
+*  on source integration time = data(292)
+*  number of spectra averaged = data(295)
+*  Jy per K conversion = data(296)
+*
+      iunit = idata(538)
+      ifolded = idata(539)
+*
+      TRMS = 1.235 * 1.414 * data(293) /
+     &       sqrt (1e6 * data(291) / idata(535) * sbw(idata(532))
+     &             * data(292) * data(295))
+      if (folded) trms = trms / 1.414
+      if (tunit .eq. 'JY') then
+          if (data(296) .eq. 0.0) then
+              PRINT *,'Point source Jy / K ? _'
+              READ  *, data(296)
+          end if
+          trms = trms * data(296)
+      end if
+c
+C     update stored value for theoretical rms noise
+      DATA(297) = trms
+      return
+      end
+************************
+      include /MIKE/PROGS/UPCASE.SUB
+      include /MIKE/PROGS/NCHAR.SUB
+      include /MIKE/PROGS/STFROMUT.SUB
+      include /MIKE/PROGS/MOVE.SUB
+      include /MIKE/PROGS/JD.SUB
+************************

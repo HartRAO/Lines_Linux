@@ -1,0 +1,51 @@
+<pre>
+
+GP [position] [height] [width] [PHWB] or [show] or [clear] or [fix/freebase]
+
+Enter initial guesses for parameters of Gaussians to fit to spectral lines.
+   
+If the fourth parameter is P or H or W or any combination of these, the
+Position or Height or Width as appropriate will be kept fixed during the
+Gaussian fit.  If the fourth parameter includes a B, the baseline will be
+fixed at zero.
+
+If GP is entered without parameters, the current values are shown
+and the user is prompted for another set of parameters to add 
+to those already set.
+
+If SHOW is given as the first parameter, the current values are shown.
+
+If CLEAR is given as the first parameter, all values are cleared.
+
+If FIXBASE is given as the first parameter, the baseline will be fixed at
+zero.  If FIXBASE has been specified, it will be used by GF whether or
+not the parameter GP is passed to GF.
+
+If FREEBASE is given as the first parameter, the baseline will be
+unconstrained.  This is the default condition.
+
+For a Gaussian fit to be automated, the Gaussian parameters must be set
+using GP prior to the fit.
+
+The option to fix the baseline at zero enables a fit to be made to the
+top half of a drift scan.  At high signal to noise ratios, the only the
+top half of the main beam of the telescope closely follows the shape of a
+Gaussian.  The idea then is to give the commands
+   	GP fixbase
+	PO 	[ensure that the mean baseline is zero]
+   	VW	[set velocity window to half power points of beam]
+   	GF	[fit the Gaussian to the top half of the beam only]
+
+To check that the baseline is fixed at zero, check the output of GF:
+
+	Cycle  4 took  7 steps. Residual RMS error is    0.023536
+	Step 24  Position        Height        Width
+                  0.161945       2.625789      23.303977
+	Baseline at     0.000000
+                 
+The last line shows that the baseline was fixed.
+
+
+See also GF.
+
+</pre>

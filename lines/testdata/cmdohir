@@ -1,0 +1,15 @@
+set plotdev /xwin
+set plotps  off
+clr 8
+rav iktaum.asc 1 100000 iktaum.all 100000
+po
+do loop 1 5 1
+   ra iktaum.asc loop loop new 
+   pl 
+   ts
+   tsha
+   po pb 4
+   fd
+   atm
+   wa iktaum.po
+end

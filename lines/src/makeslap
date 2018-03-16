@@ -1,0 +1,84 @@
+#-----------------------------------------------------------------------
+# Multisystem makefile. The target should be the name of the system:
+#
+# e.g. make sun4 (or sun4sol,sgi etc.)
+#
+# This makefile compiles the main SLAP program and builds the 
+# executable file
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+# Default and common macros:
+FFLAGC=
+FCOMPL=f77
+SHELL=/bin/csh
+PRODUCT=slap
+CCOMPL=cc
+CFLAGC=
+#
+LDFLAG= 
+#Default libraries
+#
+#-----------------------------------------------------------------------
+# Default target:
+make:
+	@echo 'Make what? Specify the target system.'
+
+# System targets:
+convex:
+#                                           -O2
+	make $(PRODUCT) "FCOMPL=fc" "FFLAGC=    -72" "SYSTEM=convex" \
+	"NAGLIB = -lnag"  "GRLIBS=-lX11"
+sun4:
+	make $(PRODUCT) "FCOMPL=f77" "FFLAGC=-O" "SYSTEM=sun4" \
+         "GRLIBS=-L/usr/local/X11/lib -lX11"
+sun4sol:
+	make $(PRODUCT) "FCOMPL=f77" "FFLAGC=-O" "SYSTEM=sun4sol" \
+         "GRLIBS=-L/usr/local/lib -lX11"
+sgi:
+	make $(PRODUCT) "FCOMPL=f77" "FFLAGC=-O -32" "CFLAGC=-32" \
+         "SYSTEM=sgi" "GRLIBS=-L/usr/lib -lX11 -lgl_s"
+alliant:
+	make $(PRODUCT) "FCOMPL=fortran" "FFLAGC=-O" "SYSTEM=alliant" \
+	 "CFLAGC= -g -Inet" 
+#-----------------------------------------------------------------------
+# external libraries (I have extracted the required NSWC maths subroutines
+# and put them in slaplib, as they may not be generally available - they
+# are freely distributable though - the first routine in nswcmini.f has
+# some machine-dependent constants).
+#
+# NB must use the Makefile in olafdwarf & slaplib to create the libraries
+OLAFLIB = olafdwarf/libolafdwarf.$(LOGIN_ARCH).a 
+SLAPLIB=  slaplib/slaplib.$(LOGIN_ARCH).a
+SPCLIB=   spc/spclib.$(LOGIN_ARCH).a
+FITSLIB=  $(MIRLIB)/libmir.a
+PGPLOTLIB=-lpgplot
+# format numbers <100000 in decimal format
+#PGPLOTLIB=-L/source/pgplot/bin_sun4 -lpgplot
+#
+#if you do not have the GNU readline library you will have to
+#comment out the following line and alter olafdwarf/plib/getcmd.f as indicated
+#in the source and remove references to ol_rdlin.o in olafdwarf/Makefile
+#
+#READLINE= /usr/local/gnu/lib/libreadline.a /usr/local/gnu/lib/libtermcap.a
+# Rules for building the subroutine library:
+.f.o:
+	$(FCOMPL) -c $(FFLAGC) $<
+
+.c.o:
+	$(CCOMPL) -c $(CFLAGC) $<
+
+
+SLAP_ROUTINES=\
+slap.o
+# -Bstatic before $(SLAP_ROUTINES) for non-shared libraries (sun4 only?)
+slap:   $(SLAP_ROUTINES)
+	$(FCOMPL) $(FFLAGC)  $(LDFLAG) -o slap $(SLAP_ROUTINES)\
+	$(SLAPLIB) $(SPCLIB) $(OLAFLIB)  $(READLINE) \
+        $(FITSLIB) $(PGPLOTLIB) $(GRLIBS)
+	chmod +x slap
+
+
+clean:
+	rm -f $(SLAP_ROUTINES)
+

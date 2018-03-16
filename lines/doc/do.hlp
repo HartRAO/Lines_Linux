@@ -1,0 +1,63 @@
+<pre>
+
+DO [loopname] [loopstart] [loopend] [loopinc]
+
+   Do loop to repeat set of tasks, terminated by END.
+
+   The loop is structured like a fortran do loop (but without the "=").
+   The commands are stored until an END is encountered,
+   and are then interpreted and executed
+
+   loopname is a character string, e.g. II or $1 or LOOP
+   It can be used in place of a numeric variable in commands in the loop.
+   The loop variable can be modified with the operators +-*/ which do
+   integer arithmetic.
+
+   loopstart is the initial value of the loop variable on entry.
+   loopend is the final value of the loop variable.
+   loopinc is the increment added to the loop variable on each pass.
+   These are integer variables only.
+
+   examples:
+
+   To take a quick look at all spectra in a file:
+
+   set plotdev /xw
+   set plotps off
+   do j 1 100000 1
+	ra spectra.asc j j new 
+	pl 
+	pause
+   end
+
+   An example in which six spectra are read from a disc file, plotted on
+   the same page, both on screen and to one postscript output file, with
+   different line styles and colours is:
+
+   set plotdev /xw
+   set plotps  spectra.ps/vcps
+   set nxsub 2
+   set nysub 3
+   do i 1 6 1
+      ra spectra.asc i i new i
+      set colour i+1
+      set line i+1
+      pl i
+   end
+   set plotps off
+
+   An example in which the first four spectra in a file are plotted on
+   screen and written to separate plotfiles as gif images, the files being
+   named plot1.gif, plot2.gif etc, is shown below.  The "$iii" in the output
+   filename "srcname$iii.gif" indicates that the value loop index "iii" is
+   inserted in place of "$iii" in the file name.
+
+   set plotdev /xwin
+   do iii 1 4 1
+      ra spectra.asc iii iii new iii
+      set plotps srcname$iii.gif/gif
+      pl iii
+      set plotps off
+   end
+
+</pre>

@@ -1,0 +1,44 @@
+
+LF [file] [first spectrum] [last spectrum]
+
+   List the contents of an ascii spectra file to generate a file for
+   automated reduction of the spectra.  The listing is also echoed on
+   screen.
+
+   A brief summary of the housekeeping is given,
+   at one line per spectrum.
+
+   If the first and last spectra to list are not given,
+   the whole file is listed.
+
+   typical output to screen is:
+
+LINES>la testdata/sg3099.asc
+ list file testdata/sg3099.asc
+ opening testdata/sg3099.asc ASCII spectra file
+ testdata/sg3099.asc at spectrum 1
+testdata/sg3099.asc, 1,G309.92+0.48      NS,NS,1999-01-20, 30756,   60.42
+ testdata/sg3099.asc at spectrum 2
+testdata/sg3099.asc, 2,G309.92+0.48      EW,EW,1999-01-20, 30757,   59.52
+ testdata/sg3099.asc at spectrum 3
+testdata/sg3099.asc, 3,G309.92+0.48        ,ON,1999-01-20, 30758,   60.81
+ testdata/sg3099.asc at spectrum 4
+testdata/sg3099.asc, 4,G309.92+0.48        ,ON,1999-01-20, 30759,   60.28
+  file ends after spectrum  4 in testdata/sg3099.asc
+    
+   where the comma-separated outputs are:
+   testdata/sg3099.asc 		filename
+   1..4                         record number in file
+   G309.92+0.48	    NS		name of the object
+   NS				type of observation, pointing or on source
+   1999-01-20			date of the observation, YEAR-MONTH-DAY
+   30756                        "Scan" or observation number
+   60.42			Measured system temperature (K)
+
+Only the non-indented lines are written to disk, in the file "lines.fla" in
+the current working directory.  This file is always appended to, not
+overwritten.
+
+Sharmila Goedhart has written program "generate-script", to produce a
+command file for automated reduction of the data by "lines" from the
+contents of "lines.fla".

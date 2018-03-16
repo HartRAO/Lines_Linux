@@ -1,0 +1,20 @@
+      SUBROUTINE EDA_S4253H(DB,Y, N, ERR)
+c     smooth by 4253H
+      IMPLICIT NONE
+      LOGICAL DB, CHANGE
+      INTEGER N, ERR
+      REAL*8  Y(*), ENDSAV, WORK(5), SAVE(5)
+      INTEGER NW
+      DATA NW /5/
+c
+      IF (DB) PRINT '(A,$)', 'in EDA_S4253H '
+      CALL EDA_S4(DB,Y,N,ENDSAV,WORK,SAVE,NW,ERR)
+      IF (ERR .EQ. 0) CALL EDA_S2(DB,Y,N,ENDSAV)
+      IF (ERR .EQ. 0) CALL EDA_S5(DB,Y,N,WORK,SAVE,NW,ERR)
+      IF (ERR .EQ. 0) CALL EDA_S3(DB,Y,N,CHANGE)
+      IF (ERR .EQ. 0) CALL EDA_ENDPTS(DB,Y,N)
+      IF (ERR .EQ. 0) CALL EDA_HANN(DB,Y,N)
+      IF (DB) PRINT *,'exit EDA_S4253H'
+      RETURN
+      END
+      

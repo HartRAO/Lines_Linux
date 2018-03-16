@@ -1,0 +1,56 @@
+<pre>
+
+CMB [memory with signal bandpass] [memory with ref bandpass] [to memory]
+
+   Combine two bandpasses to give the band-corrected spectrum 
+
+   In the NCCS bandpasses are saved individually, whereas on the HP1000,
+   two bandpasses were divided to give a band-corrected spectrum.
+   
+   This command divides the individually saved signal and reference
+   bandpasses to produce the band-corrected spectrum.  This permits modes of 
+   spectroscopic observing that were not available on the HP1000, for
+   example using one reference bandpass for a number of different signal 
+   bandpasses.
+   
+   For position-switched spectra the bandpasses typically look like this:
+       signal                         reference
+    _____/\_____                     ____________
+   /            \                   /            \
+   CMB produces a spectrum looking like this:
+    _____/\_____   
+
+
+   For frequency-switched spectra the bandpasses typically look like this:
+       signal                         reference
+    _/\_________                     _________/\_   
+   /            \                   /            \
+   CMB produces a spectrum looking like this:
+    _/\__   
+
+   This has to be done individually for each polarization
+   
+   If the two polarizations are to be added to give the total intensity, 
+   CMB must be done first.
+
+   if the parameters are not specified are the command mnemonic, the user
+   is prompted for them.
+   
+   example:
+   
+# combine lcp bandpasses in mem 1 and mem 3 and write result to mem 5
+cmb 1 3 5
+# combine rcp bandpasses in mem 2 and mem 4 and write result to mem 6
+cmb 2 4 6
+
+   note that for frequency-switched spectra, the choice of which is signal 
+   and which is the reference is somewhat arbitrary and
+   	cmb 1 3 5
+   and
+   	cmb 3 1 5 
+   should produce the same result.
+   
+   For help on reading in bandpasses from the NCCS, see the help on 'rncsv'
+
+</pre>
+   

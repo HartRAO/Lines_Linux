@@ -1,0 +1,135 @@
+<pre>
+
+PCA [velocity] 
+
+Automated calculation of the pointing correction to the on-source
+intensity from the intensities at the half power points of the beam and
+on-source.
+
+The user is required to read the spectra into memories before calling
+this function.
+
+For position-switched spectra use:
+	mem 1	north
+	mem 2	south
+        mem 3   east 
+        mem 4   west
+        mem 5   on source
+For frequency-switched spectra use:
+	mem 1	north + south
+        mem 2	east + west
+        mem 3	on source
+The spectra must have flat baselines and be in the same units.
+
+PCA searches for a maximum in the data over seven points centred on the
+velocity given by the user.  It is important that the line peak in the
+offset spectra fall within this search range, otherwise the pointing
+correction applied will be incorrect.  This can be checked by using
+option LD <MEM> to list the data in each of the memories used for the
+pointing calculation, and noting the channel number at which the NSEW
+peaks occur.  PL <MEM> will give a visual display of the data in each
+memory.  If "debug" is turned before running PCA, the portion data from
+each memory being searched for the maximum will listed to screen. If the
+line peak is more than 3 channels away from its position in the on-source
+spectra, contact the author!
+
+Function PC is then called to calculate the value of the pointing
+correction.
+
+To apply the pointing correction for the amplitude to the spectrum,
+use the MC command.  This is not done automatically.
+
+This can be done in an automated way however by giving the command
+MC pc mem
+whereupon the last calculated pointing correction will be applied to 
+the spectrum in the specified memory.
+
+
+Sample command files to automate pointing correction and apply it to the
+average on source spectrum, and save to a new disk file:
+
+# lines command file to do pointing correction on freq-sw data
+do i 1 3 1
+   ra sg3099.asc i i new i
+   hm i				! smooth if line is weak
+end
+pca -59.8
+clr 8
+ra sg3099.asc 3 4 add 8
+mc pc 8
+wa sg3099.asc 8
+
+
+# position switched automated pointing correction example
+do i 1 5 1
+   ra sg3485.asc i i new i
+end
+pca -20.1
+# clear set memory (8) and average the on-source spectra
+clr 8
+ra sg3485.asc 5 7 add
+# apply the pointing correction to the averaged spectrum
+mc pc
+# write out the averaged spectrum for further work
+wa sg3485.an
+
+
+# another command file for frequency-switched spectra
+set plotdev /xw
+lf sg2137.asc
+pause
+clr all
+pb clear
+pb 7.404       9.651
+pb 14.035      16.844
+pb 20.609      21.733
+do i 1 3 1
+  ra sg2137.asc i i  new i
+  po pb 3 i
+end
+pca 11.1
+clr 
+ra sg2137.asc 3 4  add 
+mc pc 
+sf
+pl
+pause
+pb clear
+pb 7.404       9.820
+pb 13.754      14.484
+po pb 
+pl
+pause
+wa g2137-av.asc 
+wa ../g2137.asc 
+sy rm g2137.dat
+wmca g2137.dat
+
+
+#another command file for position-switched spectra
+set plotdev /xw
+lf sg0096.asc
+pause
+clr all
+pb clear
+pb -4.637      -0.647
+pb  6.153       9.637
+do i 1 5 1
+  ra sg0096.asc i i new i
+  po pb 3 i
+end
+pca 1.22
+clr 
+ra sg0096.asc 5 6 add 
+mc pc 
+pl
+pause
+po pb
+pl
+pause
+wa g0096-av.asc
+wa ../g0096.asc
+sy rm g0096.dat
+wmca g0096.dat
+
+</pre>

@@ -1,0 +1,799 @@
+FTN77,S
+$FILES 0,4
+      PROGRAM PTGCHA
+C     ===============             GCM <940619.1628>
+C     Batch type program to
+C     produce a gain curve of peak Ta vs hour angle from pointing data,
+C     from spectra in a binary disc file
+C     updated to hunt for the peak & do pointing on mixed observing
+C     files, eg. FS pting + PS on
+C     see SPECTRAL LINE USER'S GUIDE
+C
+      PARAMETER (NPTS=256, IRECSIZE=700, NFREQ=5)
+C
+      CHARACTER INFILE*64, OUTF(3)*64, FILE(3)*1, NAME*20, CDATE*30,
+     &          CUNIT*2, STANDARD*1, FRQORPOS*2, FRP*2, P1*2, P2*2,
+     &          NORMALISE*1, PCNSNAME*14, PCEWNAME*14, MIXD*1
+      LOGICAL   EXISTS, NOTLAST, DOHEADER, DOVEL2, FOLDED
+      INTEGER*2 IDATA(IRECSIZE), LARGEBUF(IRECSIZE), IDATE(15), INDEX,
+     &          N1, N2, NUMCH, NUMCHT, AIOFV(9)
+      REAL*4    RDATA(IRECSIZE/2), TSYSA, VEL, V(2,9), USEW, ANTHA,
+     &          WAVE(NFREQ), BNDWD, RA50C, DC50C, RAS, DECS, GLIIS,
+     &          GBIIS, VELG, VELU, VELD
+      REAL*8    DDATA(IRECSIZE/4), S(5), T(2), DT(2), DNS, DEW, CF, SP,
+     &          TI, DTI, CFN, RFMAX(NFREQ), DFREQ, DFOFB,
+     &          TID, TIU, DTIU, DTID
+C
+      EQUIVALENCE (IDATA,RDATA), (IDATA,DDATA),  (IDATE,CDATE),
+     &            (NAME,      IDATA(517)),
+     &            (IY,        IDATA(527)),
+     &            (ID,        IDATA(528)),
+     &            (IH,        IDATA(529)),
+     &            (IM,        IDATA(530)),
+     &            (IS,        IDATA(531)),
+     &            (INDEX,     IDATA(533)),
+     &            (N1,        IDATA(536)),
+     &            (N2,        IDATA(537)),
+     &            (CUNIT,     IDATA(538)),
+     &            (FOLDED,    IDATA(539)),
+     &            (BNDWD,     RDATA(291)),
+     &            (TSYSA,     RDATA(293)),
+     &            (ZVLINDEX,  RDATA(298)),
+     &            (AITOKM,    RDATA(299)),
+     &            (DFREQ,     DDATA(162)),
+     &            (RA50A,     RDATA(300)),
+     &            (DC50A,     RDATA(301)),
+     &            (ANTHA,     RDATA(304)),
+     &            (DFOFB,     DDATA(164))
+C
+      DATA RFMAX  / 13000., 7000., 6000., 4000., 2000. /,
+     &     WAVE   /    2.5,   4.5,   6.0,  13.0,  18.0 /
+      DATA DTR    /0.017453293/
+C
+C     assign print and read devices
+      CALL FSYSU (1,1)
+C     set up the buffer required for large record file I/O
+      CALL LGBUF (LARGEBUF,IRECSIZE)
+C
+      CALL FTIME(IDATE)
+      PRINT *,'PTGCHA : produce gain curve from NSEW pointing spectra'
+      PRINT *,CDATE
+      PRINT *,'GC : find pting corrections and fix ON-source spectra'
+      PRINT *,'  Spectra file for producing gain curve ? _'
+      READ  '(A)', INFILE
+      INQUIRE (FILE=INFILE, EXIST=EXISTS)
+      IF (.NOT. EXISTS) STOP 'INPUT FILE DOES NOT EXIST'
+C
+      PRINT *,'  First and last records to use (/ = all) ? _'
+      IFIRST = 1
+      ILAST  = 32767
+      READ *, IFIRST, ILAST
+C     tell if the file contains mixed data or not, eg. FS pting + ON
+      PRINT *,'does the file contain mixed data FS pting+PS ON (Y/N)?'
+      READ *, MIXD
+      CALL UPCASE (MIXD)
+C
+      PRINT *,'Pointing info is written to a multicolumn ASCII file.'
+      PRINT *,'  Name for the output ASCII file ? _'
+      READ  '(A)', OUTF(1)
+      CALL CHKFILE (OUTF(1),FILE(1))
+C
+      PRINT *,'On-source spectra are saved for further analysis.'
+      PRINT *,'  Output file name for the on-source spectra ? _'
+      READ '(A)', OUTF(2)
+      CALL CHKFILE (OUTF(2),FILE(2))
+C
+      PRINT *,'Also output spectra normalised to 100 (Y/N) ? _'
+      READ '(A)', NORMALISE
+      CALL UPCASE (NORMALISE)
+      IF (NORMALISE .EQ. 'Y') THEN
+          PRINT *,'  Output file name for the normalised spectra ? _'
+          READ '(A)', OUTF(3)
+          CALL CHKFILE (OUTF(3),FILE(3))
+      END IF
+C
+      PRINT *,'Pointing corrections are calculated from the peak'
+      PRINT *,'in the spectrum.'
+      PRINT *,'  Velocity of peak in up-spectrum ? _'
+C     if freq. switching employed then will calc down-spectrum vel.
+      READ  *, VELG
+C
+C     hunt for the peak flux about the given velocity
+      PRINT *,'Give the ODD number of channels over which to find Sp'
+      READ *,NUMCHT
+C     total number of channels searched for peak flux
+      NUMCH = (NUMCHT - 1)/2
+C
+      PRINT *,'The positioning of the spectra (N,S,E,W,ON)'
+      PRINT *,'is given by N S E W ON characters in the source name.'
+      PRINT *,'  Start, end location of position ID in the name ? _'
+      READ *, IN1, IN2
+C
+C     PRINT *,'The error estimate in the system temp. was not stored'
+C     PRINT *,'in the housekeeping prior to 1990 December.'
+C     PRINT *,'  If there is no error estimate :'
+C     PRINT *,'  Use a typical estimate for the error in Tsys (T)'
+C     PRINT *,'  or enter calculated error for each spectrum  (C) ? _'
+C     READ '(A)',STANDARD
+C     CALL UPCASE (STANDARD)
+C     IF (STANDARD .EQ. 'T') THEN
+C         PRINT *,'  Typical estimated error in Tsys (K) ? _'
+C         READ  *,DTSYS
+C     END IF
+C
+      PRINT *,'opening ',INFILE
+      OPEN (100, FILE=INFILE,  STATUS='OLD', IOSTAT=IOS, ERR=900)
+      PRINT *,'opening ',OUTF(1)
+      OPEN (101, FILE=OUTF(1), IOSTAT=IOS, ERR=900)
+      PRINT *,'opening ',OUTF(2)
+      OPEN (102, FILE=OUTF(2), IOSTAT=IOS, ERR=900)
+      IF (NORMALISE .EQ. 'Y') THEN
+          PRINT *,'opening ',OUTF(3)
+          OPEN (103, FILE=OUTF(3), IOSTAT=IOS, ERR=900)
+      END IF
+C
+C if ASCII file already exists then set DOHEADER=.FALSE.
+      DOHEADER = .TRUE.
+      DO I=1,3
+          IF (FILE(I) .EQ. 'A') THEN
+C             advance to the end of the output files
+              IF (I .EQ. 1) THEN
+                  DO WHILE (.TRUE.)
+                      READ (101,IOSTAT=IOS,ERR=900,END=33) JUNK
+                  END DO
+                  DOHEADER = .FALSE.
+              ELSE IF (I .EQ. 2) THEN
+                  DO WHILE (.TRUE.)
+                      READ (102,IOSTAT=IOS,ERR=900,END=33) JUNK
+                  END DO
+              ELSE IF (I .EQ. 3 .AND. NORMALISE .EQ. 'Y') THEN
+                  DO WHILE (.TRUE.)
+                      READ (103,IOSTAT=IOS,ERR=900,END=33) JUNK
+                  END DO
+              END IF
+          END IF
+   33     CONTINUE
+      END DO
+C
+          IF (FILE(1) .NE. 'A' .AND. DOHEADER) THEN
+C             print header for output file in ASCII multicolumn format
+              WRITE (101,1500,IOSTAT=IOS,ERR=900)
+              DOHEADER = .FALSE.
+          END IF
+C
+      PRINT *,'Rec In  Name                   Year  Day   Obs'
+C
+      INDEXPREV = 0
+      USEW = 0.0
+      IRECIN = 0
+      NOTLAST = .TRUE.
+      DOVEL2 = .TRUE.
+      FRQORPOS = '  '
+C     IF (DFOFB .EQ. 0.0) THEN
+C        FRQORPOS='PS'
+C     ELSE
+C        FRQORPOS='FS'
+C     END IF
+C     PRINT *,'DFOFB = ',DFOFB,' FRQORPOS = ',FRQORPOS
+C
+      DO WHILE (NOTLAST)
+   40     READ (100,IOSTAT=IOS,ERR=900,END=200)
+     &         (IDATA(I),I=1,IRECSIZE)
+          IRECIN = IRECIN + 1
+          IF (IRECIN .LT. IFIRST .OR. IRECIN .GT. ILAST) GO TO 40
+C
+C         records are within specified range
+C
+C         determine the wavelength used
+          IF (USEW .EQ. 0.0) THEN
+              DO K = 1,NFREQ
+                  IF (DFREQ .LT. RFMAX(K) .AND.
+     &                DFREQ .GT. RFMAX(K+1)) IWAVE = K
+              END DO
+              USEW = WAVE(IWAVE)
+          END IF
+C
+C         test to see if posn. or freq.switching imployed
+C         if already shown to be PS or FS don't check again
+C
+          FRP = NAME(IN1:IN2)
+          IF (FRP .NE. ' N' .AND. FRP .NE. ' S' .AND.
+     &        FRP .NE. ' E' .AND. FRP .NE. ' W' .AND.
+     &        FRP .NE. 'N ' .AND. FRP .NE. 'S ' .AND.
+     &        FRP .NE. 'E ' .AND. FRP .NE. 'W ' .AND.
+     &        FRP .NE. 'NS' .AND. FRP .NE. 'EW') FRP='ON'
+C
+          IF (FRQORPOS .EQ. '  ') THEN
+              IF (FRP .EQ. ' N' .OR. FRP .EQ. ' S' .OR.
+     &            FRP .EQ. ' E' .OR. FRP .EQ. ' W' .OR.
+     &            FRP .EQ. 'N ' .OR. FRP .EQ. 'S ' .OR.
+     &            FRP .EQ. 'E ' .OR. FRP .EQ. 'W ') THEN
+                  FRQORPOS='PS'
+              ELSE
+                  FRQORPOS='FS'
+              END IF
+          END IF
+C
+C         determine the vel. of the search and DOWN if freq switch
+          AIOFV1 = VTOAI (VELG,ZVLINDEX,AITOKM)
+          IF (NUMCH .EQ. 0) THEN
+             AIOFV(1) = AIOFV1
+             V(1,1) = VELG
+          ELSE
+             DO I = -NUMCH, NUMCH
+                J = I + NUMCH + 1
+                AIOFV(J) = AIOFV1 + I
+                AIN = AIOFV(J)
+                V(1,J) = AITOV (AIN,ZVLINDEX,AITOKM)
+             END DO
+          END IF
+          IF (FRQORPOS .EQ. 'PS' .AND. DOVEL2) THEN
+              DOVEL2 = .FALSE.
+C         find the DOWN velocity range
+              DO I = 1, NUMCHT
+                 V(2,I) = V(1,I)
+              END DO
+          END IF
+C
+          IF (FRQORPOS .EQ. 'FS' .AND. DOVEL2) THEN
+              DOVEL2 = .FALSE.
+C
+C             array index offset = no of points in spectrum * dFofB / bw
+              AIOFFSET = IDATA(535) * DDATA(164) / RDATA(291)
+C             array index of V(2)
+              IF (NUMCH .EQ. 0) THEN
+                 AIDOWN = AIOFV1 + AIOFFSET
+                 V(2,1) = AITOV (AIDOWN, ZVLINDEX, AITOKM)
+              ELSE
+                 DO I = 1, NUMCHT
+                    AIOFV2 = AIOFV(I) + AIOFFSET
+                    V(2,I) = AITOV (AIOFV2,ZVLINDEX,AITOKM)
+                 END DO
+              END IF
+          END IF
+C
+C         use records in specified range from input file
+          PRINT 1100, IRECIN, NAME, IDATA(527), IDATA(528),
+     &        IDATA(533)
+C
+C         calculate the theoretical rms noise in the spectrum
+          CALL ARMS (IDATA,RDATA)
+C
+          IF (STANDARD .EQ. 'C') THEN
+C             using individual error estimates for Tsys
+              IF (RDATA(310) .EQ. 0.0) THEN
+C                 DTsys not defined in housekeeping
+                  PRINT *,'Error in Tsys for this spectrum (K) ? _'
+                  READ  *, DTSYS
+              ELSE
+C                 error in Tsys from housekeeping
+                  DTSYS = RDATA(310)
+              END IF
+          END IF
+C
+C         correct hour angle if it is between 270 and 360
+          IF (ANTHA .GE. 270.) ANTHA = ANTHA - 360.0
+C
+          IF (FRQORPOS .EQ. 'FS' ) THEN
+C             frequency switching
+C             determine the height and error of the lines
+              IF (NUMCH .EQ. 0) THEN
+                 VELU = V(1,1)
+                 CALL DOTI(IDATA,RDATA,VELU,TI)
+                 T(1) = TI
+                 CALL DODTI(IDATA,RDATA,CUNIT,TSYSA,DTSYS,TI,DTI)
+                 DT(1) = DTI
+                 IF (MIXD .EQ. 'Y' .AND. FRP .EQ. 'ON') GOTO 100
+                    VELD = V(2,1)
+                    CALL DOTI(IDATA,RDATA,VELD,TI)
+                    T(2) = TI
+                    CALL DODTI(IDATA,RDATA,CUNIT,TSYSA,DTSYS,TI,DTI)
+                    DT(2) = DTI
+              ELSE
+                 VELU = V(1,1)
+                 CALL DOTI(IDATA,RDATA,VELU,TIU)
+                 DO I = 2, NUMCHT
+                    VEL = V(1,I)
+                    CALL DOTI(IDATA,RDATA,VEL,TI)
+                    IF (TI .GT. TIU) THEN
+                       TIU = TI
+                       VELU = VEL
+                    END IF
+                 END DO
+                 T(1) = TIU
+                 CALL DODTI(IDATA,RDATA,CUNIT,TSYSA,DTSYS,TIU,DTIU)
+                 DT(1) = DTIU
+                 IF (MIXD .EQ. 'Y' .AND. FRP .EQ. 'ON') GOTO 100
+                 VELD = V(2,1)
+                 CALL DOTI(IDATA,RDATA,VELD,TID)
+                 DO I = 2, NUMCHT
+                    VEL = V(2,I)
+                    CALL DOTI(IDATA,RDATA,VEL,TI)
+                    IF (TI .LT. TID) THEN
+                       TID = TI
+                       VELD = VEL
+                    END IF
+                 END DO
+                 T(2) = TID
+                 CALL DODTI(IDATA,RDATA,CUNIT,TSYSA,DTSYS,TID,DTID)
+                 DT(2) = DTID
+              END IF
+100           CONTINUE
+          ELSE
+C             position switching - get height and error in line
+              IF (NUMCH .EQ. 0) THEN
+                 VELU = V(1,1)
+                 CALL DOTI (IDATA,RDATA,VELU,TIU)
+              ELSE
+                 VELU = V(1,1)
+                 CALL DOTI (IDATA,RDATA,VELU,TIU)
+                 DO I = 2, NUMCHT
+                    VEL = V(1,I)
+                    CALL DOTI (IDATA,RDATA,VEL,TI)
+                    IF (TI .GT. TIU) THEN
+                       TIU = TI
+                       VELU = VEL
+                    END IF
+                 END DO
+              END IF
+              T(1) = TIU
+              CALL DODTI (IDATA,RDATA,CUNIT,TSSA,DTSYS,TIU,DTIU)
+              DT(1) = DTIU
+          END IF
+C
+          IF (FRP .EQ. 'NS') THEN
+              P1=' N'
+              P2=' S'
+              S(1) = DABS( T(1) )
+              S(2) = DABS( T(2) )
+          ELSE IF (FRP .EQ. 'EW') THEN
+              P1=' E'
+              P2=' W'
+              S(3) = DABS( T(1) )
+              S(4) = DABS( T(2) )
+          ELSE IF (FRP .EQ. 'ON') THEN
+C             find the hour angle at the center of the observation
+C             at the ON source position
+              HALFANGLE = RDATA(292) / 240
+              CENTERHA =  RDATA(304) - HALFANGLE
+              IF (CENTERHA .GT. 180.0) CENTERHA = CENTERHA - 360.0
+C
+              P1 = 'ON'
+              IF (FRQORPOS .EQ. 'PS' .OR. DFOFB .LT. 0.000001) THEN
+C                 position switching if 'PS' or 'ON' in 'PS' only
+                  PRINT * , 'DFOFB =', DFOFB
+                  S(5) = DABS( T(1) )
+              ELSE
+C                 frequency switching
+                  IF (MIXD .EQ. 'Y') THEN
+                     S(5) = T(1)
+                  ELSE
+                     S(5) = 0.5 * ( DABS( T(1) ) + DABS( T(2) ) )
+                  END IF
+              END IF
+          END IF
+C
+          IF (FRQORPOS .EQ. 'PS') THEN
+              P1 = FRP
+              IF (P1 .EQ. ' N') S(1) = DABS( T(1) )
+              IF (P1 .EQ. ' S') S(2) = DABS( T(1) )
+              IF (P1 .EQ. ' E') S(3) = DABS( T(1) )
+              IF (P1 .EQ. ' W') S(4) = DABS( T(1) )
+              IF (P1 .EQ. 'N ') S(1) = DABS( T(1) )
+              IF (P1 .EQ. 'S ') S(2) = DABS( T(1) )
+              IF (P1 .EQ. 'E ') S(3) = DABS( T(1) )
+              IF (P1 .EQ. 'W ') S(4) = DABS( T(1) )
+          END IF
+C
+C         Use the subroutine OFFSET to determine the
+C         pointing correction for consecutive spectra,
+C         ie when we have one complete set of pting data N,S,E,W,ON
+C
+C         PRINT *,'FRP = ',FRP,' FRQORPOS = ',FRQORPOS
+C         PRINT *,'S1:5',(S(I),I=1,5)
+  
+          IF (S(1) .GT. 0. .AND. S(2) .GT. 0. .AND. S(3) .GT. 0.
+     &        .AND. S(4) .GT. 0. .AND. S(5) .GT. 0.) THEN
+C
+C             have all info needed for pointing calculations
+              CALL OFFSET (USEW,S(1),S(2),S(3),S(4),S(5),
+     &            RDATA(297),DNS,DEW,CF,SP)
+C
+          IF (FRP .EQ. 'ON') THEN
+              WRITE  (101, 1010, IOSTAT=IOS, ERR=900)
+     &            NAME, USEW, BNDWD, IY, ID, IH, IM, IS
+          END IF
+C
+****************************************************************************
+*     add pointing offset to coords of current position, assumed on source
+      DECS = DC50A - DNS
+      RAS = RA50A - DEW / COS(DECS * DTR)
+*     convert the coordinates to galactic, using real*4 arguments
+      CALL CTOG (1,RAS,DECS,GLIIS,GBIIS)
+*     convert to hms d'"
+      CALL DTHMS (RAS,IRHRS,IRMNS,RSCS)
+      CALL DTDMS (DECS,IDDGS,IDMNS,DSCS)
+      CALL DTHMS (RA50A, IRHRA, IRMNA, RSCA)
+      CALL DTDMS (DC50A, IDDGA, IDMNA, DSCA)
+C
+              WRITE (101, 2100, IOSTAT=IOS, ERR=900) IRECIN,
+     &            CENTERHA, VELU, VELD, S(1), S(2),
+     &            S(3), S(4), S(5), DNS*1000., DEW*1000., CF, ANTHA,
+     &            SP, IRHRA, IRMNA, RSCA, IDDGA, IDMNA, DSCA,
+     &            IRHRS, IRMNS, RSCS, IDDGS, IDMNS, DSCS
+C
+C             DO NOT ATTEMPT TO FOLD POSITION-SWITCHED DATA
+              IF (FRQORPOS .EQ. 'PS' .OR. DFOFB .LT. 0.000001) THEN
+                 PRINT *,'REC=',IRECIN,' NO ACTION - POSITION SWITCHED'
+              ELSE
+C                fold records in the ON spectra for freq-switched data
+                 IF (FOLDED) THEN
+C                   should only be done on non-folded spectra
+                    PRINT *,'REC=',IRECIN,' NO ACTION - FOLDED SPECTRUM'
+                 ELSE
+C                   fold the spectra
+                    CALL FOLD (IDATA,RDATA,DDATA)
+                 END IF
+              END IF
+C
+C             calculate the theoretical rms noise in the spectrum
+              CALL ARMS (IDATA,RDATA)
+C
+C             scale up spectrum by the pointing correction
+              RDATA(293) = RDATA(293) * CF
+              RDATA(294) = RDATA(294) * CF
+              RDATA(297) = RDATA(297) * CF
+              RDATA(310) = RDATA(310) * CF
+              RDATA(311) = RDATA(311) * CF
+              DO I = N1, N2
+                  RDATA(I) = CF * RDATA(I)
+              END DO
+C             store the on-source spectrum corrected for pointing
+              WRITE (102,IOSTAT=IOS,ERR=900) (IDATA(I),I=1,IRECSIZE)
+C
+              IF (NORMALISE .EQ. 'Y') THEN
+C                 if the data is to be normalized to 100 then determine
+C                 multiplicative factor for the up-velocity chosen
+                  CFN = 100. / (S(5) * CF)
+C                 note the change in units in CUNIT
+                  CUNIT(2:2) = 'N'
+                  IF (CUNIT(1:1) .EQ. 'J') THEN
+C                     spectra were in Jy
+                      SCALEJY = RDATA(296)
+                  ELSE
+C                     spectra were in K
+                      SCALEJY = 1.0
+                  END IF
+C                 scale Tsys, dTsys, Trms
+                  RDATA(293) = RDATA(293) * CFN * SCALEJY
+                  RDATA(294) = RDATA(294) * CFN * SCALEJY
+                  RDATA(297) = RDATA(297) * CFN * SCALEJY
+                  RDATA(310) = RDATA(310) * CFN * SCALEJY
+                  RDATA(311) = RDATA(311) * CFN * SCALEJY
+C                 scale the spectrum similarly, from N1 to N2
+                  DO I = N1, N2
+                      RDATA(I) = RDATA(I) * CFN * SCALEJY
+                  END DO
+C                 store the normalised spectrum
+                  WRITE (103,IOSTAT=IOS,ERR=900) (IDATA(I),I=1,IRECSIZE)
+              END IF
+C set values to zero so that program knows to look for new pting
+              DO I = 1, 5
+                 S(I) = 0.0
+              END DO
+          END IF
+          INDEXPREV = INDEX
+          IF (IRECIN .EQ. ILAST) NOTLAST = .FALSE.
+      END DO
+C
+  200 PRINT *,'closing ',INFILE
+      CLOSE (100)
+      PRINT *,'closing ',OUTF(1)
+      CLOSE (101)
+      PRINT *,'closing ',OUTF(2)
+      CLOSE (102)
+      IF (NORMALISE .EQ. 'Y') THEN
+          PRINT *,'closing ',OUTF(3)
+          CLOSE (103)
+      END IF
+      STOP 'done'
+C
+ 1010 FORMAT (A20,2X,F4.1,' cm',' Bandwidth = ',F4.2,'MHz',
+     &          ' on: ',I4,1X,I3,1X,I2,1X,I2,1X,I2)
+ 1100 FORMAT (I6,3X,A20,I7,I5,I6)
+ 1500 FORMAT('NREC',' CenterHA','  Vel. up ',
+     &       '  Vel. dn ','   S(N) ','   S(S) ','   S(E) ',
+     &       '   S(W) ','  S(ON) '/,
+     &       ' DNS ','  DEW ','    CF  ', 'end HA ','Corr. FLux')
+ 2100 FORMAT (I3,1X,F9.3,1X,F9.3,1X,F9.3,1X,F7.2,1X,F7.2,
+     &        1X,F7.2,1X,F7.2,1X,F7.2/,F5.1,1X,F5.1,1X,F6.4,1X,F7.3,
+     &        1X,F9.4/,
+     &        'ra (O) = ',I5,I3,F5.1,' dec (O) = ',I5,I3,F5.1/,
+     &        'ra (C) = ',I5,I3,F5.1,' dec (C) = ',I5,I3,F5.1)
+C
+  900 PRINT *,'ERROR ',IOS,' IN FILE I/O'
+      END
+*********************
+      SUBROUTINE ARMS (IDATA,DATA)
+*********************
+*  Calculates theoretical spectrum noise levels
+*     IDATA = DATA      input spectrum
+*     TRMS = DATA(297)  output theoretical rms noise
+*
+      logical   folded
+      character tunit*2
+      integer*2 idata(1), iunit, ifolded
+      real*4    data(1), sbw(0:3)
+      equivalence (tunit,iunit), (folded,ifolded)
+  
+*     noise bandwidth RECT  TRNG  HANN  HAMM smoothing
+      data  sbw     / 1.00, 1.33, 1.50, 1.36 /
+*
+*  Quantization loss factor for 3*3 level = 1.235
+*  noise in difference spectrum = root2 (1.414) * pass band noise
+*  1.0E6 converts bandwidth (data(291)) from MHz to Hz.
+*  on source system temperature is data(293)
+*  bandwidth = data(291)
+*  correlator channels = idata(535)
+*  on source integration time = data(292)
+*  number of spectra averaged = data(295)
+*  Jy per K conversion = data(296)
+*
+      iunit = idata(538)
+      ifolded = idata(539)
+*
+      TRMS = 1.235 * 1.414 * data(293) /
+     &       sqrt (1e6 * data(291) / idata(535) * sbw(idata(532))
+     &             * data(292) * data(295))
+      if (folded) trms = trms / 1.414
+      if (tunit .eq. 'JY') then
+          if (data(296) .eq. 0.0) then
+              PRINT *,'Point source Jy / K ? _'
+              READ  *, data(296)
+          end if
+          trms = trms * data(296)
+      end if
+C
+C     update stored value for theoretical rms noise
+      DATA(297) = trms
+      return
+      end
+*********************
+      SUBROUTINE DOTI (IDATA,DATA,V,TI)
+*********************
+*     return the line height at a specified velocity
+*
+*     IDATA=DATA      input spectrum and housekeeping
+*     V               input velocity at which height is wanted
+*     TI              output height at specified velocity
+*
+      INTEGER*2   IDATA(*)
+      REAL*4      DATA(*), V
+      REAL*8      TI
+*
+      ZVLINDEX = DATA(298)
+      AITOKM   = DATA(299)
+      N1 = IDATA(536)
+      N2 = IDATA(537)
+*
+*         array index of point below wanted velocity
+          I=0
+          VI=0.0
+          I = INT (VTOAI (V,ZVLINDEX,AITOKM))
+*         velocity of the point below the wanted velocity
+          VI  = AITOV (FLOAT(I),ZVLINDEX,AITOKM)
+*
+*         check index range is valid
+          IF (I .GE. N1 .AND. I+1 .LE. N2) THEN
+*             use simple proportion to linearly interpolate height at V
+              TI = DBLE( (DATA(I)*(AITOKM+VI-V) + DATA(I+1)*(V-VI)) /
+     &                    AITOKM )
+          ELSE
+              PRINT *,V,'km/s corresponds to array index ',I
+              PRINT *,'Velocity is out of range - recheck.'
+              STOP
+          END IF
+      RETURN
+      END
+**********************
+      SUBROUTINE DODTI (IDATA,RDATA,CUNIT,TSYSA,DTSYS,TI,DTI)
+**********************
+*     estimate the uncertainty in the height at the specified velocity
+*     IDATA=RDATA     input spectrum and housekeeping
+*     CUNIT           units of height (K/JY)
+*     TSYSA           input system temperature for A obs
+*     DTSYS           input error in system temperature
+*     TI              input line height at velocity
+*     DTI             output error in height
+*
+      CHARACTER   CUNIT*2
+      INTEGER*2   IDATA(*)
+      REAL*4      RDATA(*), TSYSA, DTSYS
+      REAL*8      TI,DTI
+C
+C     line height and RMS noise
+      TIK = SNGL( TI )
+      TRMS = RDATA(297)
+      IF (CUNIT .EQ. 'JY') THEN
+C         if spectrum in Jy,
+C         convert line height and RMS noise to Kelvin for calculation
+          TIK = TIK / RDATA(296)
+          TRMS = TRMS / RDATA(296)
+      END IF
+C
+C     calculate rms noise in K at this point in the spectrum
+      ATIK = ABS(TIK)
+      TRMSI = TRMS * (ATIK + TSYSA) / TSYSA
+C
+C     calculate uncertainty in height in Kelvins
+C     first factor is RMS noise at this point in spectrum
+C     second factor is uncertainty in line height from calibration
+      DTI = DBLE( SQRT (TRMSI**2 + (ATIK*DTSYS/TSYSA)**2) )
+C
+      IF (CUNIT .EQ. 'JY') THEN
+C         convert error to Jy
+          DTI = DTI * DBLE( RDATA(296) )
+      END IF
+C
+      RETURN
+      END
+**********************
+      SUBROUTINE VILIM (v1,v2,n1,n2)
+**********************
+      PRINT 1000,  V1, V2, N1, N2
+ 1000 FORMAT(/'Velocity limits are   ',F8.2,' and',F8.2,' km/s'/
+     *        'Array index limits are',I8,' and',I8)
+      RETURN
+      END
+*******************
+      FUNCTION VTOAI  (v,zvlindex,aitokm)
+*******************
+*  Convert velocity to spectrum array index
+*
+      VTOAI  = V / aitokm + zvlindex
+      RETURN
+      END
+********************
+      FUNCTION AITOV (rN,zvlindex,aitokm)
+********************
+*  Convert spectrum array index to velocity
+*
+      AITOV = (rN - zvlindex) * aitokm
+      RETURN
+      END
+************************
+      SUBROUTINE FOLD (IDATA,RDATA,DDATA)
+*********************
+*     fold frequecy-shifted spectra
+*
+      LOGICAL FIRSTCHAN, FOLDED
+      INTEGER IDATA(*)
+      REAL*4  RDATA(*)
+      REAL*8  DDATA(*)
+      EQUIVALENCE (IFOLDED, FOLDED)
+*
+*     array index offset = n * dfofb / bw
+      AIOFFSET = IDATA(535) * DDATA(164) / RDATA(291)
+      IOFFSET  = NINT (AIOFFSET)
+      FIRSTCHAN = .TRUE.
+C
+      DO I = 1, IDATA(535)
+          IREF = IOFFSET + I
+          IF (IREF .GE. 1 .AND. IREF .LE. IDATA(535)) THEN
+              RDATA(I) = (RDATA(I) - RDATA(IREF)) / 2
+C             new N1
+              IF (FIRSTCHAN) THEN
+                  IDATA(536) = I
+                  FIRSTCHAN = .FALSE.
+              END IF
+C             new N2
+              IDATA(537) = I
+          END IF
+      END DO
+C
+      FOLDED = .TRUE.
+      IDATA(539) = IFOLDED
+      RETURN
+      END
+************************
+      SUBROUTINE OFFSET (USEW,SN,SS,SE,SW,SP,TRMS,DNS,DEW,CORF,SPC)
+*     Revised as a subroutine by GM <921104>
+*     Rev MJG also use on-source and half-power points
+*     Calculate pointing corrections from measurements made at the
+*     half power points and on-source point of the telescope beam.
+*     Also calculate corrected on source flux.
+*
+      PARAMETER  (MAXF = 6)
+      CHARACTER  PCNSNAME*14, PCEWNAME*14
+      REAL*4     WAVE(MAXF),USEW, TRMS, LN2
+      REAL*8     HHPBW(MAXF),CORF,SPC,SN,SE,SS,SW,SP,DNS,DEW,DTRMS
+      DATA WAVE  /18., 13., 6., 4.5, 3.6, 2.5/
+      DATA HHPBW /0.247, 0.166, 0.080, 0.058, 0.048, 0.033/
+*
+      DTRMS = TRMS
+      IUSE = 1
+      DO 10 I = 1, MAXF
+          IF (USEW .EQ. WAVE(I)) IUSE = I
+   10 CONTINUE
+*
+*     calculate pointing offsets from on-source and one half power point
+*
+*     find best pair of points to use on each axis
+*
+*     use half power points as default
+      SN = MAX (SN,DTRMS)
+      SS = MAX (SS,DTRMS)
+      SE = MAX (SE,DTRMS)
+      SW = MAX (SW,DTRMS)
+      LN2 = 0.693147
+      TWOLN2 = 1.386294
+      FOURLN2 = 2.772589
+      DNS = HHPBW(IUSE) * (LOG(SS) - LOG(SN)) / (FOURLN2)
+      PCNSNAME = 'NORTH + SOUTH'
+      IF ((SS .LT. 5*TRMS .OR. SS .LT. 0.15*SP) .AND.
+     &    (SS .LT. SN)) THEN
+          DNS = HHPBW(IUSE)*(LOG(SP) - LOG(SN) - LN2)/(TWOLN2)
+          PCNSNAME = 'ON + NORTH'
+      END IF
+      IF ((SN .LT. 5*TRMS .OR. SN .LT. 0.15*SP) .AND.
+     &    (SN .LT. SS)) THEN
+          DNS = HHPBW(IUSE)*(LOG(SS) - LOG(SP) + LN2)/(TWOLN2)
+          PCNSNAME = 'ON + SOUTH'
+      END IF
+*
+      DEW = HHPBW(IUSE) * (LOG(SW) - LOG(SE)) / (FOURLN2)
+      PCEWNAME = 'EAST + WEST'
+      IF ((SW .LT. 5*TRMS .OR. SW .LT. 0.15*SP) .AND.
+     &    (SW .LT. SE)) THEN
+          DEW = HHPBW(IUSE)*(LOG(SP) - LOG(SE) - LN2)/(TWOLN2)
+          PCEWNAME = 'ON + EAST'
+      END IF
+      IF ((SE .LT. 5*TRMS .OR. SE .LT. 0.15*SP) .AND.
+     &    (SE .LT. SW)) THEN
+          DEW = HHPBW(IUSE)*(LOG(SW) - LOG(SP) + LN2)/(TWOLN2)
+          PCEWNAME = 'ON + WEST'
+      END IF
+*
+C     PRINT *, 'Use ',PCNSNAME,' =', DNS*1000,' mdeg'
+C     PRINT *, 'Use ',PCEWNAME,' =', DEW*1000,' mdeg'
+*
+*     calculate intensity on source corrected for pointing
+      CORF = EXP (0.693 * (DNS**2 + DEW**2) / HHPBW(IUSE)**2)
+      SPC = SP * CORF
+      RETURN
+      END
+************************
+      SUBROUTINE CHKFILE (FILENAME,FILESTAT)
+C     check status of output files
+      CHARACTER FILENAME*64, FILESTAT*1
+      LOGICAL   EXISTS
+C
+      INQUIRE (FILE=FILENAME,EXIST=EXISTS)
+C
+      IF (EXISTS) THEN
+          PRINT *,FILENAME(1:NCHAR(FILENAME)),' already exists :'
+          PRINT *,'  Quit (Q), Overwrite (O), or Append (A)',
+     &            ' to output file ? _'
+          READ  '(A)',FILESTAT
+          CALL UPCASE (FILESTAT)
+C
+          IF (FILESTAT .EQ. 'Q') STOP 'BYE'
+          IF (FILESTAT .EQ. 'O') THEN
+              PRINT *,'  OKAY TO OVERWRITE OUTPUT FILE (O) ? _'
+              READ '(A)',FILESTAT
+              CALL UPCASE (FILESTAT)
+              IF (FILESTAT .NE. 'O') FILESTAT = 'A'
+          END IF
+      ELSE
+C         new output file
+          FILESTAT = 'N'
+      END IF
+      RETURN
+      END
+************************
+      INCLUDE UPCASE.SUB
+      INCLUDE NCHAR.SUB
+      INCLUDE DTHMS.SUB
+      INCLUDE DTDMS.SUB
+      INCLUDE CTOG.SUB
+************************

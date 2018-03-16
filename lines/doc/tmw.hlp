@@ -1,0 +1,118 @@
+
+TMW [input file] [output file] [first spectrum] [last spectrum]
+
+   Write time series files from the specified input file of spectra.
+   If the first and last spectra to use are not specified, 
+   the whole input file will be used.
+
+   Use TMV beforehand to specify the velocity range to be output.
+
+   Set TMWVNUM beforehand to give the desired style of velocity column
+   header, as shown below - 
+   true (default) for general spreadsheet programs,
+   false for AXUM
+
+   The format of the output files is multicolumn ascii.
+   The title is in row 1,
+   column headers are in row 2, 
+   and the JD-2440000 followed by data values in subsequent rows.
+
+   The output files are suited to importing into spreadsheet-style programs.
+
+   If the files already exist, they are overwritten, NOT appended to.
+
+   The primary file lists the flux at each velocity for each spectrum.
+   The values are in K if the data are in K, otherwise in Jy if the point
+   source sensitivity > 0, ie data have been converted to Jy.
+
+	format with TMWVNUM SET True:
+
+OH357.3-1.3  OH1612  time series of intensities F from oh3573t.asc
+JDm2440000,      -44.274,     -43.809,     -43.344,     -42.880,...
+  6704.036,  .490256E-01, .788383E-01, .201069E+00, .842779E-01,...
+  6717.872,  .113449E+00, .275803E+00, .203937E+00, .305830E-01,...
+  6732.833,  .479678E-01, .100120E+00, .163734E+00, .151315E+00,...
+   ...
+
+        format with TMWVNUM SET False:  (for AXUM)
+
+OH357.3-1.3  OH1612  time series of intensities F from oh3573t.asc
+JDm2440000,   Vm44p274,    Vm43p809,    Vm43p344,    Vm42p880,...
+  6704.036,  .490256E-01, .788383E-01, .201069E+00, .842779E-01,...
+  6717.872,  .113449E+00, .275803E+00, .203937E+00, .305830E-01,...
+  6732.833,  .479678E-01, .100120E+00, .163734E+00, .151315E+00,...
+   ...
+
+where:
+   JDm2440000 is the Julian date - 2440000
+   -44.274    is the channel velocity written in a form suitable for use as
+              a column header for XESS, as a normal floating point number
+   Vm44p274   is the channel velocity written in a form suitable for use as
+              a column header for AXUM, with V for velocity, m for -, p for .
+              Note that the format in the fourth output file is designed for
+	      use in contour plotting of irregular data in AXUM.
+
+
+   The second output file, with added suffix "2",
+   lists the estimated error in the flux at each velocity for each spectrum: 
+   The error is calculated using both the rms noise in the spectrum and the
+   error due to the uncertainty in the calibration signal.  This gives an
+   uncertainty which is proportional to the amplitude of the line.
+   The values are in K if the data are in K, otherwise in Jy if the point
+   source sensitivity > 0, ie data have been converted to Jy.
+
+OH357.3-1.3  OH1612  time series of delta F from oh3573t.asc
+JDm2440000,      -44.274,     -43.809,     -43.344,     -42.880,... or
+JDm2440000,   Vm44p274,    Vm43p809,    Vm43p344,    Vm42p880,...
+  6704.036,  .223860E+01, .223927E+01, .224201E+01, .223939E+01,...
+  6717.872,  .194861E+01, .195164E+01, .195030E+01, .194707E+01,...
+  6732.833,  .190031E+01, .190129E+01, .190249E+01, .190226E+01,...
+  ...
+
+
+
+   The third file, with added suffix "3", lists 
+   Julian Date - 2440000, 
+   date (and UT for later data) of observation, 
+   Hour Angle in degrees, 
+   System Temperature in Kelvins, 
+   estimated error in the system temperature for each spectrum, in K
+   pointing correction applied to spectrum
+
+351.78-0.54 A+90 ON obs HA, Tsys, dTsys from am3517an.asc
+ JDm2440000,              DATEOBS,     HA,      TSYS,     DTSYS,   PNTCORR
+ 10251.3923, 1996-06-16          , -22.760,  137.0600,    0.5451,  1.000000
+ 10254.4548, 1996-06-19          ,   6.479,  135.5900,    0.7465,  1.000000
+ 10257.3736, 1996-06-22          , -19.800,  135.1600,    0.5243,  1.000000
+  ...
+
+
+   The fourth file, with added suffix "4",
+   lists the intensity channel by channel within the selected velocity range
+   for each observation.
+
+   It is needed if making a contour plot of the time series using AXUM (DOS)
+   or gri (linux) as the data are irregularly spaced in time.
+
+   Note that the column headers are taken directly from the housekeeping for
+   the spectra, and may not import properly as column headers in Axum -
+   these may have to be added after importing the data.
+
+   From 2000/09 the columns are space-delimited not comma delimited,
+   as gri currently does not like comma-delimited values (after discussion
+   with its author this should change in future versions)
+
+351.78-0.54 A+90 ON JD, V, F for AXUM irregular contour plot from am3517an.asc
+JDm2440000,VELO-LSR KM/S, FLUX_DENSITY JY
+ 10251.392, -.177550E-02, 0.277278E+01
+ 10251.392, 0.544200E-01, 0.223117E+01
+ 10251.392, 0.110616E+00, -.333496E+01
+ 10251.392, 0.166811E+00, 0.180763E+01
+ 10251.392, 0.223007E+00, 0.743764E+00
+ ...
+ 
+ 
+   example:
+   
+   tmw src.asc src.tm
+   

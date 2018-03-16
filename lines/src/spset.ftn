@@ -1,0 +1,250 @@
+FTN77,S
+$FILES 0,2
+      PROGRAM SPSET
+C     ==============              MJG <960604.0956>
+C     Batch type program to
+C     add sets of spectra together and store in a disc file
+C     see /MIKE/PROGS/FIXPROGS.DOC
+C
+      PARAMETER (NPTS=256, IRECSIZE=700)
+C
+      CHARACTER INFILE*40, OUTFILE*40, FILEOPT*1, CDATE*30,
+     &          NAME*20, NAMEAV*20
+      LOGICAL   EXISTS, NOTLAST, FIRST
+      INTEGER*2 IDATA(IRECSIZE), IAVRG(IRECSIZE),
+     &          LARGEBUF(IRECSIZE), IDATE(15)
+      REAL*4    RDATA(IRECSIZE/2), RAVRG(IRECSIZE/2)
+      REAL*8    DDATA(IRECSIZE/4), DAVRG(IRECSIZE/4)
+C
+      EQUIVALENCE (IDATA,RDATA), (IDATA,DDATA),  (IDATE,CDATE),
+     &            (IAVRG,RAVRG), (IAVRG,DAVRG),
+     &            (NAME,   IDATA(517)),
+     &            (NAMEAV, IAVRG(517)),
+     &            (IY,     IDATA(527)),  (ID,    IDATA(528)),
+     &            (IYAV,   IAVRG(527)),  (IDAV,  IAVRG(528))
+C
+C     assign print and read devices
+      CALL FSYSU (1,1)
+C     set up the buffer required for large record file I/O
+      CALL LGBUF (LARGEBUF,IRECSIZE)
+c
+      CALL FTIME(IDATE)
+      PRINT *,'  SPSET :  ',CDATE
+      PRINT *,'  Add sets of spectra from same day together'
+      PRINT *,'  Source file for spectra ? _'
+      READ  '(A)', INFILE
+C
+      PRINT *,'  First and last records to use (/ = all) ? _'
+      IFIRST = 1
+      ILAST  = 32767
+      READ *, IFIRST, ILAST
+C
+      PRINT *,'  Name for the output added spectrum file ? _'
+      READ  '(A)', OUTFILE
+C
+      INQUIRE (FILE=INFILE, EXIST=EXISTS)
+      IF (.NOT. EXISTS) STOP 'INPUT FILE DOES NOT EXIST'
+C
+      INQUIRE (FILE=OUTFILE, EXIST=EXISTS)
+C
+      IF (EXISTS) THEN
+          PRINT *,'Output file already exists :'
+          PRINT *,'  Quit (Q), Overwrite (O), or Append (A)',
+     &            ' to output file ? _'
+          READ  '(A)',FILEOPT
+          CALL UPCASE (FILEOPT)
+C
+          IF (FILEOPT .EQ. 'O') THEN
+              PRINT *,'  OKAY TO OVERWRITE OUTPUT FILE (O) ? _'
+              READ '(A)',FILEOPT
+              CALL UPCASE (FILEOPT)
+          END IF
+      ELSE
+C         new output file
+          FILEOPT = 'N'
+      END IF
+C
+      IF (FILEOPT .EQ. 'Q') STOP 'BYE'
+C
+      OPEN (100, FILE=INFILE,  STATUS='OLD', IOSTAT=IOS, ERR=900)
+      OPEN (101, FILE=OUTFILE, IOSTAT=IOS, ERR=900)
+C
+      IF (FILEOPT .EQ. 'A') THEN
+C         advance to the end of the output file
+          IRECOUT = 0
+          DO WHILE (.TRUE.)
+              READ (101,IOSTAT=IOS,ERR=900,END=100) JUNK
+              IRECOUT = IRECOUT + 1
+          END DO
+      END IF
+  100 CONTINUE
+C
+      PRINT *,
+     &'Rec In  Name                   Year  Day  Obs No  Rec Out  Nav'
+C
+      IRECIN  = 0
+      IRECOUT = 0
+      NOTLAST = .TRUE.
+      FIRST   = .TRUE.
+      IYAV    = 0
+      IDAV    = 0
+C
+      DO WHILE (NOTLAST)
+C         read a spectrum from the input file
+          READ (100,IOSTAT=IOS,ERR=900,END=200)
+     &         (IDATA(I),I=1,IRECSIZE)
+          IRECIN = IRECIN + 1
+C
+          IF (IRECIN .GE. IFIRST .AND. IRECIN .LE. ILAST) THEN
+C             use records in the specified range
+              IF (IY .EQ. IYAV .AND. (ID-IDAV) .LE. 1) THEN
+C                 if the date differs by less than one day, then
+C
+C                 add this spectrum to the current average spectrum
+                  CALL ADAVS (IAVRG,RAVRG,DAVRG,IDATA,RDATA,DDATA)
+C                 calculate the theoretical rms noise in the spectrum
+                  CALL ARMS (IAVRG,RAVRG)
+C                 list info to screen
+                  PRINT 1100, IRECIN, NAME, IAVRG(527), IAVRG(528),
+     &                        IAVRG(533), IRECOUT+1, RAVRG(295)
+              ELSE
+C                 start of a new data set
+                  IF (.NOT. FIRST) THEN
+C                     write current average spectrum to output file
+                      WRITE (101,IOSTAT=IOS,ERR=900)
+     &                      (IAVRG(I),I=1,IRECSIZE)
+                      IRECOUT = IRECOUT + 1
+                  END IF
+C
+C                 start a new average spectrum
+                  DO I = 1,IRECSIZE
+                      IAVRG(I) = IDATA(I)
+                  END DO
+C                 list info on spectrum to screen
+                  PRINT 1100, IRECIN, NAME, IAVRG(527), IAVRG(528),
+     &                        IAVRG(533), IRECOUT+1, RAVRG(295)
+              END IF
+              FIRST = .FALSE.
+          END IF
+          IF (IRECIN .EQ. ILAST) NOTLAST = .FALSE.
+      END DO
+C
+C     write last average spectrum to output file
+  200 WRITE (101,IOSTAT=IOS,ERR=900)
+     &      (IAVRG(I),I=1,IRECSIZE)
+C
+      CLOSE (100)
+      CLOSE (101)
+      STOP 'done'
+C
+ 1100 FORMAT (I6,3X,A20,I7,I5,I6,I8,I7)
+C
+  900 PRINT *,'ERROR ',IOS,' IN FILE I/O'
+      END
+**********************
+      SUBROUTINE ADAVS (iavrg,avrg,davrg,idata,data,ddata)
+**********************
+*     add spectrum to current average, assumed to be compatible
+*
+      integer*2 iavrg(1), idata(1)
+      real*4     avrg(1),  data(1)
+      real*8    davrg(1), ddata(1)
+*
+*     scale new data by ad/adav * tint/tintav
+      factor = data(295) / avrg(295) * data(292) / avrg(292)
+*
+*     add in data from n1av to n2av
+      do i = iavrg(536), iavrg(537)
+          AVRG(I) = (AVRG(I) + DATA(I)*FACTOR) / (1 + FACTOR)
+      end do
+*
+*     update ADAV, number of spectra averaged
+      avrg(295) = avrg(295) * (1 + factor)
+*
+      DO I = 293,294
+*         update TSYSAVA and TSYSAVB
+          avrg(I) = (avrg(I) + data(I)*factor) / (1 + factor)
+      END DO
+*
+      DO I = 310,311
+*         update error estimates in system temperatures
+          AVRG(I) = SQRT ((AVRG(I)**2 + (DATA(I)*FACTOR)**2) /
+     &                    ((1 + FACTOR)**2))
+      END DO
+*
+*     average mid-HAs...
+*     convert HAs to continuous numbers for averaging
+      IF ((DATA(340) .GE. 270.0) .AND. (DATA(340) .LE. 360.0))
+     &     DATA(340) = DATA(340) - 360.0
+      IF ((AVRG(340) .GE. 270.0) .AND. (AVRG(340) .LE. 360.0))
+     &     AVRG(340) = AVRG(340) - 360.0
+*     average...
+      AVRG(340) = (AVRG(340) + DATA(340)*FACTOR) / (1 + FACTOR)
+*     return HAs to [270,360] (and [0,90]) intervals
+      IF (AVRG(340) .LT. 0.0) AVRG(340) = AVRG(340) + 360.0
+      IF (DATA(340) .LT. 0.0) DATA(340) = DATA(340) + 360.0
+*
+*     average Julian date
+      DAVRG(166) = (DAVRG(166) + DDATA(166)*FACTOR) / (1 + FACTOR)
+*
+*     set observation number to that of last spectrum added
+      IAVRG(533) = IDATA(533)
+*
+*     ditto time in UT  (NB: JD used rather than UT, thus UT NOT AVERAGED)
+      DO I = 527,531
+          IAVRG(527) = IDATA(527)
+      END DO
+*
+*     reset polynomial to 1 to allow refit
+      IAVRG(534) = 1
+*
+      RETURN
+      END
+*********************
+      SUBROUTINE ARMS (IDATA,DATA)
+*********************
+*  Calculates theoretical spectrum noise levels
+*     IDATA = DATA      input spectrum
+*     TRMS = DATA(297)  output theoretical rms noise
+*
+      logical   folded
+      character tunit*2
+      integer*2 idata(1), iunit, ifolded
+      real*4    data(1), sbw(0:3)
+      equivalence (tunit,iunit), (folded,ifolded)
+  
+*     noise bandwidth RECT  TRNG  HANN  HAMM smoothing
+      data  sbw     / 1.00, 1.33, 1.50, 1.36 /
+*
+*  Quantization loss factor for 3*3 level = 1.235
+*  noise in difference spectrum = root2 (1.414) * pass band noise
+*  1.0E6 converts bandwidth (data(291)) from MHz to Hz.
+*  on source system temperature is data(293)
+*  bandwidth = data(291)
+*  correlator channels = idata(535)
+*  on source integration time = data(292)
+*  number of spectra averaged = data(295)
+*  Jy per K conversion = data(296)
+*
+      iunit = idata(538)
+      ifolded = idata(539)
+*
+      TRMS = 1.235 * 1.414 * data(293) /
+     &       sqrt (1e6 * data(291) / idata(535) * sbw(idata(532))
+     &             * data(292) * data(295))
+      if (folded) trms = trms / 1.414
+      if (tunit .eq. 'JY') then
+          if (data(296) .eq. 0.0) then
+   10         PRINT *,'Point source Jy / K ? _'
+              READ  *, data(296)
+          end if
+          trms = trms * data(296)
+      end if
+c
+C     update stored value for theoretical rms noise
+      DATA(297) = trms
+      return
+      end
+************************
+      include UPCASE.ftn
+************************

@@ -1,0 +1,106 @@
+ lines.log     opened 2010-01-27T12:06:57 
+quit
+ lines.log     opened 2010-01-27T12:07:15 
+quit
+ lines.log     opened 2010-01-27T12:13:44 
+QUIT
+ lines.log     opened 2010-01-27T12:14:28 
+quit
+ lines.log     opened 2010-01-27T12:16:02 
+quit
+ lines.log     opened 2010-01-27T12:17:12 
+quit
+ lines.log     opened 2010-01-27T12:18:09 
+quit
+ lines.log     opened 2010-01-27T12:18:36 
+quit
+ lines.log     opened 2010-01-27T12:21:21 
+quit
+ lines.log     opened 2010-01-27T13:51:11 
+ 
+quit
+ lines.log     opened 2010-01-27T14:10:02 
+quit
+ lines.log     opened 2010-01-27T14:11:13 
+quit
+ lines.log     opened 2010-01-27T14:14:39 
+  Input from cmdfile
+ra spectra.asc 1
+  read spectra.asc from            1  to            1  in mem           12  add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G351.78-0.54 65L    1995-08-02  5719  1665 0.16   0 -21 0 0  1  1   0.0 K
+  start new average spectrum in mem           12
+  mem           11  copied to           12
+int -100 100 m
+   Fitdate, Name                ,  Scan,    DateObs,     MJD,        Resoln,     NomRMS, units,  PCCalUnc,   fromVel,     toVel,    LineHt,       dHt,     atVLn,   LineInt,      dInt,   VCentroid,     dVCent,   WeightMn, ZeroXWidth,      atVZX, EquivWidth,      atVEQ,   FWidthHM,      dFWHM,      atVFW,     TCont,    dTCont,     LTE                            Vturb,    dVTurb
+2010-01-27, G351.78-0.54_65L    ,  5719, 1995-08-02,  49931.720,   0.112510,   0.249710, K    ,     1.036,   -16.401,    12.289,   146.665,     1.540,    -1.775,    90.280,     0.937,
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G351.78-0.54 65L    1995-08-02  5719  1665 0.16   0 -21 0 0  1  1   0.0 K
+  12 G351.78-0.54 65L    1995-08-02  5719  1665 0.16   0 -21 0 0  1  1   0.0 K
+           11  of           13  memories are empty
+do loop 2 5 1
+ra am3517an.asc loop loop new loop
+int .5 2.5 m loop*1
+end
+  read am3517an.asc from            2  to            2  in mem            2  add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 351.78-0.54 A+90 ON 1996-06-19 16814  6668 0.32   0   6 0 1  1  4  14.5 JY
+  start new average spectrum in mem            2
+  mem           11  copied to            2
+   Fitdate, Name                ,  Scan,    DateObs,     MJD,        Resoln,     NomRMS, units,  PCCalUnc,   fromVel,     toVel,    LineHt,       dHt,     atVLn,   LineInt,      dInt,   VCentroid,     dVCent,   WeightMn, ZeroXWidth,      atVZX, EquivWidth,      atVEQ,   FWidthHM,      dFWHM,      atVFW,     TCont,    dTCont,     LTE                            Vturb,    dVTurb
+2010-01-27, 351.78-0.54_A+90_ON , 16814, 1996-06-19,  50253.955,   0.056196,   1.675500, JY   ,     0.551,     0.448,     2.471,   190.417,     1.976,     1.178,   146.351,     0.821,
+  read am3517an.asc from            3  to            3  in mem            3  add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 351.78-0.54 A+90 ON 1996-06-22 16969  6668 0.32   0 -19 0 1  1  4  14.5 JY
+  start new average spectrum in mem            3
+  mem           11  copied to            3
+   Fitdate, Name                ,  Scan,    DateObs,     MJD,        Resoln,     NomRMS, units,  PCCalUnc,   fromVel,     toVel,    LineHt,       dHt,     atVLn,   LineInt,      dInt,   VCentroid,     dVCent,   WeightMn, ZeroXWidth,      atVZX, EquivWidth,      atVEQ,   FWidthHM,      dFWHM,      atVFW,     TCont,    dTCont,     LTE                            Vturb,    dVTurb
+2010-01-27, 351.78-0.54_A+90_ON , 16969, 1996-06-22,  50256.874,   0.056196,   1.670200, JY   ,     0.388,     0.448,     2.471,   185.514,     1.819,     1.178,   142.841,     0.570,
+  read am3517an.asc from            4  to            4  in mem            4  add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 351.78-0.54 A+90 ON 1996-06-25 16975  6668 0.32   0 -20 0 1  1  4  14.5 JY
+  start new average spectrum in mem            4
+  mem           11  copied to            4
+   Fitdate, Name                ,  Scan,    DateObs,     MJD,        Resoln,     NomRMS, units,  PCCalUnc,   fromVel,     toVel,    LineHt,       dHt,     atVLn,   LineInt,      dInt,   VCentroid,     dVCent,   WeightMn, ZeroXWidth,      atVZX, EquivWidth,      atVEQ,   FWidthHM,      dFWHM,      atVFW,     TCont,    dTCont,     LTE                            Vturb,    dVTurb
+2010-01-27, 351.78-0.54_A+90_ON , 16975, 1996-06-25,  50259.863,   0.056196,   1.690900, JY   ,     0.403,     0.448,     2.471,   181.463,     1.842,     1.178,   142.734,     0.591,
+  read am3517an.asc from            5  to            5  in mem            5  add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 351.78-0.54 A+90 ON 1996-07-08 17197  6668 0.32   0   8 0 1  1  4  14.5 JY
+  start new average spectrum in mem            5
+  mem           11  copied to            5
+   Fitdate, Name                ,  Scan,    DateObs,     MJD,        Resoln,     NomRMS, units,  PCCalUnc,   fromVel,     toVel,    LineHt,       dHt,     atVLn,   LineInt,      dInt,   VCentroid,     dVCent,   WeightMn, ZeroXWidth,      atVZX, EquivWidth,      atVEQ,   FWidthHM,      dFWHM,      atVFW,     TCont,    dTCont,     LTE                            Vturb,    dVTurb
+2010-01-27, 351.78-0.54_A+90_ON , 17197, 1996-07-08,  50272.910,   0.056196,   1.660200, JY   ,     0.561,     0.448,     2.471,   151.013,     1.864,     1.235,   127.060,     0.728,
+  quit DO loop
+ 
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   2 351.78-0.54 A+90 ON 1996-06-19 16814  6668 0.32   0   6 0 1  1  4  14.5 JY
+   3 351.78-0.54 A+90 ON 1996-06-22 16969  6668 0.32   0 -19 0 1  1  4  14.5 JY
+   4 351.78-0.54 A+90 ON 1996-06-25 16975  6668 0.32   0 -20 0 1  1  4  14.5 JY
+   5 351.78-0.54 A+90 ON 1996-07-08 17197  6668 0.32   0   8 0 1  1  4  14.5 JY
+  11 351.78-0.54 A+90 ON 1996-07-08 17197  6668 0.32   0   8 0 1  1  4  14.5 JY
+  12 G351.78-0.54 65L    1995-08-02  5719  1665 0.16   0 -21 0 0  1  1   0.0 K
+            7  of           13  memories are empty
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+set plotps
+  PLOTPS    now junkplot.ps/cps
+pl
+set plotps off
+  PLOTPS    now off
+ls
+quit
+ lines.log     opened 2011-05-19T11:22:27 
+ls
+ra am3517an.asc 1 1 new
+  read am3517an.asc from            1  to            1  in mem           12  add= T
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 351.78-0.54 A+90 ON 1996-06-16 16752  6668 0.32   0 -22 0 1  1  5  14.5 JY
+  start new average spectrum in mem           12
+  mem           11  copied to           12
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=?
+lh
+quit

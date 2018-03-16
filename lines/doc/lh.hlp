@@ -1,0 +1,90 @@
+
+LH [memory]
+
+   List the housekeeping in the specified memory on screen.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+   An example is:
+
+LINES>lh
+ Housekeeping in memory  8
+ FROMFILE= 'm17.asc'  RECORD 2
+ OBJECT  = 'M17'
+ OBSERVER= 'MJG'                         DATE_OBS= '1996-10-29'
+ DATE    = '1997-01-09'
+ ADDED   =   1.                          TELESCOP= 'HartRAO 26M'
+ POL     =  0                            SCAN    =  19536
+ FIRST_CH=  22                           LAST_CH =  244
+ POLYFIT =  3                            FOLDED  =  0
+ SMOOTHED=  0                            TRANSFRM=  0
+ HA      =  -4.63 / deg                  DUR     =   420. / s
+ ALTDEG  =   45.1 / deg                  ATMCORR =   1.
+ PNTCORR =   1.                          GAINCORR=   1.
+ CTYPE1  = 'VELO-LSR KM/S'               NAXIS   =  1
+ CTYPE2  = 'ANTENNA_TEMP'                BUNIT   = 'K'
+ NAXIS1  =  256                          CRPIX1  =  1
+ CRVAL1  =  -61.723                      CDELT1  =   0.61507
+ RESTFREQ=   4.874157E+09 / Hz
+ FROFFSET=   0. / Hz                     BW      =   2560000. / Hz
+ EQUINOX =   1950.                       JULDATE =   2450386.060000
+ RA      =   274.41 = 18h 17m  38.4s     DEC     =  -16.213 = -16d 12'46.8"
+ RADOWN  =   274.41 = 18h 17m  38.4s     DECDOWN =  -21.213 = -21d 12'46.8"
+ GLII    =   15.0499935                  GBII    =  -0.699241553
+ GLIIDOWN=   10.6470019                  GBIIDOWN=  -3.07357579
+ TCAL    =   11.3                        TCALUNIT= 'K'
+ TSYS    =   102.9 / K                   DTSYS   =   10.655 / K
+ RMS     =   0.124 / K                   PSS     =   0. / Jy/K
+ TCONT   =   15.0 / K                    TCER    =   0.1 / K
+
+where:
+ FROMFILE file from which the data were read
+ RECORD   record or data set number in the file
+ OBJECT   name of the object (FITS key word)
+ OBSERVER name of principal investigator or observer (FITS)
+ DATE_OBS date of the observation, YEAR-MONTH-DAY-HH:MM:SS (FITS Y2K)
+ DATE     date the information was last modified (FITS)
+ ADDED    number of spectra that have been averaged to form this one
+ TELESCOP telescope used for observation (FITS)
+ POL      polarization (FITS)
+ SCAN     "Scan" or observation number
+ FIRST_CH index of first valid datum 
+ LAST_CH  index of last valid datum 
+ POLYFIT  order of polynomial fitted to the spectrum baseline
+ FOLDED	  has frequency-shifted spectrum been folded? 0 = no, 1 = yes
+ SMOOTHED smoothing applied to the spectrum, 0 = none
+ TRANSFRM are they data stored as the fourier transform? 0 = no, 1 = yes
+ HA       hour angle at the end of the observation, in degrees
+ DUR      duration of observation, in seconds
+ ALTDEG   altitude or elevation of telescope during scan, in degrees
+ ATMCORR  correction for atmospheric absorption applied to the data
+ GAINCORR antenna gain correction applied to the data
+ PNTCORR  pointing correction applied to the data
+ CTYPE1   description of coordinate 1 (ordinate / X axis) (FITS)
+ NAXIS    number of axes in the data (FITS)
+ NAXIS1   number of data points along axis 1 (FITS)
+ CRPIX1   reference pixel on axis 1 (FITS)
+ CRVAL1   value on axis 1 at reference pixel (FITS)
+ CDELT1   increment per point along axis 1 (FITS)
+          CRVAL1 and CDELT1 are only valid for regularly spaced data
+ RESTFREQ line rest frequency in Hz
+ FROFFSET frequency offset of frequency-shifted spectra, in Hz
+ BW       original bandwidth of the spectrum, in Hz
+ EQUINOX  equinox of the coordinate system (FITS)
+ JULDATE  Julian date of the start of the observation
+ RA       right ascension at equinox of object (FITS)
+ DEC      declination at equinox of object (FITS)
+ RADOWN   right ascension at equinox of "down" spectrum if position switched
+ DECDOWN  declination at equinox of "down" spectrum if position switched
+ GLII     galactic longitude of object
+ GBII     galactic latitude of object
+ GLIIDOWN galactic longitude of "down" spectrum if position switched
+ GBIIDOWN galactic latitude of "down" spectrum if position switched
+ TCAL     value of calibration signal for the observation
+ TCALUNIT brightness units of the calibration signal and hence the data
+ TSYS     system temperature measured during the observation
+ DTSYS    measured rms uncertainty in the system temperature
+ RMS      theoretical rms noise in the spectrum
+ PSS      point source sensitivity in Jy/K used to scale the spectrum to Jy
+ TCONT    continuum antenna temperature of the source, if known
+ TCER     uncertainty in TCONT, if known

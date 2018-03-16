@@ -1,0 +1,46 @@
+<pre>
+
+PC2 [intensity north] [south] [east] [west] [on] [error] [hpbw] [memory]
+
+Calculate the pointing correction to the on-source intensity from
+the intensities at the half power points of the beam and on-source.
+
+In contrast to 'PC', 'PC2' does a 2-dimensional gaussian fit to the five 
+points to give a more accurate result.
+
+The 'error' is the typical uncertainty in intensities.
+
+If the intensities and error are not given, the user is prompted for them.
+
+The units of the halfpower beamwidth are decimal degrees.
+
+If the halfpower beamwidth is not given then it is computed from the rest
+frequency for the specified memory - the antenna is assumed to be 26m
+diameter Hartbeesthoek telescope.
+
+If the memory is not specified, the set memory is used.
+
+If the memory is specified as 0 (zero) then the pointing correction
+calculation does not use any data in the memories, only what has been
+entered in calling the routine.
+
+If the beam offsets used for the observations were inaccurate, 
+the user is shown how to correct them.
+
+If the measurements were made to find the position of an unknown source,
+the coordinates for the location of the source are calculated. (Only
+where the source coordinates are available in memory).
+
+To apply the pointing correction for the amplitude to the spectrum,
+use the MC command.  This is not done automatically.  The command:
+MC PC	applies the pointing correction
+
+
+An example of the output from the PC2 command is shown below:
+
+
+example:
+   
+pc2 0.65 0.44 0.52 0.67 1.12 0.03
+
+</pre>

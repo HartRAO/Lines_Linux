@@ -1,0 +1,5 @@
+
+PGC Mark points on an interactive plot and get their X,Y coordinates.
+
+    Plot the data on screen using pl and then use pgc.
+    

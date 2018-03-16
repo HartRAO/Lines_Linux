@@ -1,0 +1,24 @@
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+cp 13 2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+cp 13 4
+# set the screen plotting device
+set plotdev /xw
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+set colour 2
+pl 5
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+set colour 3
+pl 6 add
+# write out the lcp spectrum in ascii file format for easy adding
+wa 5 spectrum_lcp.asc
+# write out the rcp spectrum in ascii file format for easy adding
+wa 6 spectrum_rcp.asc

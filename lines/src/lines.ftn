@@ -1,0 +1,1925 @@
+FTN77,S
+      PROGRAM LINES
+**********************************************************************
+*  256 CHANNEL CORRELATOR SPECTRAL LINE ANALYSIS PROGRAM.
+*  in file /MIKE/PROGS/LINES.FTN
+*  Link with $CPLOT.LIB::LIBRARIES temporarily $CPLOTMG.LIB::PROGRAMS
+*  Link command :  LINK +EB $CPLOTMG LINES.REL LINES.RUN::PROGRAMS
+*
+*  These subprograms are called :
+*     LPOLY  polynomial fit to baseline
+*     LINTG  line integral
+*     LGAUS  Gaussian fit to lines
+*     LGFIT  Multiple Gaussian fit
+*     LFFT4  Fast Fourier Transform
+*     LMTFL  mag tape file read / write
+*     LDSFL  disc file read / write
+*     LNHLP  help lister uses file LINES::HELP
+*     LSLAP  read a SLAP file from Jodrell Bank
+*     LWASC  write an ASCII disc file for export
+*     LSPLI  brief listing of contents of a spectra data file
+*
+*  These are RPd by procedure file 'RUNLINES.CMD::CMDFILES'.
+*  The command is  RUNLINES .
+*  This renames the subprograms,
+*  appending the terminal lu to the program names,
+*  to enable multiple copies to run.
+*
+      LOGICAL   legal, indplt, plotok, acf, input,
+     &          discfile, firstchan, noend,
+     &          xscloff, yscloff, readmtape, folded, foldedav,
+     &          xscloffav, yscloffav, knowdfile, knowmfile,
+     &          adtoav, CHECKALL, LPRAM(5)
+*
+      CHARACTER FILENAME*64, FILENAMENOW*64, FILEAV*64,
+     &          CBUF*78,
+     &          srcname*20, nameav*20,
+     &          labxcp*30, labycp*30, NEWLABEL*30, digitscp*4,
+     &          name1cp*40, name2cp*40, name3cp*40, name4cp*40,
+     &          LABYK*17, LABYJY*17, LABYD*5, LABYN*11, LABYPC*8,
+     &          ANSWER*1, ASANSWER*1, ANORMAL*1,
+     &          TUNIT*2, TUNITAV*2,
+     &          SMOOTH(1:4)*4, CLINE*2, NEXT*2, DATE*30
+*
+      INTEGER*2 idata(750), iavrg(750), fchar,
+     &          itime(5), idate(15), ipram(5),
+     &          ipbuf(31), ipb(20), ipbav(20),
+     &          LINTG(3), LPOLY(3), LGAUS(3), LFFT4(3), LGFIT(3),
+     &          LMTFL(3), LDSFL(3), LNHLP(3), LSLAP(3), LWASC(3),
+     &          LSPLI(3)
+*
+      REAL*4    data(350), avrg(350),
+     &          xvalcp(256), yvalcp(256)
+*
+      REAL*8    ddata(175), davrg(175),
+     &          dsynon, dsynof, dfreq, dfof, dfofb, dxmc,
+     &          dsynonav, dsynofav, dfreqav, dfofav, dfofbav,
+     &          dxmcav, dj, djav
+*
+*     data = idata = ddata hold the spectrum and housekeeping info.
+*     avrg = iavrg = davrg hold the average spectrum and housekeeping
+*
+      EQUIVALENCE
+     & (IPRAM,   LPRAM),               ! passed parameters int/logical
+     & (next,    inext),               ! mnemonic
+     & (data(1), idata(1)),            ! real*4 & integer*2 arrays
+     & (data(1), ddata(1)),            ! real*8 & real*4    arrays
+*
+     & (srcname, idata(517)),          ! source name, 20 characters
+     & (iy,      idata(527)),          ! start of obs, year
+     & (id,      idata(528)),          ! start of obs, day (UT)
+     & (ih,      idata(529)),          ! start of obs, hour
+     & (im,      idata(530)),          ! start of obs, minute
+     & (is,      idata(531)),          ! start of obs, second
+     & (ismooth, idata(532)),          ! smoothing window type
+     & (index,   idata(533)),          ! observation number
+     & (ipoly,   idata(534)),          ! degree of baseline polynomial
+     & (n,       idata(535)),          ! number of points in spectrum
+     & (n1,      idata(536)),          ! array index of start of spectrum
+     & (n2,      idata(537)),          ! array index of end   of spectrum
+     & (tunit,   idata(538)),          ! intensity unit, K or JY, 2 char
+     & (folded,  idata(539)),          ! spectrum folded, logical check
+     & (ipb(1),  idata(540)),          ! array indecies of poly fit blocks
+     & (filename,idata(701)),          ! disc file name for prog schedule
+*
+     & (bw,      data(291)),           ! correlator bandwidth, MHz
+     & (tint,    data(292)),           ! integration time, seconds on source
+     & (tsysA,   data(293)),           ! system temperature on A
+     & (tsysB,   data(294)),           ! system temp on B
+     & (ad,      data(295)),           ! number of spectra averaged
+     & (scalejy, data(296)),           ! JY to K conversion
+     & (trms,    data(297)),           ! theoretical RMS noise in spectrum
+     & (zvlindex,data(298)),           ! array index of 0 Vlsr
+     & (aitokm,  data(299)),           ! array index to Km/s conversion 
+     & (ra50a,   data(300)),           ! ra  1950 of position A 
+     & (dc50a,   data(301)),           ! dec 1950 of position A
+     & (ra50b,   data(302)),           ! ra  1950 of position B
+     & (dc50b,   data(303)),           ! dec 1950 of position B
+     & (antha,   data(304)),           ! ha  at end of observation
+     & (antdc,   data(305)),           ! dec at end of observation
+     & (haboff,  data(306)),           ! ha  beam offset
+     & (dcboff,  data(307)),           ! dec beam offset
+     & (yscale,  data(308)),           ! y axis plot scale
+     & (yofset,  data(309)),           ! y axis plot offset
+     & (DTSYSA,  DATA(310)),           ! error in A spectrum system temp
+     & (DTSYSB,  DATA(311)),           ! error in B spectrum system temp
+     & (AIRTEMP, DATA(312)),           ! outside air temperature in deg C
+     & (AIRHUM,  DATA(313)),           ! outside air humidity in %
+*
+     & (dsynon ,ddata(160)),           ! synth freq on A (MHz)
+     & (dsynof ,ddata(161)),           ! synth freq on B (MHz)
+     & (dfreq,  ddata(162)),           ! line rest freq  (MHz)
+     & (dfof,   ddata(163)),           ! rf freq offset for A & B  (MHz)
+     & (dfofb,  ddata(164)),           ! rf freq offset for B only (MHz)
+     & (dxmc,   ddata(165)),           ! LO multiplier
+     & (dj,     ddata(166)),           ! Julian date of start of obs.
+*
+*     avrg / iavrg / davrg hold the average spectrum and housekeeping info.
+*
+     & (avrg(1),   iavrg(1)),          ! real*4 & integer*2 arrays
+     & (avrg(1),   davrg(1)),          ! real*8 & real*4    arrays
+* 
+     & (nameav,    iavrg(517)),        ! source name, 20 characters 
+     & (iyav,      iavrg(527)),        ! start of obs, year 
+     & (idav,      iavrg(528)),        ! start of obs, day (UT) 
+     & (ihav,      iavrg(529)),        ! start of obs, hour 
+     & (imav,      iavrg(530)),        ! start of obs, minute 
+     & (isav,      iavrg(531)),        ! start of obs, second 
+     & (ismoothav, iavrg(532)),        ! smoothing window type
+     & (indexav,   iavrg(533)),        ! last observation number
+     & (ipolyav,   iavrg(534)),        ! degree of baseline polynomial
+     & (nav,       iavrg(535)),        ! number of points in spectrum
+     & (n1av,      iavrg(536)),        ! array index of start of spectrum
+     & (n2av,      iavrg(537)),        ! array index of end   of spectrum
+     & (tunitav,   iavrg(538)),        ! intensity unit, K or JY, 2 char
+     & (foldedav,  iavrg(539)),        ! spectrum folded, logical check
+     & (ipbav(1),  iavrg(540)),        ! array indecies of poly fit blocks
+     & (fileav,    iavrg(701)),        ! average file name for compatibility
+*
+     & (bwav,      avrg(291)),         ! correlator bandwidth, MHz
+     & (tintav,    avrg(292)),         ! integration time, seconds on source
+     & (tsysavA,   avrg(293)),         ! system temperature on A
+     & (tsysavB,   avrg(294)),         ! system temp on B
+     & (adav,      avrg(295)),         ! number of spectra averaged
+     & (scalejyav, avrg(296)),           ! JY to K conversion
+     & (trmsav,    avrg(297)),           ! theoretical RMS noise in spectrum
+     & (zvlindexav,avrg(298)),           ! array index of 0 Vlsr
+     & (aitokmav,  avrg(299)),           ! array index to Km/s conversion
+     & (ra50Aav,   avrg(300)),           ! ra  1950 of position A
+     & (dc50Aav,   avrg(301)),           ! dec 1950 of position A
+     & (ra50Bav,   avrg(302)),           ! ra  1950 of position B
+     & (dc50Bav,   avrg(303)),           ! dec 1950 of position B
+     & (anthaav,   avrg(304)),           ! ha  at end of observation
+     & (antdcav,   avrg(305)),           ! dec at end of observation
+     & (haboffav,  avrg(306)),           ! ha  beam offset
+     & (dcboffav,  avrg(307)),           ! dec beam offset
+     & (yscaleav,  avrg(308)),           ! y axis plot scale
+     & (yofsetav,  avrg(309)),           ! y axis plot offset
+     & (DTSYSAVA,  AVRG(310)),           ! average error in TsysA
+     & (DTSYSAVB,  AVRG(311)),           ! average error in TsysA
+*
+     & (dsynonav,  davrg(160)),           ! synth freq on A (MHz)
+     & (dsynofav,  davrg(161)),           ! synth freq on B (MHz)
+     & (dfreqav,   davrg(162)),           ! line rest freq  (MHz)
+     & (dfofav,    davrg(163)),           ! rf freq offset for A & B  (MHz)
+     & (dfofbav,   davrg(164)),           ! rf freq offset for B only (MHz)
+     & (dxmcav,    davrg(165)),           ! LO multiplier
+     & (djav,      davrg(166)),           ! start of last obs Julian date
+*
+     & (date,      idate)                 ! date buffer
+*
+      DATA  LU /1/,  nch/256/,
+     &      noend /.true./,
+     &      smooth/ 'RECT', 'TRNG', 'HANN', 'HAMM' /,
+     &      LINTG / 'LINTG ' /, LGAUS / 'LGAUS ' /,
+     &      LPOLY / 'LPOLY ' /, LFFT4 / 'LFFT4 ' /,
+     &      LGFIT / 'LGFIT ' /, LMTFL / 'LMTFL ' /,
+     &      LDSFL / 'LDSFL ' /, LNHLP / 'LNHLP ' /,
+     &      LSLAP / 'LSLAP ' /, LWASC / 'LWASC ' /,
+     &      LSPLI / 'LSPLI ' /
+     &      labxcp  / 'VELOCITY (km/s)' /,
+     &      labyk   / 'ANTENNA TEMP. (K)' /,
+     &      labyjy  / 'FLUX DENSITY (Jy)' /,
+     &      LABYD   / 'RATIO' /,
+     &      LABYPC  / '% CHANGE' /,
+     &      LABYN   / 'NORMALISED ' /
+*
+*     PROGRAM  START
+*     --------------
+      CALL FSYSU (LU,LU)
+      lu = LUTRU (1)
+      luthi = (lu / 10) * 10
+      lutlo = lu - luthi
+      luthiascii = luthi / 10 + 60b
+      lutloascii = ((lutlo + 60b) * 400b) + 40b
+*     subprograms should have been RP'd with session number added
+*     rename the subprograms with session lu appended
+      call RNAME (lutloascii,luthiascii,LPOLY)
+      call RNAME (lutloascii,luthiascii,LINTG)
+      call RNAME (lutloascii,luthiascii,LGAUS)
+      call RNAME (lutloascii,luthiascii,LFFT4)
+      call RNAME (lutloascii,luthiascii,LGFIT)
+      call RNAME (lutloascii,luthiascii,LMTFL)
+      call RNAME (lutloascii,luthiascii,LDSFL)
+      call RNAME (lutloascii,luthiascii,LNHLP)
+      call RNAME (lutloascii,luthiascii,LSLAP)
+      call RNAME (lutloascii,luthiascii,LWASC)
+      CALL RNAME (LUTLOASCII,LUTHIASCII,LSPLI)
+*
+      CALL EXEC (11,ITIME,IYR)
+      CALL FTIME (idate)
+      write (lu,'(4a)') char(27),'H',char(27),'J_'
+      WRITE  (LU,1000) char(27),date,ITIME(5),char(27)
+ 1000 FORMAT (//a,'&dBSPECTRAL ANALYSIS ',a,' : DAY',I4,a,'&d@')
+      write (1,*) 'Version <930219.1053>'
+      N1 = 1
+      N2 = nch
+      RN = nch
+      legal = .true.
+      acf = .false.
+      knowdfile = .false.
+*     plot default choice on hp150
+      ipselect = 3
+      isizecp = 6
+      lp = 150
+      indplt = .true.
+      plotok = .true.
+*
+*     PRINT MNEMONICS FOR PROGRAM OPTIONS (??,? ,HE)
+*     ----------------------------------------------
+   10 call EXEC (23,LNHLP)
+*
+*     CHECK INPUT MNEMONIC AND ITS VALIDITY
+*     -------------------------------------
+   20 if ( .not. legal) then
+          write (lu,'(''Illegal _'')')
+          LEGAL = .TRUE.
+      endif
+      write (lu,'(''next ? _'')')
+      next = '  '
+      read (lu,'(a)',err=20) next
+      call UPCASE (next)
+*
+  22  if (next .eq. 'HE' .or.
+     *    next .eq. '??' .or. next .eq. '? ' ) then
+          go to 10
+      else if (next .eq. 'CP') then
+          go to 150
+      else if (next .eq. 'RT') then
+          go to 200
+      else if (next .e. 'RA') then
+          go to 400
+      else if (next .eq. 'RB') then
+          go to 400
+      ELSE IF (NEXT .EQ. 'RS') THEN
+          GO TO 400
+      ELSE IF (NEXT .EQ. 'WA') THEN
+*         schedule son program to write spectrum in ASCII to disc file
+          CALL EXEC (23,LWASC,0,0,0,0,0,IDATA,750)
+          GO TO 20
+      else if (next .eq. 'AN') then
+          go to 500
+      else if (next .eq. 'VW') then
+          go to 510
+      else if (next .eq. 'PL') then
+          go to 520
+      else if (next .eq. 'PR') then
+          go to 540
+      else if (next .eq. 'SP') then
+          go to 560
+      else if (next .eq. 'FT') then
+          go to 580
+      else if (next .eq. 'HN') then
+          go to 600
+      else if (next .eq. 'HM') then
+          go to 600
+      else if (next .eq. 'HO') then
+          go to 620
+      else if (next .eq. 'PO') then
+          go to 640
+      else if (next .eq. 'GS') then
+          go to 660
+      else if (next .eq. 'GM') then
+          go to 680
+      else if (next .eq. 'SB') then
+          go to 700
+      else if (next .eq. 'LI') then
+          go to 720
+      else if (next .eq. 'SF') then
+          go to 740
+      else if (next .eq. 'MC') then
+          go to 760
+      else if (next .eq. 'AC') then
+          go to 770
+      else if (next .eq. 'JY') then
+          go to 780
+      else if (next .eq. 'NO') then
+          go to 800
+      ELSE IF (NEXT .EQ. 'AV') THEN
+          GO TO 820
+      ELSE IF (NEXT .EQ. 'VH') THEN
+          GO TO 840
+      ELSE IF (NEXT .EQ. 'FD') THEN
+          GO TO 850
+      ELSE IF (NEXT .EQ. 'AS') THEN
+          GO TO 860
+      ELSE IF (NEXT .EQ. 'CH') THEN
+          CALL CHOUSE (IDATA,DATA,DDATA)
+          GO TO 20
+      ELSE IF (NEXT .EQ. 'PC') THEN
+C         calculate pointing corrections from offset data
+          CALL OFFSET (SRCNAME, RA50A, DC50A, TRMS, DFREQ)
+          GO TO 20
+      ELSE IF (NEXT .EQ. 'LF') THEN
+C         brief listing of contents of binary spectral line file
+          CALL EXEC (9,LSPLI)
+          GO TO 20
+      ELSE IF (next .eq. 'WH') then
+C         run whzat for system status
+          call exec (9,6hWHZAT ,2hAL,0,0,0,0)
+          go to 20
+      ELSE IF (next .eq. 'BY' .or. next .eq. 'EN' .or. next .eq. 'EX'
+     &    .or. next .eq. 'QU' .or. next .eq. 'ST') then
+          go to 900
+      ELSE
+          write (lu,'(''? _'')')
+          go to 20
+      endif
+*
+*     CHANGE PLOT TYPE (CP)
+*     --------------------
+  150 call CHPLOT (lu,lp,isizecp)
+      go to 20
+*
+*     SET UP DATA TAPE AND FIND WANTED FILE 'MFILE' (RT)
+*     --------------------------------------------------
+*     find tape file : mtmode = 1
+*     read tape file : mtmode = 2
+  200 mtmode = 1
+*
+*         schedule son for MT find file / read file
+*         enter here for read, with mtmode = 2. start of read loop
+  240     call EXEC (23,LMTFL,nch,mtmode)
+*
+*         collect parameters and data buffer from son
+          call RMPAR (ipram)
+          call EXEC (14,1,idata,700)
+          newspectrum = ipram(1)
+          mtape = ipram(2)
+          mfile = ipram(3)
+*
+*         no tape search was done - exit from mag tape routines
+          if (mtmode .eq. 1 .and. newspectrum .eq. 0) go to 20
+*
+*         end of file on tape - no spectrum read - go to analysis
+          if (mtmode .eq. 2 .and. newspectrum .eq. 0) then
+              next = 'AN'
+              go to 22
+          end if
+*
+*         spectrum was read from tape
+          if (newspectrum .ge. 1) discfile = .false.
+*
+*         ensure number of spectra averaged is not zero
+          if (ad .lt. 1.0) ad = 1.0
+*
+*         for the moment check all spectra off tape
+          CHECKALL = .TRUE.
+*         go to routines for checking spectrum and adding to average
+          GO TO 250
+*
+*
+*         CHECK INDIVIDUAL SPECTRA AND ADD TO AVERAGE SPECTRUM
+*         ----------------------------------------------------
+*         for spectra from tape or disc files
+*
+*         display the housekeeping for this spectrum
+  250     IF (CHECKALL) THEN
+          CALL HKEEP (IDATE,DATE,smooth,filename,idset,DISCFILE,
+     &                mtape,mfile,idata,data,ddata)
+*
+*         check that system temperature for this spectrum is correct
+*
+  260     WRITE (LU,'(/''Spectrum'',i5,
+     &        '' system temperature ='',f6.1,''+-'',F4.1,A,
+     &        '' okay (CR = yes) ? _'')')
+     &        INDEX, tsysA, DTSYSA, tunit
+          read (lu,'(a)') answer
+          call UPCASE (answer)
+          if (answer .eq. 'N' .or. answer .eq. 'F') then
+  262         write (lu,'(/''Correct temperature (K) ? _'')')
+              read  (lu,*,err=262) tval
+*             system temp changed - renormalise the spectrum
+              do  i = 1,n
+                  data(i) = data(i) * tval / tsysA
+              end do
+              tsysA = tval
+              go to 260
+          end if
+*
+          IF (DTSYSA .EQ. 0.0) THEN
+              PRINT *,'Error in TsysA =',DTSYSA,'K okay (CR = yes) ? _'
+              READ '(A)', ANSWER
+              CALL UPCASE (ANSWER)
+              IF (ANSWER .EQ. 'N' .OR. ANSWER .EQ. 'F') THEN
+                  PRINT *,'Correct dTsys (K) ? _'
+                  READ *, DTSYSA
+                  DTSYSB = DTSYSA
+              END IF
+          END IF
+*
+*         option to plot the individual spectra
+*         -------------------------------------
+          IF (PLOTOK) THEN
+*             plotting is permitted
+              IF (NEWSPECTRUM .EQ. 1) THEN
+*                 first spectrum from this tape or disc file
+                  WRITE (lu,'(''Suppress plot of individual spectra'',
+     *                       '' (CR = yes) ? _'')')
+                  READ  (lu,'(a)') answer
+                  CALL UPCASE (answer)
+                  IF (answer .eq. 'N' .or. answer .eq. 'F') then
+                      INDPLT = .true.
+                  ELSE
+                      INDPLT = .false.
+                  END IF
+              END IF
+*
+              IF (INDPLT) THEN
+*                 set up parameters for individual spectrum plot
+                  CALL SETYLABEL (TUNIT,LABYK,LABYJY,LABYD,LABYPC,LABYN,
+     &                            LABYCP)
+                  WRITE (digitscp,'(i4)') index
+                  NAME1CP = 'SPECTRUM '//digitscp
+                  DO I = 1,N
+                      xvalcp(i) = AITOV (float(i),zvlindex,aitokm)
+                      yvalcp(i) = data(i)
+                  end do
+*                 plot the spectrum
+                  CALL PLOTT (xvalcp,yvalcp,n,xvalcp,xvalcp,0,yvalcp,0,
+     *                labxcp,labycp,name1cp,' ',' ',' ',
+     *                1.0,0.0,1.0,0.0,isizecp,-1,' ',1,
+     *                2,.true.,.true.,0,ipbuf)
+              END IF
+          END IF
+*
+*         calculate the theoretical rms noise in the spectrum
+          WRITE (lu,3020)  INDEX
+ 3020     FORMAT ('Spectrum',I5,' : _')
+          CALL ARMS (lu,idata,data)
+          END IF    ! end of checkall if loop
+*
+*         option to start a new average spectrum if starting a new data file
+*
+          IF (NEWSPECTRUM .EQ. 1 ) THEN
+*             first spectrum from this tape file, check compatibility
+              CALL ADAVC (lu,adtoav,srcname,nameav,
+     &            idata,data,ddata,iavrg,avrg,davrg)
+          END IF
+*
+          IF (CHECKALL) THEN
+              WRITE (lu,3060) index
+ 3060         FORMAT (/'Include spectrum',I5,' in the average '
+     &                 '(CR = yes) ? _')
+              READ (lu,'(a)') answer
+              CALL UPCASE (answer)
+          ELSE
+              ANSWER = 'Y'
+          END IF
+*
+          IF (ANSWER .NE. 'N' .AND. ANSWER .NE. 'F') THEN
+*             this spectrum has been accepted
+              IF (DISCFILE) THEN
+                  KNOWDFILE = .TRUE.
+*                 update the filename and data set number in the file
+                  FILENAMENOW = FILENAME
+                  IDSETNOW = IDSET
+              ELSE
+*                 from tape file
+                  KNOWDFILE = .FALSE.
+              END IF
+*
+              IF (.NOT. ADTOAV) THEN
+*                 starting new average spectrum
+*                 store spectrum and housekeeping
+                  DO I = 1,700
+                      IAVRG(I) = IDATA(I)
+                  END DO
+                  IF (ADAV .EQ. 0.0) ADAV = 1.0
+              ELSE
+*                 adding to previous average spectrum
+                  CALL ADAVS (iavrg,avrg,davrg,idata,data,ddata)
+              END IF
+*             for next spectrum, adding to current average
+              ADTOAV = .TRUE.
+*
+*             option to plot the average spectrum
+*
+C             IF (INDPLT) THEN
+C                 IF (TUNITAV .EQ. 'K ') THEN
+C                     labycp = labyk
+C                 ELSE
+C                     labycp = labyjy
+C                 END IF
+C                 WRITE (digitscp,'(i3)') adav
+C                 NAME1CP = 'AVERAGE '//digitscp
+C                 NDATACP = 0
+C                 DO i = n1,n2
+C                     ndatacp = ndatacp + 1
+C                     xvalcp(ndatacp) = AITOV (float(i),zvlindex,aitokm)
+C                     yvalcp(ndatacp) = avrg(i)
+C                 END DO
+C                 CALL PLOTT (xvalcp,yvalcp,ndatacp,
+C    &                xvalcp,xvalcp,0,yvalcp,0,
+C    &                labxcp,labycp,name1cp,' ',' ',' ',
+C    &                1.0,0.0,1.0,0.0,isizecp,-1,' ',1,
+C    &                2,.true.,.true.,0,ipbuf)
+C             END IF
+*
+*             calculate theoretical rms noise in the average spectrum
+              WRITE (lu,3600)  adav
+ 3600         FORMAT (/'Average spectrum',i6,' : _')
+              CALL ARMS (lu,iavrg,avrg)
+          END IF
+*
+          IF (DISCFILE) THEN
+              IF (NEWSPECTRUM .EQ. 3) THEN
+*                 last specified spectrum has been read from disc
+                  NEXT = 'AN'
+                  KNOWDFILE = .TRUE.
+                  GO TO 22
+              ELSE
+*                 read the next single spectrum from the disc file
+                  GO TO 405
+              END IF
+          ELSE
+*             set up to read another spectrum from tape
+              MTMODE = 2
+              GO TO 240
+          END IF
+*
+*     READ AVERAGE SPECTRUM FROM DISC (RA or RB or RS)
+*     ------------------------------------------------
+*
+*     store current filename and data set number
+  400 FILENAMENOW = filename
+      IDSETNOW = idset
+      PRINT 4010
+ 4010 FORMAT ('disc file name (/ exits) ? _')
+      READ '(A)', FILENAME
+      ICHAR = NCHAR(FILENAME)
+      IF (FILENAME(1:1) .EQ. '/' .AND. ICHAR .EQ. 1) THEN
+          FILENAME = FILENAMENOW
+          GO TO 20
+      END IF
+      CALL UPCASE (FILENAME)
+*
+*     schedule a disc i/o program
+  405 IF (NEXT .EQ. 'RS') THEN
+*         read a SLAP file from jodrell bank
+          CALL EXEC (23,LSLAP,inext,0,0,0,0,idata,750)
+      ELSE
+*         read an HARTRAO ascii or binary file
+          CALL EXEC (23,LDSFL,inext,0,0,0,0,idata,750)
+      END IF
+*
+*     pick up returned parameters and data + filename on return
+      CALL RMPAR (IPRAM)
+      CALL EXEC (14,1,IDATA,750)
+*
+      IDSET = IPRAM(1)
+      NEWSPECTRUM = IPRAM(2)
+      CHECKALL = LPRAM(3)
+      IF (IDSET .GT. 0) DISCFILE = .TRUE.
+*
+*     individual spectra was read from the disc file
+      IF (NEWSPECTRUM .GT. 0) GO TO 250
+*     this will jump back in at label 405 to read the next spectrum
+*
+*     previously averaged spectrum was read from disc file
+      ANSWER = ' '
+      IF (IDSET .GT. 0) THEN
+*         spectrum was read from disc
+          CALL HKEEP (IDATE,DATE,SMOOTH,FILENAME,IDSET,.TRUE.,
+     &                MTAPE,MFILE,IDATA,DATA,DDATA)
+          PRINT 4050
+ 4050     FORMAT ('what you wanted (CR = yes) ? _')
+          READ '(A)', ANSWER
+          CALL UPCASE (ANSWER)
+      END IF
+*
+      if (idset .eq. 0 .or.
+     &    answer .eq. 'N' .or. answer .eq. 'F') then
+*         data was not read succesfully or
+*         not wanted - reset filename and idset, analyze
+          filename = FILENAMENOW
+          idset = IDSETNOW
+*         put average spectrum back into DATA
+          do i = 1,700
+              idata(i) = iavrg(i)
+          end do
+          go to 20
+      end if
+*
+*     data from disc file is okay and wanted by user
+      knowdfile = .true.
+*
+*     new average or add to present average ?
+      call ADAVC (lu,adtoav,srcname,nameav,
+     &    idata,data,ddata,iavrg,avrg,davrg)
+*
+      if (adtoav) then
+*         add to present average
+          call ADAVS (iavrg,avrg,davrg,idata,data,ddata)
+      else
+*         start a new average
+          do i = 1,700
+              iavrg(i) = idata(i)
+          end do
+      end if
+      next = 'AN'
+      go to 22
+*
+*     AVERAGE SPECTRUM ANALYSIS (AN)
+*     ------------------------------
+*     restore average spectrum to the working array
+  500 DO i = 1,700
+          idata(i) = iavrg(i)
+      END DO
+*
+*     reset housekeeping for the spectrum
+      acf = .FALSE.
+      CALL SETYLABEL (TUNIT,LABYK,LABYJY,LABYD,LABYPC,LABYN,
+     &                LABYCP)
+*
+*     find start and end velocities from array indecies
+      V1 = AITOV (float(N1),zvlindex,aitokm)
+      V2 = AITOV (float(N2),zvlindex,aitokm)
+*
+*     rectangular window (ismooth = 0)
+      resolution = 1.20 * aitokm
+*     triangular smoothing
+      if (ismooth .eq. 1) resolution = 1.48 * resolution
+*     hann smoothing
+      if (ismooth .eq. 2) resolution = 1.67 * resolution
+*     hamming smoothing
+      if (ismooth .eq. 3) resolution = 1.50 * resolution
+*
+      CALL HKEEP (IDATE,DATE,smooth,filename,idset,knowdfile,
+     &            mtape,mfile,iavrg,avrg,davrg)
+      CALL VILIM (v1,v2,n1,n2)
+      CALL VIDATA (AITOKM,RESOLUTION,ZVLINDEX)
+      CALL ARMS (lu,idata,data)
+      go to 20
+*
+*     APPLY VELOCITY WINDOW TO THE SPECTRUM (VW)
+*     ------------------------------------------
+  510 call VILIM (v1,v2,n1,n2)
+      write (LU,5120)
+ 5120 format('New Start & End velocities (as is = /) ? _')
+      vn1 = 0
+      vn2 = 0
+      read  (lu,*,err=510) vn1,vn2
+*
+*     convert velocities to indecies n1 and n2
+      if (vn1 .ne. 0.0 .or. vn2 .ne. 0.0) then
+          n1 = VTOAI (vn1,zvlindex,aitokm)
+          n1 = max (1,n1)
+          n1 = min (n1,n)
+          v1 = AITOV (float(n1),zvlindex,aitokm)
+*         set n2 to array index 1 above the chosen velocity
+          n2 = VTOAI (vn2,zvlindex,aitokm) + 1
+          n2 = min (n2,n)
+          n2 = max (n1,n2)
+          v2 = AITOV (float(n2),zvlindex,aitokm)
+          call VILIM (v1, v2, n1, n2)
+      end if
+      go to 20
+*
+*     AVERAGE SPECTRUM PLOT (PL)
+*     --------------------------
+  520 if ( .not. PLOTOK .or. acf ) then
+          LEGAL = .FALSE.
+          GO TO 20
+      end if
+*
+*     default to doing a new plot
+      IGRAPH = 0
+*
+*     find minimum and maximum, store spectrum in plot arrays
+      ymin = data(n1)
+      ymax = data(n1)
+      ndatacp = 0
+      do i = n1,n2
+          ymin = min (data(i), ymin)
+          ymax = max (data(i), ymax)
+          ndatacp = ndatacp + 1
+          xvalcp(ndatacp) = AITOV (float(i),zvlindex,aitokm)
+          yvalcp(ndatacp) = data(i)
+      end do
+      yl = ymin
+      yh = ymax
+*
+      write (lu,'(/''Standard type'',i2,'' plot (CR = yes) ? _'')')
+     &       isizecp
+      READ  '(a)', answer
+      CALL UPCASE (answer)
+      IF (answer .eq. 'N' .or. answer .eq. 'F') then
+*
+*         non-standard plot
+*         superimpose on previous plot ?
+          PRINT *,'Plot on the previous graph (CR = NO) ? _'
+          READ  '(a)',answer
+          CALL UPCASE (answer)
+          IF (answer .eq. 'Y' .or. answer .eq. 'T') then
+              IGRAPH = 1
+          ELSE
+*             new plot wanted
+*             check plot type
+              CALL CHPLOT (lu,lp,isizecp)
+*             check plot limits (X limits predetermined by VW option)
+  525         write (lu,'(2(a,f7.2))') 'Ymin =',ymin,' Ymax =',Ymax
+              write (lu,'(a)')'low, high Y axis limits (/ = as is) ? _'
+              read  (lu,*,err=525) yl, yh
+*
+*             check Y axis label is what user wants
+              PRINT *,'Y axis label =',LABYCP
+              PRINT *,'Enter new label or CR if ok :'
+              READ  '(A)',NEWLABEL
+              IF (NCHAR(NEWLABEL) .GT. 1) LABYCP = NEWLABEL
+          END IF
+*
+*         select the line type for the plot - for new and repeat plots
+  527     LINETYPE = -1
+          PRINT *,'Line type (-1 = solid, 0 = no line,',
+     &            ' or 1-6 = dots or dashes (CR = -1) ? _'
+          READ '(A)', CLINE
+          IF (CLINE(1:1) .NE. ' ') THEN
+              READ (CLINE,*,ERR=527) LINETYPE
+          END IF
+*
+*         user's plot titles - new and repeat plots
+          write (lu,'(/''There are 4 lines of 40 characters ''
+     *                 ''for the title :'')')
+          write (lu,'(/''First (top) line'')')
+          read  (lu,'(a)') name4cp
+          write (lu,'(''Second line'')')
+          read  (lu,'(a)') name3cp
+          write (lu,'(''Third line'')')
+          read  (lu,'(a)') name2cp
+          write (lu,'(''Fourth (lowest) line'')')
+          read  (lu,'(a)') name1cp
+      ELSE
+*         standard new plot of spectrum
+*         default line type = solid
+          LINETYPE = -1
+*
+*         default plot titles in top line of caption
+          NAME4CP = SRCNAME
+*
+*         origin of spectrum in second line of caption
+          IF (KNOWDFILE) THEN
+              fchar = nchar (filename)
+*             look for a / in descriptor, use file name, not path
+              kchar = fchar
+              do while (filename(kchar:kchar) .ne. '/'
+     &                  .and. kchar .gt. 1)
+                  kchar = kchar - 1
+              end do
+*
+              write (name3cp,'(3a,i5)')
+     &            'from file ',filename(kchar:fchar),' rec',idset
+          ELSE
+              write (name3cp,'(a,i6,a,i6)')
+     &            'from tape ',mtape,' file ',mfile
+          END IF
+*
+*         observation number and date / time in third line
+          WRITE (name2cp,'(a,i6,a,4i4)')
+     &        'last obs.',index,' of ',iy,id,ih,im
+*
+*         housekeeping about the spectrum in the fourth line
+          NAME1CP = ' '
+          IF (FOLDED) NAME1CP(1:6) = 'folded'
+          IF (ISMOOTH .GT. 0) NAME1CP(7:15) = ' smoothed'
+          WRITE (NAME1CP(16:40),'(A4,I2,A4,F4.2,A5,F5.1)')
+     &        ' PO=',IPOLY,' BW=',BW,' Nav=',AD
+*
+      END IF
+*
+*     plot the spectrum using CPLOT
+      CALL PLOTT (xvalcp,yvalcp,ndatacp,xvalcp,xvalcp,0,yvalcp,0,
+     &    labxcp,labycp,name1cp,name2cp,name3cp,name4cp,
+     &    1.0,0.0,yl,yh,isizecp,LINETYPE,' ',ipen,
+     &    3,.true.,.true.,igraph,ipbuf)
+      GO TO 20
+*
+*     PRINT ARRAY 'DATA' (PR)
+*     -----------------------
+  540 if ( .not. acf) then
+          CALL VIDATA (AITOKM, RESOLUTION, ZVLINDEX)
+      end if
+      call TABULATE (lu,idata,data)
+      go to 20
+*
+*     SPIKE REMOVAL: SET SELECTED POINTS IN 'DATA' TO NEW VALUES (SP)
+*     ---------------------------------------------------------------
+  560 write (lu,'(''Selectively alter data :'')')
+  562 write (lu,5620) n1, n2
+ 5620 format ('array index I must be between',i4,' and',i4)
+  564 write  (lu,5640)
+ 5640 format ('ISTART, IEND, new value (/ exits) ? _')
+      II1 = 0
+      read (lu,*,err=562) II1, II2, ynew
+      if (II1 .ne. 0) then
+          DO I = II1, II2, 1
+              if (I .ge. n1 .and. I .le. n2)  data(i) = ynew
+          END DO
+          go to 564
+      else
+          go to 20
+      end if
+*
+*     FAST FOURIER TRANSFORM THE ARRAY 'DATA' (FT)
+*     --------------------------------------------
+  580 if ((n1 .ne. 1) .or. (n2 .ne. n)) then
+          legal = .false. 
+          write (lu,'(''Spectrum has been windowed'')') 
+          go to 20
+      end if
+      call EXEC (9,LFFT4,lu,n*2,-1,1,0,idata,512) 
+      call EXEC (14,1,idata,512)
+      acf = .not. acf
+      if (acf .and. plotok) then
+          write (lu,'(''Plot the ACF (CR  = yes) ? _'')')
+          read (lu,'(a)') answer
+          call UPCASE (answer)
+          if (answer .eq. 'N' .or. answer .eq. 'F') go to 20
+          do i = 1,n
+              xvalcp(i) = i
+              yvalcp(i) = data(i)
+          end do
+          call PLOTT (xvalcp,yvalcp,n,xvalcp,xvalcp,0,yvalcp,0,
+     *        'CHANNEL','ACF COEFFICIENT','ACF',' ',' ',' ',
+     *        1.0,0.0,1.0,0.0,ISIZECP,-1,' ',ipen,
+     *        3,.TRUE.,.FALSE.,0,ipbuf)
+      endif
+      go to 20
+*
+*     HANN or HAMMING SMOOTH THE SPECTRUM (HN or HM)
+*     ----------------------------------------------
+  600 if ( acf ) then
+          legal = .false.
+          go to 20
+      end if
+*
+      if (ismooth .ne. 0) then
+  605     write (lu,6050)
+ 6050     format('Data already smoothed ! Go on (CR = yes) ? _')
+          read  (lu,'(a)') answer
+          call UPCASE (answer)
+          if (answer .eq. 'N' .or. answer .eq. 'F') go to 20
+      end if
+*
+      if (next .eq. 'HN') then
+          ismooth = 2
+          resolution = resolution * 1.67
+      else
+          ismooth = 3
+          resolution = resolution * 1.50
+      end if
+      call HANM (ismooth,idata,data)
+      CALL VIDATA (AITOKM, RESOLUTION, ZVLINDEX)
+      call ARMS (lu,idata,data)
+      go to 20
+*
+*     PRINT HOUSEKEEPING (HO)
+*     -----------------------
+  620 CALL HKEEP (IDATE,DATE,smooth,filename,idset,knowdfile,
+     &            mtape,mfile,idata,data,ddata)
+      CALL VILIM (V1,V2,N1,N2)
+      CALL VIDATA (AITOKM, RESOLUTION, ZVLINDEX)
+      CALL ARMS (LU,IDATA,DATA)
+      GO TO 20
+*
+*     REMOVE BEST-FIT POLYNOMIAL FROM SPECTRUM BASELINE (PO)
+*     ------------------------------------------------------
+  640 IF ( acf .or. ipoly .gt. 1) then
+          legal = .false.
+          go to 20
+      end if
+*
+*     call LPOLY and return spectrum with polynomial subtracted
+      ipparm = ipselect*10 + isizecp
+      call EXEC (9,LPOLY,1,ipparm,ipage,lp,lu,idata,700)
+      call EXEC (14,1,idata,700)
+      go to 20
+*
+*     SINGLE  GAUSSIAN FIT TO SPECTRAL LINE (GS)
+*     ------------------------------------------
+  660 if ( acf ) then
+          legal = .false.
+          go to 20
+      end if
+      ipparm = ipselect * 10 + isizecp
+      call EXEC (9,LGAUS,ipparm,0,ipage,lp,lu,idata,700)
+      go to 20
+*
+*     MULTIPLE GAUSSIAN FIT TO SPECTRAL LINES (GM)
+*     --------------------------------------------
+  680 if ( acf ) then
+          legal = .false.
+          go to 20
+      end if
+      ipparm = ipselect * 10 + isizecp
+      call EXEC (9,LGFIT,ipparm,0,ipage,lp,lu,idata,700)
+      go to 20
+*
+*     STORE THE AVERAGE SPECTRUM IN 'DATA' IN A DISC FILE (SB)
+*     --------------------------------------------------------
+  700 if ( acf ) then
+          legal = .false.
+          go to 20
+      end if
+*
+*     store filename and data set number before write
+      FILENAMENOW = filename
+      IDSETNOW = idset
+*
+      PRINT 4010
+      READ  '(a)', FILENAME
+      ICHAR = NCHAR(FILENAME)
+      IF (FILENAME(1:1) .EQ. '/' .AND. ICHAR .EQ. 1) THEN
+          FILENAME = FILENAMENOW
+          GO TO 20
+      END IF
+      CALL UPCASE (FILENAME)
+*
+*     schedule son
+      call EXEC (23,LDSFL,inext,0,0,0,0,idata,750)
+*
+*     pick parameters and data on return
+      call RMPAR (ipram)
+      call EXEC  (14,1,idata,750)
+*
+      idset = ipram(1)
+      if (idset .eq. 0) then
+*         disc write not done
+          filename = FILENAMENOW
+          idset = IDSETNOW
+      else
+*         disc write done
+          knowdfile = .true.
+      end if
+      go to 20
+*
+*     LINE INTEGRAL & ELECTRON TEMPERATURE (LI)
+*     -----------------------------------------
+  720 if ( acf ) then
+          legal = .false.
+          go to 20
+      endif
+      call EXEC (9,LINTG,lu,0,0,0,0,data,700)
+      go to 20
+*
+*     SHIFT AND FOLD SPECTRUM OBSERVED WITH FREQUENCY SHIFTING (SF)
+*     -------------------------------------------------------------
+  740 if (acf .or. folded .or. dfofb .eq. 0.0) then
+          legal = .false.
+          go to 20
+      end if
+*
+*
+      aioffset = n * dfofb / bw
+      ioffset = nint (aioffset)
+      write (lu,'(''Array index offset ='',i5)') ioffset
+      firstchan = .true.
+      do i = 1, n
+          iref = ioffset + i
+          if (iref .ge. 1 .and. iref .le. n) then
+              data(i) = (data(i) - data(iref)) / 2
+              if (firstchan) n1 = i
+              firstchan = .false.
+              n2 = i
+          end if
+      end do
+      v1 = AITOV (float(n1),zvlindex,aitokm)
+      v2 = AITOV (float(n2),zvlindex,aitokm)
+      folded = .true.
+      CALL VILIM (v1,v2,n1,n2)
+      CALL VIDATA (AITOKM, RESOLUTION, ZVLINDEX)
+      CALL ARMS (lu,idata,data)
+      GO TO 20
+*
+*     MULTIPLY THE SPECTRUM BY A CONSTANT (MC)
+*     ----------------------------------------
+  760 if (acf) then
+          legal = .false.
+          go to 20
+      end if
+  762 scaler = 1.0
+      write (lu,'(''multiplier (1 = no change) ? _'')')
+      read  (lu,*,err=762) scaler
+      do i = 1,n
+          data(i) = data(i) * scaler
+      end do
+      go to 20
+* 
+*     ADD A CONSTANT TO THE SPECTRUM (AC) 
+*     ----------------------------------- 
+  770 if (acf) then 
+          legal = .false. 
+          go to 20
+      end if
+  772 sconst = 1.0
+      write (lu,'(''constant to be added (0 = no change) ? _'')')
+      read  (lu,*,err=772) sconst 
+      do i = 1,n
+          data(i) = data(i) + sconst
+      end do
+      go to 20
+* 
+*     CONVERT TO JANSKYS (JY) 
+*     ----------------------- 
+  780 if (acf .or. (tunit .eq. 'JY')) then
+          legal = .false. 
+          go to 20
+      end if
+* 
+  782 write (lu,'(''Janskys per Kelvin (/ ='',f6.2,'') ? _'')')
+     &    scalejyp
+      read (lu,*,err=782) scalejyp
+      if (scalejyp .eq. 0.0) go to 782
+      scalejy = scalejyp
+      do i = 1,n
+          data(i) = data(i) * scalejy
+      end do
+      tunit = 'JY'
+      labycp = labyjy
+      call ARMS (lu,idata,data)
+      go to 20
+*
+*     EXPECTED NOISE IN SPECTRUM (NO)
+*     -------------------------------
+  800 call ARMS (lu,idata,data)
+      go to 20
+*
+*     AVERAGE CONSECUTIVE SETS OF POINTS IN THE SPECTRUM (AV)
+*     -------------------------------------------------------
+  820 IF (ACF) THEN
+          LEGAL = .FALSE.
+          GO TO 20
+      END IF
+      CALL RMEAN (IDATA,DATA,DDATA,V1,IRMEAN)
+*     set up local housekeeping
+      V1 = AITOV (FLOAT(N1),ZVLINDEX,AITOKM)
+      V2 = AITOV (FLOAT(N2),ZVLINDEX,AITOKM)
+      CALL VILIM (V1,V2,N1,N2)
+      RESOLUTION = RESOLUTION * IRMEAN
+      CALL VIDATA (AITOKM,RESOLUTION,ZVLINDEX)
+      GO TO 20
+*
+*     SUPPLY THE LINE HEIGHT AT A SPECIFIED VELOCITY (VH)
+*     ---------------------------------------------------
+  840 IF (ACF) THEN
+          LEGAL = .FALSE.
+          GO TO 20
+      END IF
+      CALL DOVH (DATA,V1,V2,N1,N2,TUNIT)
+      GO TO 20
+*
+*     FIX UP RIGHT HALF OF FREQUENCY-SHIFTED SPECTRA
+*     ----------------------------------------------
+*     To correct frequency-shifted spectra where the spctrum is formed by
+*     (up spectrum / down spectrum) - 1
+*
+  850 PRINT *,'Has the baseline been flattened (CR = YES) ? _'
+      READ  '(A)',ANSWER
+      CALL UPCASE (ANSWER)
+      IF (ANSWER .EQ. 'N' .OR. ANSWER .EQ. 'F'
+     &    .OR. ACF .OR. TUNIT .EQ. 'JY' .OR. FOLDED) THEN
+          LEGAL = .FALSE.
+          GO TO 20
+      END IF
+*
+      DO I = (N2/2 + 1), N2
+*         assume line is inverted in right half of spectrum
+          DATA(I) = TSYSA * DATA(I) / (TSYSA + DATA(I))
+      END DO
+      GO TO 20
+*
+*     add, subtract, average or divide a spectrum from current one (AS)
+*     -----------------------------------------------------------------
+  860 IF (ACF) THEN
+          LEGAL = .FALSE.
+          GO TO 20
+      END IF
+*     store present working spectrum in AVRG
+      DO I = 1, 750
+          IAVRG(I) = IDATA(I)
+      END DO
+      PRINT *,'Add / subtract / average / divide / % change'
+*
+*     store current filename and data set number
+      FILENAMENOW = FILENAME
+      IDSETNOW = IDSET
+      PRINT 4010
+      READ '(A)', FILENAME
+      ICHAR = NCHAR(FILENAME)
+      IF (FILENAME(1:1) .EQ. '/' .AND. ICHAR .EQ. 1) THEN
+          FILENAME = FILENAMENOW
+          GO TO 20
+      END IF
+      CALL UPCASE (FILENAME)
+*
+*     read an HARTRAO ascii or binary file
+      PRINT *,'Is this file ASCII (A) or BINARY (B) (CR = B) ? _'
+      READ  '(A)', ANSWER
+      CALL UPCASE(ANSWER)
+      IF (ANSWER .NE. 'A') ANSWER = 'B'
+      NEXT = 'R'//ANSWER     ! tell LDSFL what type of file to read
+*
+*     schedule LDSFL to read the file
+      CALL EXEC (23,LDSFL,INEXT,0,0,0,0,IDATA,750)
+*
+*     pick up returned parameters and data + filename on return
+      CALL RMPAR (IPRAM)
+      CALL EXEC (14,1,IDATA,750)
+*
+      IDSET = IPRAM(1)
+*
+      ANSWER = ' '
+      IF (IDSET .GT. 0) THEN
+*         spectrum was read from disc
+          DISCFILE = .TRUE.
+          CALL HKEEP (IDATE,DATE,SMOOTH,FILENAME,IDSET,.TRUE.,
+     &                MTAPE,MFILE,IDATA,DATA,DDATA)
+          PRINT 4050
+          READ  '(A)', ANSWER
+          CALL UPCASE (ANSWER)
+      END IF
+*
+      IF (IDSET .EQ. 0 .OR.
+     &    ANSWER .EQ. 'N' .OR. ANSWER .EQ. 'F') THEN
+*         data was not read succesfully or
+*         not wanted - reset filename and idset, analyze
+          FILENAME = FILENAMENOW
+          IDSET = IDSETNOW
+          GO TO 20
+      END IF
+*
+      ASANSWER = ' '
+      DO WHILE (ASANSWER .NE. 'A' .AND. ASANSWER .NE. 'V' .AND.
+     &          ASANSWER .NE. 'S' .AND. ASANSWER .NE. 'D' .AND.
+     &          ASANSWER .NE. '%')
+*         options - use P for % - easier to type
+          PRINT *,'Add (A)  Average (V)  Subtract (S)  ',
+     &            'Divide (D)  % change (P) ? _'
+          READ '(A)', ASANSWER
+          CALL UPCASE (ASANSWER)
+*         convert P to % if necessary
+          IF (ASANSWER .EQ. 'P') ASANSWER = '%'
+      END DO
+*
+      IF (ASANSWER .EQ. 'D' .OR. ASANSWER .EQ. '%') THEN
+*         only calculate division for large SNR
+          SNRMIN = 5.0
+          PRINT *,'Minimum Signal / Noise (CR = ',SNRMIN,') ? _'
+          CBUF = ' '
+          READ  '(A)', CBUF
+          CBUF(77:77) = '/'
+          READ  (CBUF,*) SNRMIN
+      END IF
+*
+*     change units for division option
+      IF (ASANSWER .EQ. 'D') TUNITAV = 'D '
+*
+*     change units for per cent change option
+      IF (ASANSWER .EQ. '%') TUNITAV = '% '
+*
+      PRINT *,'Normalise spectra to Max = 100 first (CR = NO) ? _'
+      READ  '(A)',ANORMAL
+      CALL UPCASE (ANORMAL)
+      IF (ANORMAL .EQ. 'Y' .OR. ANORMAL .EQ. 'T') THEN
+*         normalise spectra so peak is 100
+          CALL SNORMAL (IAVRG,AVRG,AVRGNORM)
+          CALL SNORMAL (IDATA,DATA,DATANORM)
+*         note this in units housekeeping
+          TUNITAV(2:2) = 'N'
+      ELSE
+*         no normalisation
+          AVRGNORM = 1.0
+          DATANORM = 1.0
+      END IF
+*
+      DO I = IAVRG(536), IAVRG(537)
+*         from N1 to N2 find velocity of point in current spectrum
+          VAV = AITOV (FLOAT(I), AVRG(298), AVRG(299))
+*         real array index of corresponding velocity in spectrum to be subtr.
+          AJ = VTOAI (VAV, DATA(298), DATA(299))
+*         integer array index for array DATA
+          J = AJ
+*         check index range is valid
+          IF (J .GE. IDATA(536) .AND. J+1 .LE. IDATA(537)) THEN
+*             linear interpolation for height at VAV
+              TV = DATA(J)*(J+1-AJ) + DATA(J+1)*(AJ-J)
+          END IF
+*
+          IF (ASANSWER .EQ. 'A') THEN
+*             add the spectrum to the current spectrum without weighting
+              AVRG(I) = AVRG(I) + TV
+*
+          ELSE IF (ASANSWER .EQ. 'V') THEN
+*             average the spectra weighted by integration time, as normal
+              AVRG(I) = (AVRG(I)*AVRG(295)*AVRG(292)
+     &                  + TV*DATA(295)*DATA(292))
+     &                  / (AVRG(295)*AVRG(292) + DATA(295)*DATA(292))
+*
+          ELSE IF (ASANSWER .EQ. 'S') THEN
+*             subtract the data from the current spectrum without weighting
+              AVRG(I) = AVRG(I) - TV
+*
+          ELSE IF (ASANSWER .EQ. 'D') THEN
+*             for division check both lines are above the specified s/n
+              IF (ABS(AVRG(I)) .GT. AVRG(297)*SNRMIN/AVRGNORM .AND.
+     &            ABS(TV)      .GT. DATA(297)*SNRMIN/DATANORM) THEN
+                  AVRG(I) = AVRG(I) / TV
+              ELSE
+                  AVRG(I) = 1.0
+              END IF
+*
+          ELSE IF (ASANSWER .EQ. '%') THEN
+*             find change relative to first spectrum, convert to %
+*             only defined if above specified s/n
+              IF (ABS(AVRG(I)) .GT. AVRG(297)*SNRMIN/AVRGNORM .AND.
+     &            ABS(TV)      .GT. DATA(297)*SNRMIN/DATANORM) THEN
+                  AVRG(I) = 100.0 * (1.0 - (TV / AVRG(I)))
+              ELSE
+                  AVRG(I) = 0.0
+              END IF
+          END IF
+*
+      END DO
+*
+      IF (ASANSWER .EQ. 'V') THEN
+*         calculate new number of spectra averaged
+          AVRG(295) = (AVRG(295)*AVRG(292) + DATA(295)*DATA(292))
+     &                / AVRG(292)
+      END IF
+*
+*     set new start and end array indicies
+      V1AV = AITOV (FLOAT(IAVRG(536)), AVRG(298), AVRG(299))
+      V2AV = AITOV (FLOAT(IAVRG(537)), AVRG(298), AVRG(299))
+      V1   = AITOV (FLOAT(IDATA(536)), DATA(298), DATA(299))
+      V2   = AITOV (FLOAT(IDATA(537)), DATA(298), DATA(299))
+      V1AV = MAX (V1AV, V1)
+      V2AV = MIN (V2AV, V2)
+      IAVRG(536) = VTOAI (V1AV, AVRG(298), AVRG(299))
+      IAVRG(537) = VTOAI (V2AV, AVRG(298), AVRG(299))
+*
+*     reset polynomial order to 1 to permit further polynomial fitting
+      IAVRG(534) = 1
+*
+      PRINT *,'Change title from ',NAMEAV,' (CR=YES) ? _'
+      READ '(A)', ANSWER
+      CALL UPCASE (ANSWER)
+      IF (ANSWER .NE. 'N' .AND. ANSWER .NE. 'F') THEN
+          PRINT *, 'New title (20 chars) ?'
+          READ  '(A)', NAMEAV
+      END IF
+*
+*     print housekeeping
+      NEXT = 'AN'
+      GO TO 22
+*
+*
+*     end
+*     ---
+  900 PRINT *,'sure you want to quit (CR = yes) ?_'
+      READ '(a)', ANSWER
+      CALL UPCASE (ANSWER)
+      IF (ANSWER .EQ. 'N' .OR. ANSWER .EQ. 'F') GO TO 20
+      STOP 'Bye !'
+*
+      END
+**********************
+      SUBROUTINE ADAVC (lu,adtoav,srcname,nameav,
+     &                  idata,data,ddata,iavrg,avrg,davrg)
+**********************
+*     check compatibility of avrg and data for adding spectra
+*
+      character srcname*20, nameav*20, answer*1
+      logical*2 adtoav
+      integer*2 idata(1), iavrg(1), lu
+      real*4     data(1),  avrg(1)
+      real*8    ddata(1), davrg(1)
+*
+      adtoav = .false.
+*     check tunit, folded, bw, and zvlindex line freq are compatible
+      if (iavrg(538) .eq. idata(538) .and.
+     &    iavrg(539) .eq. idata(539) .and.
+     &     avrg(291) .eq.  data(291) .and.
+     &     nint(avrg(298)) .eq. nint(data(298)) .and. 
+     &     nint(davrg(162)) .eq. nint(ddata(162))) then 
+* 
+*         check if adav > 0 
+          if (avrg(295) .gt. 0.0) then
+              write (LU,3040) srcname, nameav 
+ 3040         format(/a,' is compatible with current ',a 
+     &        //'Add data from this file to the current average ' 
+     &        '(CR = yes) ? _') 
+              read (lu,'(a)') answer
+              call UPCASE (answer)
+              if (answer .ne. 'N' .and. answer .ne. 'F') then 
+                  adtoav = .true.
+              end if
+          end if
+      end if
+*
+       if (adtoav) then
+          write (lu,3045)
+ 3045     format (/'adding to previous average spectrum')
+      else
+          write (lu,3050)
+ 3050     format (/'starting a new average spectrum')
+      end if
+      return
+      end
+**********************
+      SUBROUTINE ADAVS (iavrg,avrg,davrg,idata,data,ddata)
+**********************
+*     add spectrum to current average, assumed to be compatible
+*
+      integer*2 iavrg(1), idata(1)
+      real*4     avrg(1),  data(1)
+      real*8    davrg(1), ddata(1)
+*
+*     scale new data by ad/adav * tint/tintav
+      FACTOR = DATA(295) / AVRG(295) * DATA(292) / AVRG(292)
+*
+*     add in data from n1av to n2av
+      DO I = IAVRG(536), IAVRG(537)
+          AVRG(I) = (AVRG(I) + DATA(I)*FACTOR) / (1 + FACTOR)
+      END DO
+*
+*     update ADAV, number of spectra averaged
+      AVRG(295) = AVRG(295) * (1 + FACTOR)
+*
+      DO I = 293,294
+*         update TSYSAVA and TSYSAVB
+          AVRG(I) = (AVRG(I) + DATA(I)*FACTOR) / (1 + FACTOR)
+      END DO
+*
+      DO I = 310,311
+*         update error estimates in system temperatures
+          AVRG(I) = SQRT ((AVRG(I)**2 + (DATA(I)*FACTOR)**2) /
+     &                    ((1 + FACTOR)**2))
+      END DO
+*
+*     set observation number to that of last spectrum added
+      IAVRG(533) = IDATA(533)
+*
+*     ditto time (UT and JD)
+      DO I = 527,531
+          IAVRG(I) = IDATA(I)
+      END DO
+      DAVRG(166) = DDATA(166)
+*
+*     reset polynomial to 1 to allow refit
+      IAVRG(534) = 1
+*
+      RETURN
+      END
+********************
+      FUNCTION AITOV (rN,zvlindex,aitokm)
+********************
+*  Convert spectrum array index to velocity
+*
+      AITOV = (rN - zvlindex) * aitokm
+      RETURN
+      END
+*********************
+      SUBROUTINE ARMS (lu,idata,data)
+*********************
+*  Calculates theoretical spectrum noise levels
+*
+      logical   folded
+      character tunit*2
+      integer*2 idata(1), iunit, ifolded
+      real*4    data(1), sbw(0:3)
+      equivalence (tunit,iunit), (folded,ifolded)
+  
+*     noise bandwidth RECT  TRNG  HANN  HAMM smoothing
+      data  sbw     / 1.00, 1.33, 1.50, 1.36 /
+* 
+*  Quantization loss factor for 3*3 level = 1.235 
+*  noise in difference spectrum = root2 (1.414) * pass band noise 
+*  1.0E6 converts bandwidth (data(291)) from MHz to Hz. 
+*  on source system temperature is data(293)
+*  bandwidth = data(291)
+*  correlator channels = idata(535) 
+*  on source integration time = data(292) 
+*  number of spectra averaged = data(295) 
+*  Jy per K conversion = data(296)
+* 
+      iunit = idata(538)
+      ifolded = idata(539)
+* 
+      TRMS = 1.235 * 1.414 * data(293) /
+     &       sqrt (1e6 * data(291) / idata(535) * sbw(idata(532)) 
+     &             * data(292) * data(295))
+      if (folded) trms = trms / 1.414
+      if (tunit .eq. 'JY') then
+          if (data(296) .eq. 0.0) then
+   10         write (lu,'(a)') 'Jy / K ? _'
+              read  (lu,*,err=10) data(296)
+          end if
+          trms = trms * data(296)
+      end if
+      write (lu,'(''expected RMS noise = '',F8.3,a3)') trms, tunit
+      data(297) = trms
+      return
+      end
+******************************************
+      SUBROUTINE CHOUSE (IDATA,DATA,DDATA)
+******************************************
+*     change the housekeeping  (option CH)
+*
+      LOGICAL   EQUAL
+      INTEGER*2 IDATA(*), INDEX
+      REAL*4     DATA(*), R4IN, ZERO
+      REAL*8    DDATA(*)
+      DATA      ZERO / 0.0 /
+*
+      INDEX = 298
+      EQUAL = .FALSE.
+      DO WHILE (.NOT. EQUAL)
+          IF (INDEX .EQ. 298) THEN
+              PRINT *,'Data index of 0 Vlsr =',DATA(INDEX)
+          END IF
+          R4IN = ZERO
+          PRINT 1000
+ 1000     FORMAT ('Offset to add (/=0) ? _')
+          READ  *,R4IN
+          IF (R4IN .EQ. ZERO) EQUAL = .TRUE.
+          DATA(INDEX) = DATA(INDEX) + R4IN
+      END DO
+      RETURN
+      END
+***********************
+      SUBROUTINE CHPLOT (lu,lp,isizecp)
+***********************
+*     change plot type
+*
+   10 write (lu,'(a/a,i2,a)')
+     &    'CPLOT types: 1 - 5 on 9872, 6 on 150',
+     &    'want (/ =',isizecp,') ? _'
+      read  (lu,*,err=10) isizecp
+      if (isizecp .ge. 1 .and. isizecp .le. 5) then
+          lp = 31
+      else if (isizecp .eq. 6) then
+          lp = 150
+      else
+          go to 10
+      end if
+      return
+      end
+**********************
+      SUBROUTINE DOVH (DATA,V1,V2,N1,N2,TUNIT)
+**********************
+*     find line height at given velocity by linear interpolation
+      INTEGER   N1,N2
+      REAL      DATA(*), V1, V2
+      CHARACTER TUNIT*2
+*
+      DO WHILE (.TRUE.)
+          PRINT *,'Velocity at which line height is wanted (/ exits)?_'
+          V = 1E10
+          READ *,V
+          IF (V .EQ. 1E10) THEN
+              RETURN
+          ELSE
+*             array index of point at wanted velocity
+              AI = VTOAI (V,DATA(298),DATA(299))
+*             actual array index of data point below wanted velocity
+              I  = AI
+*             check index range is valid
+              IF (I .GE. N1 .AND. I+1 .LE. N2) THEN
+*                 use simple proportion to linearly interpolate height at V
+                  TV = DATA(I)*(I+1 - AI) + DATA(I+1)*(AI - I)
+                  PRINT *,'At',V,'km/s, AI = ',AI,' H = ',TV,TUNIT
+              ELSE
+                  CALL VILIM (V1,V2,N1,N2)
+              END IF
+          END IF
+      END DO
+      END
+*********************
+      SUBROUTINE HANM (ismooth,idata,data)
+*********************
+*     Applies VON HANN (J=1), or HAMMING (J=2) smoothing to spectrum
+*
+      INTEGER idata(1), J, N
+      REAL    DATA(1), A(2), B(2)
+*
+      DATA  A/ 0.5, 0.54 /, B/ 0.25, 0.23 /
+*
+      j = ismooth - 1
+      n1 = idata(536)
+      n2 = idata(537)
+      X = DATA(n1)
+      DATA(n1) = DATA(n1)*A(J) + DATA(n2)*B(J)*2
+      DO I = n1+1, n2-1
+          Y = DATA(I)
+          DATA(I) = B(J)*X + DATA(I)*A(J) + DATA(I+1)*B(J)
+          X = Y
+      end do
+      DATA(N2) = DATA(N2-1)*B(J)*2 + DATA(N2)*A(J)
+      RETURN
+      END
+**********************
+      SUBROUTINE HKEEP (IDATE,DATE,smooth,filename,idset,knowdfile,
+     &                  mtape,mfile,id,rd,dd)
+**********************
+*     print housekeeping
+*
+      character smooth(1:4)*4, filename*(*), srcname*20, tunit*2,
+     &          DATE*30
+      logical   knowdfile, folded
+      integer   id(1), isrcname(10), ifolded, iunit, it(5), fchar,
+     &          IDATE(15)
+      real*4    rd(1)
+      real*8    dd(1)
+      equivalence (srcname,isrcname), (folded,ifolded),
+     &            (tunit,iunit)
+*
+*     get the current time
+      CALL FTIME (IDATE)
+*
+*     store character and logical parameters locally
+      do i = 1,10
+          isrcname(i) = id(516+i)
+      end do
+      iunit = id(538)
+      ifolded = id(539)
+*     get Julian date (dd(166)) if not there
+      if (dd(166) .eq. 0d0) then
+          it(1) = 0
+          it(2) = id(531)
+          it(3) = id(530)
+          it(4) = id(529)
+          it(5) = id(528)
+          call JD (id(527),it,dd(166))
+      end if
+*
+*     go to top of screen, clear screen
+      PRINT  '(4a)', char(27),'H',char(27),'J_'
+*
+*     highlight the source name
+      PRINT 1000, DATE,
+     &    char(27),'&dB',srcname,char(27),'&d@',id(533),
+     &    id(527), id(528), id(529), id(530), dd(166),
+     &    rd(300), rd(301), rd(302), rd(303),
+     &    dd(162), dd(163), dd(164),
+     &    rd(291), rd(292), smooth(id(532)+1), id(534),
+     &    rd(293), RD(310), RD(294), RD(311),
+     &    RD(312), RD(313), RD(304)
+*
+ 1000 FORMAT(/43X,A,
+     &    /5a,' observation',I5,' of',4I5,' JD',f10.1,
+     &   //'A: RA',5X,'Dec',4X,'B: RA',4X,'Dec (1950)',4x,
+     &     'Line Freq',2X,'L O offset',2X,'Ref. offset'
+     &    /F7.3,F8.3,F9.3,F8.3,' deg',
+     &     1X,F12.6,F12.6,F12.6,' MHz',
+     &   //'Bandwidth',1X,'A/B Obs',1X,'Smooth',1X,
+     &     'Poly',2X,'Tsys on A',4x,'Tsys on B',2x,'Air TMP HUM',
+     &     2X,'end HA',
+     &    /F6.2,'MHz',F7.1,'s',2X,A4,I4,
+     &      F7.1,'+-',F4.1,'K',F6.1,'+-',F4.1,'K',
+     &      f7.1,'C',I3,'%',f8.3/)
+*
+      PRINT *, 'Last spectrum from _'
+      IF (knowdfile) then
+          fchar = nchar(filename) + 1
+          PRINT *,'file ',FILENAME(1:FCHAR),' rec.',IDSET
+      ELSE
+          PRINT *,'tape ',mtape,' file ',mfile
+      END IF
+*
+      IF (rd(295) .gt. 1) then
+          PRINT '(/F5.1,A)',RD(295),' spectra averaged, _'
+      END IF
+*
+*     total onsource time in minutes
+      TON = RD(295) * RD(292) / 60
+      IF (DD(164) .GT. 1D-6) TON = TON * 2
+      PRINT *,' On source time = ',TON,' mins.'
+*
+      PRINT *,'Data in ',TUNIT,'_'
+      IF (tunit .eq. 'JY' .and. rd(296) .ne. 0.0) then
+          PRINT *,', at',RD(296),'Jy/K _'
+      END IF
+*
+*     check if dfofb allows for folding
+      IF (dd(164) .ne. 0) then
+          IF (folded) then
+              PRINT *,', folded_'
+          ELSE
+              PRINT *,', not folded_'
+          END IF
+      END IF
+*
+*     has it been smoothed ?
+      IF (ID(532) .GT. 0) THEN
+          PRINT *,', smoothed'
+      ELSE
+          PRINT *,' '
+      END IF
+      RETURN
+      END
+**********************
+      SUBROUTINE RMEAN (IDATA,DATA,DDATA,V1,IRMEAN)
+**********************
+*     do mean of consecutive sets of points in spectrum, update housekeeping
+*     for reducing the velocity resolution of spectra
+* inputs / outputs :
+*     IDATA,DATA,DDATA        spectrum and housekeeping
+*     V1          real*4      velocity of first point in spectrum
+* outputs :
+*     IRMEAN      integer*2   number of points mean is over
+*
+      INTEGER*2 IDATA(1)
+      REAL*4     DATA(1), V1
+      REAL*8    DDATA(1)
+*
+      PRINT *,'Number of points to average over (1 = no change) ? _'
+      READ  *, IRMEAN
+      IF (IRMEAN .LE. 1) RETURN
+*
+      PRINT *,'average over ',IRMEAN,' points'
+*     find new start and end array indicies
+      N1OUT = 1
+      N2OUT = (IDATA(537) - IDATA(536) + 1) / IRMEAN
+*
+*     i is the index for the output array, j1,j2 indicies for input spectrum
+      DO I = N1OUT, N2OUT
+          J1 = IRMEAN * (I - 1) + IDATA(536)
+          J2 = J1 + IRMEAN - 1
+          TEMP = 0.0
+          DO J = J1, J2
+              TEMP = TEMP + DATA(J) / IRMEAN
+          END DO
+          DATA(I) = TEMP
+      END DO
+*
+*     new velocity corresponding to first averaged point
+      V1 =  V1 + (IRMEAN - 1) * DATA(299) / 2
+*     conversion factor, array index to km/s  (AITOKM)
+      DATA(299) = DATA(299) * IRMEAN
+*     zero velocity array index  (ZVLINDEX)
+      DATA(298) =  N1OUT -  V1 / DATA(299)
+*     set new bandwidth (for RMS noise calc)
+      DATA (291) = DATA(291) * IRMEAN
+*     store start and end array indices
+      IDATA(536) = N1OUT
+      IDATA(537) = N2OUT
+      RETURN
+      END
+**********************
+      SUBROUTINE RNAME (lutloascii,luthiascii,prog)
+**********************
+*     rename subprograms with terminal lu number added
+      integer prog(3)
+*
+*     preserve left byte, add new right byte of lu tens digit
+      prog(2) = (prog(2) .and. 177400b) + luthiascii
+*     change left byte to units of terminal lu, right byte to blank
+      prog(3) = lutloascii
+      return
+      end
+*************************
+      SUBROUTINE TABULATE (lu,idata,data)
+*************************
+*     SCALE the DATA AND WRITE 8 VALUES PER LINE to screen
+* 
+      character tunit*2 
+      integer*2 idata(1), iunit 
+      REAL*4    DATA(1) 
+      equivalence (iunit,tunit) 
+* 
+      iunit = idata(538)
+      n1 = idata(536) 
+      n2 = idata(537) 
+      YMAX = DATA(n1) 
+      YMIN = DATA(n1) 
+      DO I = n1+1,n2
+          YMAX = MAX(DATA(I), YMAX) 
+          YMIN = MIN(DATA(I), YMIN) 
+      end do
+      YRANGE = MAX( ABS(YMAX), ABS(YMIN) )
+      YSCALE = 1E20 
+ 
+*     ensure no integer overflow in data printout
+      do while ((YRANGE * YSCALE) .gt. 32767.0)
+          YSCALE = YSCALE / 10.0
+      end do
+*
+      nstart = (n1/10) * 10
+      nend   = (n2/10) * 10
+      write (lu,1000) tunit, yscale,(m,m = 1,10)
+ 1000 FORMAT (/'data printed in ',a,' * ',1PE12.6
+     *        //'index',1x,9(5x,'+',I1),4x,'+',i2)
+      do i = nstart, nend, 10
+          write (lu,1350) i,(nint(data(j)*yscale), j = i+1,i+10)
+      end do
+ 1350 FORMAT (i4,3X,10(I6,1X))
+      RETURN
+      END
+***********************
+      SUBROUTINE VIDATA (AITOKM,RESOLUTION,ZVLINDEX)
+***********************
+*     print info on spectrum velocity and resolution
+*
+      PRINT 5060, -ZVLINDEX, AITOKM, AITOKM, RESOLUTION
+ 5060 FORMAT(/'Velocity in km/s = (array index ',sp,f7.3,') * ',ss,f9.6,
+     &      /'spacing of points in the spectrum =',f8.3,' km/s'
+     &      /'effective resolution =',f8.3,' km/s')
+      RETURN
+      END
+**********************
+      SUBROUTINE VILIM (v1,v2,n1,n2)
+**********************
+      PRINT 1000,  V1, V2, N1, N2
+ 1000 FORMAT(/'Velocity limits are   ',F8.2,' and',F8.2,' km/s'/
+     *        'Array index limits are',I8,' and',I8)
+      RETURN
+      END
+*******************
+      FUNCTION VTOAI  (v,zvlindex,aitokm)
+*******************
+*  Convert velocity to spectrum array index
+*
+      VTOAI  = V / aitokm + zvlindex
+      RETURN
+      END
+***********************
+      SUBROUTINE OFFSET (SRCNAME, RA50A, DC50A, TRMS, DFREQ)
+***********************
+*     Calculate pointing corrections from measurements made at the
+*     half power points of the telescope beam.
+*     Also calculate corrected on source flux.
+*
+      PARAMETER (MAXF = 5)
+      CHARACTER PCNSNAME*14, PCEWNAME*14, SRCNAME*20
+      REAL*4    RFMAX(MAXF), HHPBW(MAXF), LN2, TRMS
+      REAL*4    RA50A, DC50A
+      REAL*4    RAS,  DECS,  GLIIS,  GBIIS
+      REAL*8    DFREQ
+*
+*     wavelength    2.5     4.5      6     13     18   cm
+      DATA RFMAX /13000.,  7000., 6000., 4000., 2000./
+      DATA HHPBW / 0.033,  0.058, 0.080, 0.166, 0.247/
+      DATA DTR   /0.017453293/
+      DATA LN2   /0.693147/, TWOLN2 /1.386294/, FOURLN2 /2.772589/
+*
+*     find receiver in use to establish half power beamwidth
+      DO I = 1, MAXF
+          IF (DFREQ .LT. RFMAX(I)) IUSE = I
+      END DO
+*
+      PRINT *,'Intensities at HP points N,S ? _'
+      READ  *,SN,SS
+      PRINT *,'Intensities at HP points E,W ? _'
+      READ  *,SE,SW
+      PRINT *,'Intensity on source ? _'
+      READ  *,SP
+*
+      SN = ABS(SN)
+      SS = ABS(SS)
+      SE = ABS(SE)
+      SW = ABS(SW)
+      SP = ABS(SP)
+*     prevent log of zero
+      SN = MAX (SN,TRMS)
+      SS = MAX (SS,TRMS)
+      SE = MAX (SE,TRMS)
+      SW = MAX (SW,TRMS)
+      SP = MAX (SP,TRMS)
+*
+*     calculate pointing offsets from half power points
+      DNS = HHPBW(IUSE) * (LOG(SS) - LOG(SN)) / (FOURLN2)
+      DEW = HHPBW(IUSE) * (LOG(SW) - LOG(SE)) / (FOURLN2)
+*
+*     calculate pointing offsets from on-source and one half-power point
+      DON = HHPBW(IUSE) * (LOG(SP) - LOG(SN) - LN2) / (TWOLN2)
+      DOS = HHPBW(IUSE) * (LOG(SS) - LOG(SP) + LN2) / (TWOLN2)
+      DOE = HHPBW(IUSE) * (LOG(SP) - LOG(SE) - LN2) / (TWOLN2)
+      DOW = HHPBW(IUSE) * (LOG(SW) - LOG(SP) + LN2) / (TWOLN2)
+*
+*     find best pair of points to use on each axis
+      PCNS = DNS
+      PCNSNAME = 'NORTH + SOUTH'
+      IF ((SS .LT. 0.15*SP .OR. SS .LT. 5*TRMS) .AND.
+     &    (SS .LT. SN)) THEN
+          PCNS = DON
+          PCNSNAME = 'ON + NORTH'
+      END IF
+      IF ((SN .LT. 0.15*SP .OR. SN .LT. 5*TRMS) .AND.
+     &    (SN .LT. SS)) THEN
+         PCNS = DOS
+          PCNSNAME = 'ON + SOUTH'
+      END IF
+*
+      PCEW = DEW
+      PCEWNAME = 'EAST + WEST'
+      IF ((SW .LT. 0.15*SP .OR. SW .LT. 5*TRMS) .AND.
+     &    (SW .LT. SE)) THEN
+          PCEW = DOE
+          PCEWNAME = 'ON + EAST'
+      END IF
+      IF ((SE .LT. 0.15*SP .OR. SE .LT. 5*TRMS) .AND.
+     &    (SE .LT. SW)) THEN
+          PCEW = DOW
+          PCEWNAME = 'ON + WEST'
+      END IF
+*
+      PRINT 1500,DNS*1000,DON*1000,DOS*1000,
+     &           DEW*1000,DOE*1000,DOW*1000
+ 1500 FORMAT (/' PC:'3X,'NS',6X,'ON',6X,'OS',10X,'EW',6X,'OE',6X,'OW'/
+     &        1X,3F8.1,4X,3F8.1,' mdeg')
+*
+*     calculate intensity on source corrected for pointing
+      CORRECTION = EXP (LN2 * (PCNS**2 + PCEW**2) / HHPBW(IUSE)**2)
+      SPC = SP * CORRECTION
+*
+      PRINT *,'Use ',PCNSNAME,' = ',PCNS*1000,' mdeg'
+      PRINT *,'Use ',PCEWNAME,' = ',PCEW*1000,' mdeg'
+      PRINT '(/1X,2A,F10.6)',
+     &    SRCNAME,' Amplitude correction =',CORRECTION
+      PRINT '(22X,A,F10.6)','corrected peak intensity =',SPC
+*
+*     add pointing offset to coords of current position, assumed on source
+      RAS = RA50A - PCEW / COS(DC50A * DTR)
+      DECS = DC50A - PCNS
+*     convert the coordinates to galactic, using real*4 arguments
+      CALL CTOG (1,RAS,DECS,GLIIS,GBIIS)
+*     convert to hms d'"
+      CALL DTHMS (RAS,IRAHR,IRAMIN,RASEC)
+      CALL DTDMS (DECS,IDDEG,IDMIN,DSEC)
+*
+      PRINT 2100, SRCNAME, IRAHR, IRAMIN, RASEC, IDDEG, IDMIN, DSEC,
+     &            RAS, DECS, GLIIS, GBIIS
+ 2100 FORMAT (/1X,A,' pointing corrected coordinates :'/
+     &        4X,'H',2X,'M',2X,'S',6X,'D',2X,'M',2X,'S',7X,
+     &        'RA50',5X,'DEC50',5X,'LII',6X,'BII'/
+     &        I5,I3,F5.1,I5,I3,F5.1,4X,
+     &        F7.3,F9.3,'  G',F7.3,F9.3/)
+      RETURN
+      END
+******************************************************************
+      SUBROUTINE SETYLABEL (TUNIT,LABYK,LABYJY,LABYD,LABYPC,LABYN,
+     &                      LABYCP)
+******************************************************************
+*     set up plot label
+      CHARACTER TUNIT*(*)             ! input units identifier
+      CHARACTER LABYK*(*)             ! input Kelvins label
+      CHARACTER LABYJY*(*)            ! input Jy label
+      CHARACTER LABYD*(*)             ! input Division label
+      CHARACTER LABYPC*(*)            ! input per cent change label
+      CHARACTER LABYN*(*)             ! input Normalised label
+      CHARACTER LABYCP*(*)            ! output plot label
+*
+*     set up output plot y axis label
+      LABYCP = ' '
+      IF (TUNIT(2:2) .EQ. 'N') THEN
+*         normalised spectra were added / subtracted / divided
+          IF (TUNIT(1:1) .EQ. 'K') LABYCP = LABYN//LABYK
+          IF (TUNIT(1:1) .EQ. 'J') LABYCP = LABYN//LABYJY
+          IF (TUNIT(1:1) .EQ. 'D') LABYCP = LABYN//LABYD
+          IF (TUNIT(1:1) .EQ. '%') LABYCP = LABYN//LABYPC
+      ELSE
+*         non-normalised spectra
+          IF (TUNIT(1:1) .EQ. 'K') LABYCP = LABYK
+          IF (TUNIT(1:1) .EQ. 'J') LABYCP = LABYJY
+          IF (TUNIT(1:1) .EQ. 'D') LABYCP = LABYD
+          IF (TUNIT(1:1) .EQ. '%') LABYCP = LABYPC
+      END IF
+      RETURN
+      END
+********************************************
+      SUBROUTINE SNORMAL (IARRAY,ARRAY,SMAX)
+********************************************
+*     normalise spectrum so max (min) = 100
+*
+      INTEGER*2 IARRAY(*)             ! input / output integer spectrum
+      REAL*4     ARRAY(*)             ! input / output real spectrum
+*
+*     find maximum and minimum between N1 and N2
+      SMIN = ARRAY(1)
+      SMAX = ARRAY(1)
+      DO I = IARRAY(536), IARRAY(537)
+          SMIN = MIN (SMIN, ARRAY(I))
+          SMAX = MAX (SMAX, ARRAY(I))
+      END DO
+*
+*     find absolute maximum, take 100th of it
+      SMAX = MAX (ABS(SMAX),ABS(SMIN))
+      SMAX = ABS (SMAX) / 100
+*
+*     normalise by 100th of absolute maximum
+      DO I = IARRAY(536), IARRAY(537)
+          ARRAY(I) = ARRAY(I) / SMAX
+      END DO
+*
+      RETURN
+      END
+********************
+      INCLUDE JD.SUB         ! Julian date
+      INCLUDE NCHAR.SUB      ! number of characters in string
+      INCLUDE UPCASE.SUB     ! characters to upper case
+      INCLUDE CTOG.SUB       ! ra, dec <> lii, bii
+      INCLUDE DTHMS.SUB      ! deg to h m s
+      INCLUDE DTDMS.SUB      ! deg to d ' "
+********************
+[ok]
+CI.54> 

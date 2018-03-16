@@ -1,0 +1,27 @@
+<pre>
+
+HM [memory]
+
+Hamming smooth the spectrum in the specified memory.
+
+If the memory is not given as a parameter, the set memory is used.
+
+The Hamming function is a moving window which smoothes using this 
+algorithm:
+   
+   Ynew(I) = 0.23*Yold(I-1) + 0.46*Yold(I) + 0.23*Yold(I+1)
+
+It is effective in reducing noise, but will subtley alter the shape of a 
+line profile, which may be a significant consideration if it is intended 
+to fit Gaussians to the profile.  It will broaden narrow lines (ie lines
+appearing in only a few channels) and reduce their peak amplitude.
+   
+The Hamming function has very low sidelobes, in contrast to unsmoothed 
+spectra, where the sidelobes are those of a rectangular window.
+   
+If data with spikes (outliers) need to be cleaned, try using median
+filtering (function <a href="mf.html">MF<a/>).
+
+See also <a href="smoothing_drift_scans.html">smoothing drift scans<a>.
+
+</pre>

@@ -1,0 +1,53 @@
+
+PTX Add labels / comments / text to the current plot.
+
+    Labels are added interactively.
+    The user is prompted for the text string to add to the plot.
+    After entering the text, the mouse is used to mark the position 
+    of the lower left corner at which the text must start.
+
+    Up to twenty text strings may be entered at a time;
+    to enter more, rerun PTX.
+
+    If a postscript plotfile has been set, the text will be added to it.
+
+    Positioning of the text appears imprecise if portrait-orientation
+    plotting has been selected with multiple plots per page.
+
+    Superscripts are specified by 
+	\utext\d
+
+    Subscripts are specified by
+	\dtext\u
+
+    Greek letters are specified by
+	letter		lower case	upper case
+	alpha		\ga		\gA
+	beta		\gb		\gB
+	gamma		\gg		\gG
+	delta		\gd		\gD
+	epsilon		\ge		\gE
+	zeta		\gz		\gZ
+	eta		\gy		\gY
+	theta		\gh		\gH
+	iota		\gi		\gI
+	kappa		\gk		\gK
+	lambda		\gl		\gL
+	mu		\gm		\gM
+	nu		\gn		\gN
+	xi		\gc		\gC
+	omicron		\go		\gO
+	pi		\gp		\gP
+	rho		\gr		\gR
+	sigma		\gs		\gS
+	tau		\gt		\gT
+	upsilon		\gu		\gU
+	phi		\gf		\gF
+	chi		\gx		\gX
+	psi		\gq		\gQ
+	omega		\gw		\gW
+
+    Hershey symbols are specified by the symbol number, e.g.
+	\(2233)	= plus over minus
+	\(2281) = solar symbol
+    see the WIP manual for more examples

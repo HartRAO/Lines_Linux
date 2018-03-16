@@ -1,0 +1,40 @@
+<pre>
+
+SPL [number of splines to fit] [mem]
+
+Fit cubic splines through the data and subtract from the data.
+
+If the number of splines is specified and is greater than 0, 
+the fit will be automatic and not interactive
+   
+If the memory is to be specified as a parameter, then one 
+character must be used as a placeholder for the number of splines.
+This should be a 0 for an interactive fit.
+
+If plotting devices have been set, the fitted splines will be displayed
+superimposed on the data, followed by the data - splines.
+
+Examples:
+   
+interactive fit using default memory:
+   
+spl
+   
+   
+interactive fit using memory 6:
+   
+spl 0 6
+   
+   
+automatic fit of 7 splines to data in default memory
+   
+spl 7 
+   
+   
+automatic fit of 10 splines to data in memory 3
+   
+spl 10 3
+
+see also PO and MF
+   
+</pre>   

@@ -1,0 +1,96 @@
+
+SET [parameter] [new value]
+
+   List or alter values of parameters used by the program.
+   If no parameter is given the current values are listed.
+   If the parameter is given but no new value, 
+   the user is asked to enter a new value.
+
+   MEMRD        memory into which data is read from a disc file
+                default = MAXMEM-1 = 11
+
+   MEMSET       memory on which operations are done by default 
+                default = MAXMEM = 12
+
+   PLOTDEV      interactive plotting device, e.g. /xwin for Xwindow on Linux
+                see the PGPLOT manual for more info on settings relating to
+                plotting.  Type SET PLOTDEV with no arguments to get a list
+		of devices.  Select from "interactive devices"
+
+   PLOTPS       hardcopy plotting device, normally postscript file/plot type
+                e.g. plotfile.ps/vcps for colour, portrait orientation. 
+                Type SET PLOTPS with no arguments to get a list of devices. 
+                Select from "non-interactive devices".
+                Alternative output file types include gif (landscape) and
+                vgif (portrait orientation).   
+                If a file name is not specified, it will be written to a
+		file called "pgplot".
+
+   NXSUB        number of columns into which the plot area is subdivided
+                default = 1
+
+   NYSUB        number of rows into which the plot area is subdivided
+                default = 1
+
+   PGPROMPT     prompt user to start the next screen plot, True or False
+                default = False
+
+   COLOUR       plot colour
+                Black=0 White=1 Red=2 Green=3 Blue=4 Cyan=5 Magenta=6 Yellow=7
+                default screen plots are black on white to match postscript
+
+   LINE         line type for plot
+                None=0 Full=1 Dashed=2 Dotdash=3 Dotted=4 Dashdotdotdot=5
+                default = 1
+
+   WIDTH        line width, in units of 0.13 mm
+                default = 1
+
+   SYMBOL       symbol drawn at each point
+                default = 1, for a dot
+
+   CHARSIZE     character size
+                default height = 1.0 equals 1/40 height of view surface
+
+   FONT         plot text font: normal=1 roman=2 italic=3 script=4
+                default = 2, for roman
+
+   XPMIN        plot X axis minimum: set > XPMAX for normalised plot
+                default = 0
+
+   XPMAX        plot X axis maximum: set < XPMIN for normalised plot
+                default = -1; with XPMIN, this autoscales the X axis
+
+   YPMIN        plot Y axis minimum: set > YPMAX for normalised plot
+                default = 0   
+
+   YPMAX        plot Y axis maximum: set < YPMIN for normalised plot
+                default = -1; with YPMIN, this autoscales the Y axis
+                
+   CAPTION      plot caption; only used if CAP is set as PL parameter
+                default = blank
+
+   ADDIDENT     add plot identifier with name date time
+                to lower right corner of plot, True or False
+                default = True
+
+   ADDTSYS      add hour angle, system temperature data to plot, 
+                on second line of caption, True or False
+   		default = True
+
+   TMWVNUM      write TMW velocity column headers as numbers, True or False
+   	        number form (-17.321) is suitable for some spreadsheets,
+   	        character form (Vm17p321) is needed for AXUM 
+   	        default = True
+
+   TELLONG	telescope longitude in degrees, used for HA calculation
+                note that east is positive, west is negative
+                default = HartRAO = +27.685
+
+   TELLAT	telescope latitude in degrees, used for HA calculation
+                note that north is positive, south is negative
+                default = HartRAO = -25.886
+
+   PWV          atmospheric precipitable water vapour [mm] for 
+                atmospheric absorption correction at 22GHz
+                default = 0.0

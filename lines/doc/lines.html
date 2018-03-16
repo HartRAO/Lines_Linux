@@ -1,0 +1,287 @@
+<pre>
+
+commands in "lines":
+--------------------
+
+AC	AD	ATM	AV	CLR	CMB	CP	DB	DO	
+END	FD	FT	GC	GCP	GF	GP	GW	HE	
+HM	INP	INT	JY	JDC	JDP	LA	LD	LF	
+LH	LM	LOG	LS	MC	MF	MN	MV	NFCLOSE	
+OHJY	OP	PAUSE	PB	PC	PCA	PGC	PL	PO	
+PSS	PSSF	PTX	QUIT	RA	RAV	RMCA	RMS	RNCSV	
+SET	SF	SPL	SY	TC	TMV	TMW	TS	TSHA	
+VH	VW	WA	WMCA	1720JY	5000JY	6668JY  12178JY
+
+? COMMAND or HE COMMAND		provides detailed help on the command
+
+"q" quits from help ("less" is used to display help files)
+
+command summary, showing [optional parameters] in parentheses:
+--------------------------------------------------------------
+(do not put in the parentheses when actually using the command)
+
+AC [constant] [memory]
+   add a constant to a spectrum in memory
+AD [index of first point] [index of last point] [new value] [memory]
+   alter data in a memory
+ATM [memory]
+   correct a spectrum for atmospheric absorption
+AV [from memory] [with memory]
+   combine spectrum from specified memory with average in second memory
+CLR [memory or ALL]
+   clear the contents of a memory
+CMB [memory with signal bandpass] [memory with ref bandpass] [to memory]
+   combine two bandpasses to give band-corrected spectrum 
+CP [from memory] [to memory]
+   copy a spectrum and its housekeeping from one memory to another
+DB turn debug output on/off
+DO [loopname] [loopstart] [loopend] [loopinc]
+   start a do loop to repeat a set of tasks, terminated by END
+END stop making list of commands in a do loop and execute the loop
+FD [memory]
+   Fix amplitude of "down" HBK spectrum observed prior to 1990 d 338
+FT [memory]
+   Fourier transform the data in the specified memory
+GC [GCP] [gain correction] [memory]
+   apply gain correction to spectrum, optionally using coeffs from GCP
+GCP [CLEAR] [SHOW] [polynomial coefficients]
+   enter gain curve polynomial coefficients
+GF [GP] [PL] [NOASK] [memory]
+   fit one or more Gaussian profiles to a spectrum, optionally use GP parms.
+GP [position] [height] [width] [PHWB] or [show] or [clear] or [fix/freebase]
+   enter initial guesses for parameters of Gaussian to fit to spectra
+GW [output file name]
+   write data and fitted Gaussian profiles to file in multicolumn ascii format
+HE [command]
+   list all commands, or provide help on the specified command
+HM [memory]
+   Hamming smooth the spectrum in the specified memory
+INP [command file name]
+   read commands from a disc file
+INT [Vstart] [Vend] [M/S] [memory]
+   calculate line integral and line shape statistics
+JDC [JDP] [gain correction] [date offset] [memory]
+   apply gain correction to spectrum, optionally using coeffs from JDP
+JDP [CLEAR] [SHOW] [polynomial coefficients]
+   enter polynomial coefficients of relative gain vs JD-2440000
+JY [Kelvin to Jansky factor] [memory]
+   convert spectrum from Kelvin to Jansky, or change K to Jy value
+LD [memory]
+   list data in ascii on screen
+LA [file] [first spectrum] [last spectrum]
+   list contents of an ascii spectra file to .fla file for automated reduction
+LF [file] [first spectrum] [last spectrum]
+   list a summary of contents of an ascii spectra file on screen
+LH [memory]
+   list housekeeping from the specified memory on screen
+LM [first memory] [last memory]
+   summarize the contents of the memories
+LOG [on/off]
+   turn logging or results to 'lines.log' on or off (default is on)
+LS [options]
+   list directory contents
+MC [constant] [memory]
+   multiply spectrum in memory by a constant
+MF [filter] [memory]
+   median filter data with filter 1 = 3RSSH,Twice or 2 = 4253H,Twice
+MN [start velocity] [end velocity] [memory]
+   calculate the mean and standard dev. of the data in the specified range
+MV [from memory] [to memory]
+   move spectrum and housekeeping from one memory to another
+NFCLOSE 
+   close file 'nextfile' used by rncsv
+OHJY [Kelvin to Jansky factor] [memory]
+   convert 18cm OH spectrum from Kelvin to Jansky, or change K to Jy value
+OP [memory 1] [operator] [memory 2]
+   add subtract multiply or divide contents of first memory by second
+PAUSE [Enter] or [Q, Enter]
+   continue processing after pressing "Enter", or [Q] return control to user
+PB [start velocity] [end velocity] or [show] or [clear]
+   set start, end velocities for blocks for fitting polynomial to baseline
+PC [intensity north] [south] [east] [west] [on source] [hpbw] [memory]
+   calculate pointing correction from intensities at half power points 
+PCA [velocity] 
+   Automated calculation of the pointing correction 
+PGC mark points on an interactive plot and get their X,Y coordinates 
+PL [ADD] [CAP] [memory]
+   plot data, optionally ADD to previous plot, use set CAPtion
+PO [PB] [polynomial order] [memory]
+   fit a polynomial to spectrum baseline, optionally using blocks from PB
+PSS [memory]
+   Convert spectrum in Kelvins to Janskys using PSS's read with PSSF   
+PSSF [from file] [JD column] [PSS column]
+   Read file with Point Source Sensitivities from calibrators, for PSS
+PTX add labels / comments / text to current plot
+QUIT  quit program or quit setting up do loop or quit running loop
+RA [from file] [first spectrum] [last spectrum] [new/add] [to memory]
+   read one or more spectra from an ascii-format LINES file
+RAV [from file] [first spectrum] [last spectrum] [to file] [interval] [memory]
+   read, average within interval, and write out spectra from an ascii file
+RMCA [from file] [X col] [Y col] [start line] [cap line] [label line] [memory]
+   read X,Y data from a file in multi-column ascii format
+RMS [memory]
+   calculate rms noise in spectrum
+RNCSV [from file] [memory]
+   read spectra from NCCS csv file created by fits2asc from NCCS fits file
+SET [parameter] [new value]
+   list or alter values of program parameters
+SF [memory]
+   shift and fold spectra observed with the frequency-shifting technique
+SPL [number of splines to fit] [mem]
+   Fit splines through the data and subtract from it
+SY [system command]
+   pass a command to the operating system
+TC [continuum antenna temperature] [error in Tc] [memory]
+   set the continuum antenna temperature and uncertainty 
+TMV [start velocity] [end velocity] or [show] or [clear]
+   set velocity ranges for writing to a time series file
+TMW [input file] [output file] [first spectrum] [last spectrum]
+   write time series files from the specified input file of spectra
+TS [corrected system temperature] [error in Tsys] [memory]
+   Correct the on-source system temperature Tsys and its error
+TSHA [memory]
+   Correct Tsys from end to middle of observation (pre-1991 OHIRs only)
+VH [velocity] [memory]
+   Calculate the height of the datum at the specified velocity.
+VW [start velocity] [end velocity] [memory]
+   change the velocity limits for the spectrum in the specified memory
+WA [to file] [from memory]
+   write spectrum to an ascii-format LINES file
+WMCA [to file] [from memory]
+   write spectrum to multi-column ascii file for import to a spreadsheet
+1720JY [memory]
+   convert 1720MHz spectrum from K to Jy using Point Source Sens. of date
+5000JY [memory]
+   convert 5000MHz spectrum from K to Jy using Point Source Sens. of date
+6668JY [memory]
+   convert 6668MHz spectrum from K to Jy using Point Source Sens. of date
+12178JY [memory]
+   convert 12178MHz spectrum from K to Jy using Point Source Sens. of date
+
+General notes:
+--------------
+
+* A command file can be specified in the run string e.g. "lines cmdfile"
+
+* Multiple memories are available for storing data; there are 12
+  memories, of which memory 11 is used to read spectra (SET MEMRD alters
+  this) and memory 12 is the standard operating memory to which operations
+  default if the memory to use is not specified (SET MEMSET alters this),
+  leaving memories 1 to 10 available for general use.
+
+* lines.log is a log file of commands and results that is written
+  automatically when the program runs.  This file is appended to if the
+  program is rerun.  It is not overwritten.
+
+* The program was originally designed to read spectra from the HP1000,
+  converted to a FITS-like ascii format, using the RA/RAV commands.  However
+  to make it more useful, it can also read data from multi-column ascii
+  files as can be exported from spreadsheets, using the RMCA command.  In
+  this case the user specifies which columns contain the X and Y data.  As
+  the housekeeping accompanying the HP spectra is then not available, some
+  commands needing certain housekeeping will not work.  Data arrays in the
+  program are currently sized at 4098 points.
+
+* The velocity window can be marked by mouse clicks on the displayed
+  spectrum.
+
+* The velocity limits for the line integral can be marked with the mouse
+
+* Baseline blocks for polynomial fitting can be marked with the mouse or can
+  be preset using PB
+
+* Gaussian profiles to be fitted can be marked by mouse clicks at the half
+  power points of each Gaussian or can be preset using GP
+
+* The profiles of each Gaussian fitted can be written to a multi-column
+  ascii format file for post-analysis replotting in a spreadsheet, using the
+  GW command
+
+* Results of Gaussian fits, as well as being shown on screen, can be written
+  to a multi-column ascii format file for importation to a spreadsheet for
+  further analysis or plotting
+
+* Results of line integral calculations, as well as being shown on screen,
+  are automatically written to a multi-column ascii format disc file for
+  importation to a spreadsheet for further analysis or plotting
+
+* The SET PLOTPS command enables plots to be written to disc files in 
+  postscript or other formats for later hardcopy or publication.
+
+* Plot pages can be subdivided into any number of rows and columns using the
+  SET NXSUB and SET NYSUB commands, providing multiple spectra per page
+
+* Plots can be customised in a number of ways e.g.: 
+  line colour (SET COLOUR), 
+  line style (SET LINE), 
+  line width (SET WIDTH), 
+  symbol drawn at each point (SET SYMBOL),
+  character size (SET CHARSIZE), 
+  font (SET FONT), 
+  X and Y minima and maxima (SET XPMIN, SET XPMAX, SET YPMIN, SET YPMAX), 
+  alternative caption (SET CAPTION)
+  user identifier (SET ADDIDENT)
+
+* Comments can be added anywhere on plots using the PTX command; these
+  comments can include super- and sub-scripts and Greek characters
+
+* Spectra can be exported as multicolumn ascii format files for import into
+  spreadsheets or plotting programs, via the WMCA command
+
+* Varying spectra can be output as a time series in multicolumn ascii format
+  for import into phase lag analysis programs or plotting programs, by means
+  of the TMV and TMW commands
+
+* Many commands take parameters; the user is prompted for the parameters if
+  they are omitted, but intelligent defaults are used where possible
+
+* The DO loop command permits repetitive operations to be automated
+
+* Files containing LINES commands can be executed using the INP command,
+  thus permitting much analysis to be automated
+
+* Any command can be passed to the operating system (SY command), for
+  example permitting command files to be edited or output files renamed or
+  edited while in LINES
+
+* For more help, for example on the best sequence of commands to use for
+  reducing particular types of spectra, consult the author at
+  mike@hartrao.ac.za
+
+Example: analysis of OHIR monitoring spectra
+--------------------------------------------
+
+Use TSHA to recalculate system temperature at the middle of the observation,
+for the whole file, in a do loop.
+
+Use TS to add correct the system temperature if needed, and add the error
+estimate in the system temperature for spectra prior to 1990 day 399 = JD
+2448230.
+
+Use RAV for all the spectra to produce a high signal to noise ratio spectrum
+to see where to set baseline blocks for polynomial fitting.
+
+Use PO to fit polynomials to the baselines, in a do loop
+
+Use FD to fix "down" spectra prior to 1990 day 338 = JD 2448229, on the
+whole file, in a do loop.  Note that the spectrum baseline must have been
+made flat using PO prior to running FD.  FD, OHJY and ATM could all be done
+in the same do loop.
+
+Use OHJY to convert spectra from K to Jy using the point source sensitivity
+of the period, in a do loop.
+
+Use ATM to correct the spectrum for atmospheric absorption, in a do loop. 
+Keep the output file - this is the last file with unaveraged spectra, so
+that bad single spectra can be edited out if needed.
+
+Use RAV with a 1 day interval to add together sets of spectra recorded on
+the same day.  Keep the output file.
+
+Use SF to shift and fold frequency-shifted spectra, in a do loop.  Keep the
+output file.
+
+Use TMV and TMW to output light curves for each selected range of channels.
+
+</pre>
+

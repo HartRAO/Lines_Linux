@@ -1,0 +1,243 @@
+<html>
+<head>
+ <title>'Lines' command list</title>
+</head>
+
+<h2>'Lines' command list</h2>
+
+Click on the command for more detailed information. <br>
+Optional parameters for each command are shown in [].  
+Do not put in the parentheses [] when
+actually using the command.
+
+<ul>
+<li><a href="ac.html">
+   AC</a> [constant] [memory]
+   <br>add a constant to a spectrum in memory
+<li><a href="ad.html">
+   AD</a> [index of first point] [index of last point] [new value] [memory]
+   <br>alter data in a memory by typing in array indices and values
+<li><a href="ag.html">
+   AG</a> 
+   <br>alter data in a memory by marking pairs of points on the plot
+<li><a href="ap.html">
+   AP</a> [in memory] [plus memory]
+   <br>Add orthogonal polarizations of the same spectrum for total intensity
+<li><a href="atm.html">
+   ATM</a> [memory]
+   <br>correct spectrum amplitude for atmospheric absorption
+<li><a href="av.html">
+   AV</a> [from memory] [with memory]
+   <br>combine spectrum from specified memory with average in second memory
+<li><a href="clr.html">
+   CLR</a> [memory or ALL]
+   <br>clear the contents of a memory
+<li><a href="cmb.html">
+   CMB</a> [memory with signal bandpass] [memory with ref bandpass] [to memory]
+   <br>combine two bandpasses to give band-corrected spectrum 
+<li><a href="cp.html">
+   CP</a> [from memory] [to memory]
+   <br>copy a spectrum and its housekeeping from one memory to another
+<li><a href="db.html">
+   DB</a> turn debug output on/off
+<li><a href="do.html">
+   DO</a> [loopname] [loopstart] [loopend] [loopinc]
+   <br>start a do loop to repeat a set of tasks, terminated by END
+<li><a href="end.html">
+   END</a> stop making list of commands in a do loop and execute the loop
+<li><a href="fd.html">
+   FD</a> [memory]
+   <br>Fix amplitude of "down" HBK spectrum observed prior to 1990 d 338
+<li><a href="ft.html">
+   FT</a> [memory]
+   <br>Fourier transform the data in the specified memory
+<li><a href="fxm.html">
+   FXM</a> [memory]
+   <br>Fix jumps in X values eg in drift scan, in the specified memory
+<li><a href="gc.html">
+   GC</a> [GCP] [gain correction] [memory]
+   <br>apply gain correction to spectrum, optionally using coeffs from GCP
+<li><a href="gcp.html">
+   GCP</a> [CLEAR] [SHOW] [polynomial coefficients]
+   <br>enter gain curve polynomial coefficients
+<li><a href="gf.html">
+   GF</a> [GP] [PL] [NOASK] [memory]
+   <br>fit one or more Gaussian profiles to a spectrum, optionally use GP parms.
+<li><a href="gp.html">
+   GP</a> [position] [height] [width] [PHWB] or [show] or [clear] or [fix/freebase]
+   <br>enter initial guesses for parameters of Gaussian to fit to spectra
+<li><a href="gw.html">
+   GW</a> [output file name]
+   <br>write data and fitted Gaussian profiles to file in multicolumn ascii format
+<li><a href="he.html">
+   HE</a> [command]
+   <br>list all commands, or provide help on the specified command
+<li><a href="hm.html">
+   HM</a> [memory]
+   <br>Hamming smooth the spectrum in the specified memory
+<li><a href="inp.html">
+   INP</a> [command file name]
+   <br>read commands from a disc file
+<li><a href="int.html">
+   INT</a> [Vstart] [Vend] [M/S] [memory]
+   <br>calculate line integral and line shape statistics
+<li><a href="jdc.html">
+   JDC</a> [JDP] [gain correction] [date offset] [memory]
+   <br>apply gain correction to spectrum, optionally using coeffs from JDP
+<li><a href="jdp.html">
+   JDP</a> [CLEAR] [SHOW] [polynomial coefficients]
+   <br>enter polynomial coefficients of relative gain vs JD-2440000
+<li><a href="jy.html">
+   JY</a> [PSS in Jy/K] [memory]
+   <br>convert spectrum from Kelvin to Jansky, or change K to Jy value
+<li><a href="la.html">
+   LA</a> [file] [first spectrum] [last spectrum]
+   <br>list contents of an ascii spectra file to .fla file for automated reduction
+<li><a href="ld.html">
+   LD</a> [memory]
+   <br>list data in ascii on screen
+<li><a href="lf.html">
+   LF</a> [file] [first spectrum] [last spectrum]
+   <br>list a summary of contents of an ascii spectra file on screen
+<li><a href="lh.html">
+   LH</a> [memory]
+   <br>list housekeeping from the specified memory on screen
+<li><a href="lm.html">
+   LM</a> [first memory] [last memory]
+   <br>summarize the contents of the memories
+<li><a href="log.html">
+   LOG</a> [on/off]
+   <br>turn logging or results to 'lines.log' on or off (default is on)
+<li><a href="ls.html">
+   LS</a> [options]
+   <br>list directory contents
+<li><a href="mc.html">
+   MC</a> [constant] [memory]
+   <br>multiply spectrum in memory by a constant, or by pointing correction
+   (pc) from pca or pca2
+<li><a href="mf.html">
+   MF</a> [filter] [memory]
+   <br>median filter data with filter 1 = 3RSSH,Twice or 2 = 4253H,Twice
+<li><a href="mn.html">
+   MN</a> [start velocity] [end velocity] [memory]
+   <br>calculate the mean and standard dev. of the data in the specified range
+<li><a href="mv.html">
+   MV</a> [from memory] [to memory]
+   <br>move spectrum and housekeeping from one memory to another
+<li><a href="nfclose.html">
+   NFCLOSE</a>
+   <br>close file 'nextfile' used by rncsv
+<li><a href="ohjy.html">
+   OHJY</a> [Kelvin to Jansky factor] [memory]
+   <br>convert 18cm OH spectrum from Kelvin to Jansky, or change K to Jy value
+<li><a href="op.html">
+   OP</a> [first memory] [operator] [second memory]
+   <br>add subtract multiply or divide contents of first memory by second
+<li><a href="pause.html">
+   PAUSE</a> [sleep_seconds]
+   <br>continue processing after sleep_seconds or after pressing "Enter", or [Q]
+   to return control to user
+<li><a href="pb.html">
+   PB</a> [start velocity] [end velocity] or [show] or [clear]
+   <br>set start, end velocities for blocks for fitting polynomial to baseline
+<li><a href="pc.html">
+   PC</a> [intensity north] [south] [east] [west] [on source] [hpbw] [memory]
+   <br>calculate pointing correction from intensities at half power points 
+<li><a href="pc2.html">
+   PC2</a> [intensity north] [south] [east] [west] [on] [error] [hpbw] [memory]
+   <br>calculate 2D pointing correction from intensities at half power points 
+<li><a href="pca.html">
+   PCA</a> [velocity] 
+   <br>Automated calculation of the pointing correction using 1D gauss fit
+<li><a href="pca2.html">
+   PCA2</a> [velocity] 
+   <br>Automated calculation of the pointing correction using 2D gauss fit
+<li><a href="pgc.html">
+   PGC</a> mark points on an interactive plot and get their X,Y coordinates 
+<li><a href="pl.html">
+   PL</a> [ADD/X] [CAP] [memory]
+   <br>plot data, optionally ADD to previous plot or plot X values, use set CAPtion
+<li><a href="po.html">
+   PO</a> [PB] [polynomial order] [memory]
+   <br>fit a polynomial to spectrum baseline, optionally using blocks from PB
+<li><a href="pss.html">
+   PSS</a> [memory]
+   <br>Convert spectrum in Kelvins to Janskys using PSS's read with PSSF
+<li><a href="pssf.html">
+   PSSF</a> [from file] [JD column] [PSS column]
+   <br>Read file with Point Source Sensitivities from calibrators, for PSS
+<li><a href="ptx.html">
+   PTX</a> add labels / comments / text to current plot
+<li><a href="quit.html">
+   QUIT</a>  quit program or quit setting up do loop or quit running loop
+<li><a href="ra.html">
+   RA</a> [from file] [first spectrum] [last spectrum] [new/add] [to memory]
+   <br>read one or more spectra from an ascii-format LINES file
+<li><a href="rav.html">
+   RAV</a> [from file] [first spectrum] [last spectrum] [to file] [interval] [memory]
+   <br>read, average within interval, and write out spectra from an ascii file
+<li><a href="rmca.html">
+   RMCA</a> [from file] [X col] [Y col] [start line] [cap line] [label line] [memory]
+   <br>read X,Y data from a file in multi-column ascii format
+<li><a href="rms.html">
+   RMS</a> [memory]
+   <br>calculate rms noise in spectrum
+<li><a href="rncsv.html">
+   RNCSV</a> [from file] [memory]
+   <br>read spectra from NCCS csv file created by spfits2asc from NCCS fits file
+<li><a href="set.html">
+   SET</a> [parameter] [new value]
+   <br>list or alter values of program parameters
+<li><a href="sf.html">
+   SF</a> [memory]
+   <br>shift and fold spectra observed with the frequency-shifting technique
+<li><a href="sm.html">
+   SM</a> [smoothing width] [memory]
+   <br>Apply running mean smoothing to the data in the specified memory
+<li><a href="spl.html">
+   SPL</a> [number of splines to fit] [mem]
+   <br>Fit splines through the data and subtract from it
+<li><a href="sy.html">
+   SY</a> [system command]
+   <br>pass a command to the operating system
+<li><a href="tc.html">
+   TC</a> [continuum antenna temperature] [error in Tc] [memory]
+   <br>set the continuum antenna temperature and uncertainty 
+<li><a href="tmv.html">
+   TMV</a> [start velocity] [end velocity] or [show] or [clear]
+   <br>set velocity ranges for writing to a time series file
+<li><a href="tmw.html">
+   TMW</a> [input file] [output file] [first spectrum] [last spectrum]
+   <br>write time series files from the specified input file of spectra
+<li><a href="ts.html">
+   TS</a> [corrected system temperature] [error in Tsys] [memory]
+   <br>Correct the on-source system temperature Tsys and its error
+<li><a href="tsha.html">
+   TSHA</a> [memory]
+   <br>Correct Tsys from end to middle of observation (pre-1991 OHIRs only)
+<li><a href="vh.html">
+   VH</a> [velocity] [memory]
+   <br>Calculate the height of the datum at the specified velocity.
+<li><a href="vw.html">
+   VW</a> [start velocity] [end velocity] [memory]
+   <br>change the velocity limits for the spectrum in the specified memory
+<li><a href="wa.html">
+   WA</a> [to file] [from memory]
+   <br>write spectrum to an ascii-format LINES file
+<li><a href="wmca.html">
+   WMCA</a> [to file] [from memory]
+   <br>write spectrum to multi-column ascii file for import to a spreadsheet
+<li><a href="1720jy.html">
+   1720JY</a> [memory]
+   <br>convert 1720MHz spectrum from K to Jy using Point Source Sens. of date
+<li><a href="5000jy.html">
+   5000JY</a> [memory]
+   <br>convert 5000MHz spectrum from K to Jy using Point Source Sens. of date
+<li><a href="6668jy.html">
+   6668JY</a> [memory]
+   <br>convert 6668MHz spectrum from K to Jy using Point Source Sens. of date
+<li><a href="12178jy.html">
+   12178JY</a> [memory]
+   <br>convert 12178MHz spectrum from K to Jy using Point Source Sens. of date
+
+</html>

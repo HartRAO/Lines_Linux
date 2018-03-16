@@ -1,0 +1,43 @@
+<pre>
+
+INP [command file name]
+
+   Read commands from a disc file.
+   Command input is then taken from the file until the end of file,
+   whereupon it reverts to the user.
+
+   If the command file name is not specified the user is prompted for it.
+
+   Comment lines can be put into command files, by starting the line with 
+   characters that are not a valid command, e.g. #
+
+   Indenting in command files, e.g. to prettyprint do loops, must be done
+   using spaces, not tabs.
+
+
+   example:
+
+   sample command file, called "cmdfile", to plot four spectra on a page:
+
+   # comment line - plot four spectra per page to screen and postscript file
+   set plotdev /xwin
+   set plotps  plotfile.ps/vcps
+   set nxsub 2
+   set nysub 2
+   clr 7
+   do i 1 4 1
+      ra oh4p7.asc i i new i
+      set colour i+1
+      set line i+1
+      pl i
+   end
+   set plotps off
+   
+   The name of a command file can also be given in the command used to start
+   the program, as a runstring parameter, e.g.:
+
+   lines cmdfile
+   
+   LINES will automatically begin processing the commands in "cmdfile".
+
+</pre>

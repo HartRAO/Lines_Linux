@@ -1,0 +1,40 @@
+#sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+av 12 13
+cp 13 2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+av 12 13
+cp 13 3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+av 12 13
+cp 13 3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+av 12 13
+cp 13 4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+av 12 13
+cp 13 4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+av 12 13
+cp 13 5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm

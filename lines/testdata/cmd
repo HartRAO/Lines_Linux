@@ -1,0 +1,11 @@
+set plotdev /xwin
+set plotps  cmdplot.ps/vcps
+set nxsub 2
+set nysub 2
+do i 1 4 1
+   ra oh4p7.asc i i new i
+   set colour i+1
+   set line i+1
+   pl i
+end
+set plotps off

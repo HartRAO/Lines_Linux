@@ -1,0 +1,182 @@
+RNCSV [from file] [memory]
+
+   Read spectra from a csv file created from an NCCS FITS file by spfits2asc
+   
+   At this time, FITS-format data files created by the NCCS at HartRAO
+   cannot be read directly by 'lines'.  
+   
+   However, spectra (or other data such as continuum scans needed for
+   calibration) from NCCS FITS-format files can be converted to
+   comma-separated (csv), multicolumn ascii files complete with the critical
+   keywords needed to interpret and reduce the data.
+   
+   A stand-alone program called 'spfits2asc' is run to convert all such files
+   in a directory to a Comma-Separated-Value (CSV) file, which can be read
+   by LINES. (Note . .bash_profile maybe needed first), e.g.:
+   spfits2asc *.fits
+   
+   These CSV files can be read into LINES using function RNCSV.
+   
+   The data are normally dual polarization, so they are read into two
+   memories, to permit reduction of each polarization independently.
+   
+   In the HP1000 spectral line observing program, two bandpasses were
+   divided by each other to obtain a gain-corrected spectrum.
+   
+   However, in the NCCS spectral line observing program, to permit new
+   observing options, the two bandpasses are not combined but are written to
+   consecutive FITS output files.  The combining of these two bandpasses to
+   produce a gain-corrected spectrum is carried out using command CMB
+   (combine), after reading in the spectra with command RNCSV.  See
+   the example that follows.
+
+   Shown below is a sample macro for reading in two lcp+rcp bandpasses that
+   will be combined using 'cmb' to produce lcp + rcp spectra,
+   and then written out in ascii format:
+
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+cp 13 2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+cp 13 4
+#
+set plotdev /xw
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+set colour 2
+pl 5
+pause
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+set colour 3
+pl 6 
+pause
+# write out the lcp spectrum in ascii file format for easy adding
+wa spectrum_lcp.asc 5
+# write out the rcp spectrum in ascii file format for easy adding
+wa spectrum_rcp.asc 6
+
+
+   The above example can be cut-and-pasted into a text file as a working
+   macro - all that needs changing is the name of the input file, 
+   where the generic 'spectrum1.csv' was used above, and if necessary, the 
+   output files (spectrum_lcp.asc and spectrum_rcp.asc).
+
+   Where many files are to be read in and combined, the process can be
+   automated, as follows:
+   create a list of files to read in, in a file called 'nextfile':
+   ls *.csv nextfile
+   use 'nextfile' in place of the actual data file name in rncsv
+   File names will be read sequentially from 'nextfile',
+   starting at line 1.  Use of the name 'nextfile' is mandatory.
+   here is an example:
+   
+set plotdev /xw
+do i 1 1000
+rncsv nextfile
+cp 12 1
+cp 13 2
+rncsv nextfile
+cp 12 3
+cp 13 4
+cmb 1 3 5
+# combine the rcp bandpasses to get the rcp spectrum
+cmb 2 4 6
+set colour 2
+pl 5
+set colour 3
+pl 6 add
+pause
+# apply Kelvins to Jy conversion for each polarization
+jy 6.34 5
+jy 6.02 6
+cp 5 7
+# add the lcp and rcp spectra to get total intensity:
+op 7 + 6
+set colour 1
+pl 7
+pause
+wa test_lcp.asc 5
+wa test_rcp.asc 6
+wa test_l+rcp.asc 7
+end
+nfclose
+
+  In the example above, pairs of spectra are read in plotted, plotted for
+  visual inspection, converted to Jy using data from calibrators, added
+  together, and written out to files for lcp, rcp and lcp+rcp.
+  Note the use of NFCLOSE to ensure 'nextfile' is closed at the end.  
+  If the loop index exceeds the number of pairs of spectra in 'nextfile',
+  'nextfile' will be closed when the end of file is reached.  However,
+  'nextfile' is not closed automatically if the end of file is not reached.
+
+  This is what 'nextfile' looked like in this example:
+
+2004d236_01h51m37s_Spec_sharmila_OMC-1.csv
+2004d236_01h59m37s_Spec_sharmila_OMC-1.csv
+2004d236_02h08m02s_Spec_sharmila_OMC-1.csv
+2004d236_02h16m02s_Spec_sharmila_OMC-1.csv
+2004d245_01h15m07s_Spec_sharmila_OMC-1.csv
+2004d245_01h23m07s_Spec_sharmila_OMC-1.csv
+2004d245_01h31m32s_Spec_sharmila_OMC-1.csv
+2004d245_01h39m32s_Spec_sharmila_OMC-1.csv
+...
+
+
+   The format of the csv files is like this:
+
+DATE    = '2003-05-16T05:50:12' / file creation date (YYYY-MM-DDThh:mm:ss UT)
+OBJECT  = 'G9.62+0.20'         / Name of object
+LONGITUD=     270.816583333333 / Longitude of object
+LATITUDE=    -20.5313611111111 / Latitude of object
+EQUINOX = '1950.0  '
+OBSERVER= 'S. GOEDHART'        / Principal Investigator
+OBSLOCAL= 'sharmila'           /  On-site observer
+PROJNAME= '6.7-GHz methanol maser monitoring' / Short name for the project
+SPVLSR  =                  2.5 / Centre Vlsr (km/s)
+SPBW    =             1000000. / spectrometer bandwidth (Hz)
+SPCHAN  =                 1024 / Number of spectrometer channels
+SPFS    =              500000. / Frequency-switching offset (Hz)
+SPPSLON =                   0. / Position-switching offset in Longitude (deg)
+SPPSLAT =                   0. / Position-switching offset in Latitude (deg)
+SPTIME  =                 225. / Integration time per scan (seconds)
+SPPOINT =                    0 / Offset pointing TRUE=non-0 FALSE=0
+RESTFREQ=             6668.518 / [MHz] Backend centre frequency
+CENTFREQ=             6668.018 / [MHz] Backend centre frequency
+POSITION= 'ON      '           / Position identifier
+TCAL1   =                 14.2 / [K] Cal noise diode value for channel 1
+TCALSIG1=                   0. / [K] uncertainty in TCAL1
+TCAL2   =                  21. / [K] Cal noise diode value for channel 2
+TCALSIG2=                   0. / [K] uncertainty in TCAL2
+TSYS1   =     71.7397109468025 / [K] System temperature
+TSYSERR1=   0.0330623369555981 / [K] System temp error
+TSYS2   =     86.4920598256053 / [K] System temperature
+TSYSERR2=   0.0480360932399716 / [K] System temp error
+TUNIT1  = 'km/s    '
+TTYPE2  = 'Polstate1'          / label for field
+TUNIT2  = 'Kelvins '
+TTYPE3  = 'Polstate4'          / label for field
+TUNIT3  = 'Kelvins '
+          Vlsr,     Polstate1,     Polstate4
+      -8.78300,       37.6346,       81.2410
+      -8.73910,       38.0180,       45.5495
+      -8.69520,       37.7877,       45.2148
+      -8.65129,       37.8176,       45.6401
+      -8.60739,       37.9358,       45.5712
+      -8.56349,       38.0047,       45.3940
+      -8.51958,       37.7439,       45.3433
+      -8.47568,       37.9906,       45.7089
+      -8.43178,       38.0999,       45.6447
+      -8.38788,       38.2124,       46.0257
+      -8.34397,       38.4427,       46.0193
+      -8.30007,       38.4249,       45.8737
+      -8.25617,       38.4322,       46.0721
+      -8.21227,       38.3573,       45.9737
+   etc.
+
+   where 'Polstate1' and 'Polstate4' refer to LCP and RCP.

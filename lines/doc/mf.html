@@ -1,0 +1,101 @@
+<pre>
+
+MF [filter] [memory]
+
+Median filter data with filter 1 = 3RSSH,Twice or 2 = 4253H,Twice
+
+For spike removal and smoothing of data.  
+   
+Taken from "Applications, Basics and Computing of Exploratory Data Analysis"
+by Paul F Velleman and David C Hoaglin, Duxbury Press, Boston, 1981.
+
+Filter 2 = 4253H,Twice is prefered, but either can be used.
+
+If the command MF is given without the filter being specified, eg
+MF 0 4
+then the fit is done interactively with plotting if this is enabled.
+   
+If the command is given with the filter specified, eg
+MF 2 4
+then the fit is done automatically without user intervention
+<pre>
+
+See also <a href="smoothing_drift_scans.html">smoothing drift scans<a>.
+
+Examples:
+
+<center>
+<img alt="3RSSH2" src="median_3RSSH2.png" height=669 width=867>
+</center>
+<p>
+<center>
+<img alt="4253H2" src="median_4253H2.png" height=669 width=867>
+</center>
+<p>
+
+<pre>   
+Test data used for the plots, from the reference, are:
+
+Median Filter test data
+X  Y
+17 183.1
+18 183.9
+19 163.1
+20 179.5
+21 181.4
+22 173.4
+23 167.6
+24 177.4
+25 171.7
+26 170.1
+27 163.7
+28 151.9
+29 145.4
+30 145.0
+31 138.9
+32 131.5
+33 125.7
+34 129.5
+35 129.6
+36 129.5
+37 132.2
+38 134.1
+39 132.1
+40 137.4
+41 148.1
+42 174.1
+43 174.7
+44 156.7
+45 143.3
+46 189.7
+47 212.0
+48 200.4
+49 201.8
+50 200.7
+51 215.6
+52 222.5
+53 231.5
+54 237.9
+55 244.0
+56 259.4
+57 268.8
+58 264.3
+59 264.5
+60 268.1
+61 264.0
+62 252.8
+63 240.0
+64 229.1
+65 204.8
+66 193.3
+67 179.0
+68 178.1
+69 181.1
+70 165.6
+71 159.8
+72 136.1
+73 126.3
+74 123.3
+75 118.5
+
+</pre>

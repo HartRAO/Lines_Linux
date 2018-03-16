@@ -1,0 +1,36 @@
+JDP [CLEAR] [SHOW] [polynomial coefficients]
+   enter polynomial coefficients of relative gain vs JD-2440000
+
+   The relative gain of the telescope may be modelled as a polynomial
+   function of the Julian Date (JD).
+   
+   As 'lines' for convenience in its time series files uses JD-2440000,
+   
+   The polynomial coefficients should be derived from the relative gain
+   at the frewquency in use as a function of JD-2440000.
+    
+   Experimental data are fitted with a low order polynomial (<7).  This is
+   used to obtain the gain correction, which is the reciprocal of the 
+   relative gain as a function of JD-2440000.
+   
+   examples:
+
+   JDP 1.000 -0.035 -0.007 -0.000015 
+   	The coefficients of a fourth order polynomial fitted to the gain
+	versus JD-2440000
+
+   JDP clear
+   	Unset any previous entered coefficients
+ 
+   JDP show
+   	show the current coefficients
+  
+   JDP
+   	enter the polynomial coefficents manually at prompts from the routine.
+   	Terminate with a zero.
+
+
+   Note that the function JY and its frequncy-specific derivatives is
+   normally used to convert data from Kelvins to Janskys, making allowance
+   for the aperture efficiency (point source sensitivity) of the telescope
+   at the time of observation.

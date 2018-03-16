@@ -1,0 +1,3164 @@
+ lines.log     opened 2000-12-21T12:30:57 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+ra ds3476 1 5 new plot
+  file not found:ds3476
+ls
+quit
+ lines.log     opened 2002-09-10T16:16:24 
+gcp show
+gcp clear
+gc
+gc show
+quit
+ lines.log     opened 2002-09-10T16:18:07 
+gcp show
+gcp clear
+gcp 0.1 .01 .001 .0001
+gcp show
+  Current gain correction coefficients
+  1   0.10000000E+00
+  2   0.10000000E-01
+  3   0.10000000E-02
+  4   0.10000000E-03
+quit
+ lines.log     opened 2002-09-10T16:22:31 
+gcp show
+  Gain correction coefficients:
+gcp 1.0 0.1 0.01 0.001
+gcp show
+  Gain correction coefficients:
+ HA**1   0.10000000E+01
+ HA**2   0.10000000E+00
+ HA**3   0.10000000E-01
+ HA**4   0.10000000E-02
+gcp clear
+gcp show
+  Gain correction coefficients:
+quit
+ lines.log     opened 2002-09-11T10:27:49 
+gcp
+  Gain correction coefficients:
+gcp show
+  Gain correction coefficients:
+ HA**0   0.10000000E+00
+quit
+ lines.log     opened 2002-09-11T10:36:26 
+gcp show
+  Gain correction coefficients:
+gcp
+  Gain correction coefficients:
+gcp show
+  Gain correction coefficients:
+ HA**0   0.10000000E+00
+ HA**1   0.20000000E+00
+ HA**2   0.30000000E+00
+ HA**3   0.40000000E+00
+ HA**5  -0.10000000E+01
+ HA**6  -0.10000000E+01
+quit
+ lines.log     opened 2002-09-11T10:39:14 
+gcp show
+  Gain correction coefficients:
+gcp
+  Gain correction coefficients:
+gcpshow
+  Gain correction coefficients:
+ HA**0   0.10000000E+00
+ HA**1   0.20000000E+00
+ HA**2   0.30000000E+01
+ HA**3   0.40000000E+01
+ HA**4   0.50000000E+01
+gcp show
+  Gain correction coefficients:
+ HA**0   0.10000000E+01
+ HA**1   0.20000000E+01
+ HA**2   0.30000000E+01
+ HA**3   0.40000000E+01
+gcp
+  Gain correction coefficients:
+ HA**0   0.10000000E+01
+ HA**1   0.20000000E+01
+ HA**2   0.30000000E+01
+ HA**3   0.40000000E+01
+gcp show
+  Gain correction coefficients:
+gcp clear
+quit
+ lines.log     opened 2002-09-11T10:43:46 
+gcp show
+  Gain correction coefficients:
+gcp clear
+gcp
+  Gain correction coefficients:
+gcp show
+  Gain correction coefficients:
+ HA**0   0.10000000E+01
+ HA**1   0.20000000E+01
+ HA**2   0.30000000E+01
+gcp
+  Gain correction coefficients:
+ HA**0   0.10000000E+01
+ HA**1   0.20000000E+01
+ HA**2   0.30000000E+01
+gcp
+  Gain correction coefficients:
+ HA**0   0.50000000E+01
+ HA**1   0.60000000E+01
+ HA**2   0.70000000E+01
+gcp 5 6 7
+gcp show
+  Gain correction coefficients:
+ HA**0   0.50000000E+01
+ HA**1   0.60000000E+01
+ HA**2   0.70000000E+01
+gcp clear
+gcp show
+  Gain correction coefficients:
+quit
+ lines.log     opened 2003-02-18T15:05:09 
+mn
+?
+quit
+ lines.log     opened 2003-05-21T08:32:28 
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  13 of  13 memories are empty
+rncsv
+  read NCCS csv file spectrum1.csv into mem 13
+  1 valid values were read
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  13 of  13 memories are empty
+quit
+ lines.log     opened 2003-05-21T09:11:31 
+db
+rncsv spectrum1.csv
+ lines.log     opened 2003-05-21T09:45:23 
+db
+rnscv spectrum1.csv
+??
+quit
+ lines.log     opened 2003-05-21T09:46:17 
+rncsv
+ lines.log     opened 2003-05-21T09:46:25 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1 valid values were read
+quit
+ lines.log     opened 2003-05-21T09:55:40 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  Error  112 reading rec  5 in file spectrum1.csv
+QUIT
+ lines.log     opened 2003-05-21T10:27:52 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1027 valid values were read
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  13 of  13 memories are empty
+lh
+lh 11
+QUIT
+ lines.log     opened 2003-05-21T10:34:08 
+DB
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1027 valid values were read
+QUIT
+ lines.log     opened 2003-05-21T10:35:27 
+RNCSV
+  read NCCS csv file spectrum1.csv into mem 12
+  1027 valid values were read
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  13 of  13 memories are empty
+ld 11
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1027 valid values were read
+quit
+ lines.log     opened 2003-05-21T10:40:43 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  Error  112 reading rec  33 in file spectrum1.csv
+quit
+ lines.log     opened 2003-05-21T11:16:27 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1026 valid values were read
+quit
+ lines.log     opened 2003-05-21T11:18:16 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  13 of  13 memories are empty
+QUIT
+ lines.log     opened 2003-05-21T11:21:17 
+db
+rncsv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   1.12903199
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+ld
+quit
+ lines.log     opened 2003-05-21T11:27:52 
+db
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   1.12903199
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2003-05-21T11:36:53 
+db
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  mem  11 copied to  12
+  mem  11 copied to  13
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20                         0     0 1.00   0   0 0 0  0  0   0.0 Ke
+  12 G9.62+0.20                         0     0 1.00   0   0 0 0  0  0   0.0 Ke
+  13 G9.62+0.20                         0     0 1.00   0   0 0 0  0  0   0.0 Ke
+  10 of  13 memories are empty
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20                         0     0 1.00   0   0 0 0  0  0   0.0 Ke
+  12 G9.62+0.20                         0     0 1.00   0   0 0 0  0  0   0.0 Ke
+  13 G9.62+0.20                         0     0 1.00   0   0 0 0  0  0   0.0 Ke
+  10 of  13 memories are empty
+pl 12
+pl 13 add
+QUIT
+ lines.log     opened 2003-05-21T11:42:44 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  mem  11 copied to  12
+  mem  11 copied to  13
+QUIT
+ lines.log     opened 2003-05-21T11:46:30 
+RNCSV spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+QUIT
+ lines.log     opened 2003-05-21T11:48:48 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20                         0     0 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G9.62+0.20                         0     0 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G9.62+0.20                         0     0 1.00   0   0 0 0  0  1   0.0 Ke
+  10 of  13 memories are empty
+lh
+ lines.log     opened 2003-05-22T10:33:51 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+ lines.log     opened 2003-05-22T10:36:29 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+ lines.log     opened 2003-05-22T10:39:44 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+ lines.log     opened 2003-05-22T10:43:05 
+RNCSV spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+lh
+ lines.log     opened 2003-05-22T11:44:07 
+RNCSV spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+lh
+ lines.log     opened 2003-05-22T11:47:04 
+Rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+lh
+ lines.log     opened 2003-05-22T11:49:02 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+lh
+ lines.log     opened 2003-05-22T11:53:00 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+lh
+ lines.log     opened 2003-05-22T11:54:52 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+lh
+DB
+LH
+QUIT
+ lines.log     opened 2003-05-22T12:01:59 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:03:05 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:05:37 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:08:01 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:08:50 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:10:13 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:12:22 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T12:12:58 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+QUIT
+ lines.log     opened 2003-05-22T12:20:54 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+vw
+                           start         end
+ array index limits:           1        1025
+ velocity limits:         -8.783      36.173 km/s
+                           start         end
+ array index limits:         139         357
+ velocity limits:         -2.724       6.846 km/s
+pl
+quit
+ lines.log     opened 2003-05-22T14:05:11 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+QUIT
+ lines.log     opened 2003-05-22T14:11:43 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+db
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2003-05-22T14:14:08 
+db
+rncsv spectrum1s.csv
+  read NCCS csv file spectrum1s.csv into mem 12
+  147 valid values were read
+  data spacing check: rmsdev from fit =   2.9049454E-06
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T14:21:07 
+rncsv spectrum1s.csv
+  read NCCS csv file spectrum1s.csv into mem 12
+  147 valid values were read
+  data spacing check: rmsdev from fit =   2.9049454E-06
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-22T14:39:22 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2003-05-27T12:03:06 
+rncsv spectrum1.csv
+quit
+ lines.log     opened 2003-05-27T12:04:20 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 12 2
+  mem  12 copied to  2
+cp 13 2
+  mem  13 copied to  2
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  8 of  13 memories are empty
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  6 of  13 memories are empty
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 1
+pl 2 add
+pl 3 add
+pl 4 add
+? cmb
+cmb 1 3 5
+  mem  1 copied to  5
+pl 5
+db
+cmb 1 3 5
+  mem  1 copied to  5
+quit
+ lines.log     opened 2003-05-27T12:21:50 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  6 of  13 memories are empty
+db
+cmb 1 3 5
+  mem  1 copied to  5
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   5 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  5 of  13 memories are empty
+lh 2
+QUIT
+ lines.log     opened 2003-05-27T12:28:01 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+pl 1
+pl 3
+QUIT
+ lines.log     opened 2003-05-27T12:59:51 
+RNCSV spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+cmb 1 3 5
+  mem  1 copied to  5
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+cmb 2 4 6
+  mem  2 copied to  6
+pl 6
+db
+cmb 1 3 5
+  mem  1 copied to  5
+lh 5
+pl 1
+pl 3 add
+pl 5
+LH
+quit
+ lines.log     opened 2003-05-27T15:01:18 
+rncsv spectrum1 csv
+  file not found:spectrum1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  6 of  13 memories are empty
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  513 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+db
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+pl 5
+quit
+ lines.log     opened 2003-05-27T15:07:31 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 4
+  mem  13 copied to  4
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0.37820499 now   0.37820499Kelvins
+wa
+  mem 12 write to spectrum_cmb.asc as spectrum  1
+sy rm spectrum_cmb.asc
+? wa
+wa spectrum_cmb.asc 5
+  mem 5 write to spectrum_cmb.asc as spectrum  1
+ra spectrum_cmb.asc 1 1 new
+  read spectrum_cmb.asc from  1 to  1 in mem  12 add= T
+  warning: TELLONG=  27.6849995 but TELESCOP=
+  warning: TELLAT= -25.8859997 but TELESCOP=
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  start new average spectrum in mem  12
+  mem  11 copied to  12
+pl
+lh
+db
+lh
+lh
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   5 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  5 of  13 memories are empty
+exit
+quit
+ lines.log     opened 2003-05-27T15:27:55 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+db
+quit
+ lines.log     opened 2003-05-28T08:23:19 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 3 1 5
+  mem  3 copied to  5
+db
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+QUIT
+ lines.log     opened 2003-05-28T10:43:58 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+quit
+ lines.log     opened 2003-05-28T10:45:37 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+DB
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+pl 5
+QUIT
+ lines.log     opened 2003-05-28T11:27:21 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+quit
+ lines.log     opened 2003-05-28T11:29:17 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set plodev /xw
+db
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+quit
+ lines.log     opened 2003-05-28T11:38:35 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+db
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 5
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+pl
+pl 5
+db
+QUIT
+ lines.log     opened 2003-05-28T11:43:58 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+quit
+ lines.log     opened 2003-05-28T11:44:25 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+db
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+pl 5
+lh 5
+ld 5
+quit
+ lines.log     opened 2003-05-28T11:53:33 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+pl 5
+QUIT
+ lines.log     opened 2003-05-28T11:58:11 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+DB
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+QUIT
+ lines.log     opened 2003-05-28T12:00:54 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+lh 5
+quit
+ lines.log     opened 2003-05-28T12:02:30 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+pl 5
+quit
+ lines.log     opened 2003-06-09T14:04:40 
+cmd sp_read
+inp sp_read
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 1
+pl 2
+pl 3
+pl 4
+? cmb
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+pl 5
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+pl 5
+QUIT
+ lines.log     opened 2003-06-09T15:17:51 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+cp 13 2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+cp 13 4
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 1
+pl 1
+quit
+ lines.log     opened 2003-06-10T09:03:00 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 1
+pl 3
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+pl 5
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0.384348708 now   0.384348708Kelvins
+quit
+ lines.log     opened 2003-06-13T15:23:29 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 1
+pl 3
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+pl 5
+? set
+set
+set ypmax 10
+  YPMAX     now   10.
+pl 5
+set ypmin -2
+  YPMIN     now  -2.
+pl 5
+set ypmin -1
+  YPMIN     now  -1.
+pl 5
+set plotps
+  PLOTPS    now ps/plot962_135.ps
+pl 5
+set plotps off
+  PLOTPS    now off
+pl 5
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+db
+pl 5
+quit
+ lines.log     opened 2003-06-13T15:37:03 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+#
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+db
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+QUIT
+ lines.log     opened 2003-06-13T15:44:04 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+#
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+DB
+CMB 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+QUIT
+ lines.log     opened 2003-06-13T15:45:30 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+#
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+pl 5
+[B[B
+quit
+ lines.log     opened 2003-06-13T15:48:52 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+#
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+db
+cmb 3 1 5
+  mem  3 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  3 RMS noise was   0. now   0.384348708Kelvins
+pl 5
+set ypmax 10
+  YPMAX     now   10.
+set ypmin -1
+  YPMIN     now  -1.
+pl 5
+set plotps ps/plot962_315.ps
+  PLOTPS    now ps/plot962_315.ps
+? set
+set plotps plot962_315.ps/ps
+  PLOTPS    now plot962_315.ps/ps
+pl 5
+set plotps off
+  PLOTPS    now off
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+pl 5
+set
+set colour
+  COLOUR    now  2
+pl 5
+set plotps plot962_135.ps/ps
+  PLOTPS    now plot962_135.ps/ps
+pl 5
+cmb 3 1 7
+  mem  3 copied to  7
+  folding mem  7: offset is  512 pixels
+  Mem  3 RMS noise was   0.384348708 now   0.384348708Kelvins
+set colour
+  COLOUR    now  3
+pl 7 add
+? wa
+wa 5 spectrum962_135.asc
+  mem 5 write to 5 as spectrum  1
+wa spectrum962_315.asc 7
+  mem 7 write to spectrum962_315.asc as spectrum  1
+ra spectrum962_135.asc
+  read spectrum962_135.asc from  1 to  1 in mem  12 add= T
+  warning: TELLONG=  27.6849995 but TELESCOP=
+  warning: TELLAT= -25.8859997 but TELESCOP=
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  start new average spectrum in mem  12
+  mem  11 copied to  12
+set colour
+  COLOUR    now  4
+pl
+ra spectrum962_315.asc 1 1 new
+  read spectrum962_315.asc from  1 to  1 in mem  12 add= T
+  warning: TELLONG=  27.6849995 but TELESCOP=
+  warning: TELLAT= -25.8859997 but TELESCOP=
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  start new average spectrum in mem  12
+  mem  11 copied to  12
+set colour
+  COLOUR    now  5
+pl
+db
+lh
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   5 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+   7 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  4 of  13 memories are empty
+lh 1
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   2 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   3 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   4 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+   5 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+   7 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  11 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  12 G9.62+0.20                         0  6668 1.00   0   0 0 1  0  1   0.0 Ke
+  13 G9.62+0.20                         0  6668 1.00   0   0 0 0  0  1   0.0 Ke
+  4 of  13 memories are empty
+lm 6
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  1 of  1 memories are empty
+lh 6
+lh 5
+quit
+ lines.log     opened 2003-07-03T08:22:03 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 1, rcp to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp to memory 3, rcp to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+#
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 1
+?
+quit
+ lines.log     opened 2003-07-03T08:23:39 
+? rncsv
+? cmb
+quit
+ lines.log     opened 2003-07-03T08:44:43 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set colour 1
+  COLOUR    now  1
+pl 5
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.455977982Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5 add
+set
+set colour
+  COLOUR    now  3
+pl 5 add
+quit
+ lines.log     opened 2003-07-03T08:45:52 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.455977982Kelvins
+set colour 3
+  COLOUR    now  3
+pl 5 add
+quit
+ lines.log     opened 2003-07-03T08:46:10 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.455977982Kelvins
+set colour 3
+  COLOUR    now  3
+pl 6 add
+quit
+ lines.log     opened 2003-07-03T08:49:55 
+  Input from sp_read
+# read in nccs csv bandpass 1
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum2.csv
+  read NCCS csv file spectrum2.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.13968405E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.37820499Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.455977982Kelvins
+set colour 3
+  COLOUR    now  3
+pl 6 add
+# write out the lcp spectrum in ascii file format for easy adding
+wa 5 spectrum_lcp.asc
+ lines.log     opened 2003-07-04T09:05:09 
+quit
+ lines.log     opened 2003-07-04T13:42:20 
+? rncsv
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  0 valid values were read
+quit
+ lines.log     opened 2003-07-04T13:46:45 
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  0 valid values were read
+lh
+db
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  0 valid values were read
+quit
+ lines.log     opened 2003-07-04T13:51:41 
+RNCSV spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 ORION A                            0  6676 4.00   0   0 0 0  0  1   0.0 Ke
+  12 ORION A                            0  6676 4.00   0   0 0 0  0  1   0.0 Ke
+  13 ORION A                            0  6676 4.00   0   0 0 0  0  1   0.0 Ke
+  10 of  13 memories are empty
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl 12
+set colour 4
+  COLOUR    now  4
+pl 13 add
+lh 12
+db
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2003-07-04T14:09:59 
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+lh 13
+quit
+ lines.log     opened 2003-07-04T14:21:35 
+r ncsv spectrum3.csv
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+lh 13
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+set colour 3
+  COLOUR    now  3
+pl 13
+set colour 2
+  COLOUR    now  2
+pl 12 add
+quit
+ lines.log     opened 2003-07-04T14:26:16 
+  Input from sp34_read
+# read in nccs csv bandpass 1
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum4.csv
+  read NCCS csv file spectrum4.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00013817277
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.110112816Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.133004633Kelvins
+set colour 3
+  COLOUR    now  3
+pl 6 add
+# write out the lcp spectrum in ascii file format for easy adding
+wa 5 spectrum_lcp.asc
+  mem 5 write to 5 as spectrum  1
+# write out the rcp spectrum in ascii file format for easy adding
+wa 6 spectrum_rcp.asc
+  mem 6 write to 6 as spectrum  1
+? wa
+quit
+ lines.log     opened 2003-07-04T14:28:56 
+  Input from sp34_read
+# read in nccs csv bandpass 1
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum4.csv
+  read NCCS csv file spectrum4.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00013817277
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.110112816Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+pause
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.133004633Kelvins
+set colour 3
+  COLOUR    now  3
+pl 6
+pause
+quit
+ lines.log     opened 2003-07-04T14:47:00 
+  Input from sp34_read
+# read in nccs csv bandpass 1
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum4.csv
+  read NCCS csv file spectrum4.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00013817277
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.110112816Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+pause
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.133004633Kelvins
+set colour 3
+  COLOUR    now  3
+pl 6
+pause
+# write out the lcp spectrum in ascii file format for easy adding
+wa spectrum_lcp.asc 5
+  mem 5 write to spectrum_lcp.asc as spectrum  1
+# write out the rcp spectrum in ascii file format for easy adding
+wa spectrum_rcp.asc 6
+  mem 6 write to spectrum_rcp.asc as spectrum  1
+quit
+ lines.log     opened 2003-07-04T14:48:54 
+  Input from sp34_read
+# read in nccs csv bandpass 1
+rncsv spectrum3.csv
+  read NCCS csv file spectrum3.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.000119321839
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 1, rcp bandpass to memory 2
+cp 12 1
+  mem  12 copied to  1
+cp 13 2
+  mem  13 copied to  2
+# read in nccs csv bandpass 2
+rncsv spectrum4.csv
+  read NCCS csv file spectrum4.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   0.00013817277
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+# copy lcp bandpass to memory 3, rcp bandpass to memory 4
+cp 12 3
+  mem  12 copied to  3
+cp 13 4
+  mem  13 copied to  4
+# set the screen plotting device
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+# combine the lcp bandpasses to produce the lcp spectrum in memory 5
+cmb 1 3 5
+  mem  1 copied to  5
+  folding mem  5: offset is  512 pixels
+  Mem  1 RMS noise was   0. now   0.110112816Kelvins
+set colour 2
+  COLOUR    now  2
+pl 5
+pause
+# combine the rcp bandpasses to produce the rcp spectrum in memory 5
+cmb 2 4 6
+  mem  2 copied to  6
+  folding mem  6: offset is  512 pixels
+  Mem  2 RMS noise was   0. now   0.133004633Kelvins
+set colour 3
+  COLOUR    now  3
+pl 6
+pause
+# write out the lcp spectrum in ascii file format for easy adding
+wa spectrum_lcp.asc 5
+  mem 5 write to spectrum_lcp.asc as spectrum  2
+# write out the rcp spectrum in ascii file format for easy adding
+wa spectrum_rcp.asc 6
+  mem 6 write to spectrum_rcp.asc as spectrum  2
+quit
+ lines.log     opened 2003-07-16T12:48:49 
+rncsv spectrum1.csv
+  read NCCS csv file spectrum1.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.20374434E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 G9.62+0.20          2003-05-16     0  6668 1.00   0   0 0 0  0  1   0.0
+  12 G9.62+0.20          2003-05-16     0  6668 1.00   0   0 0 0  0  1   0.0
+  13 G9.62+0.20          2003-05-16     0  6668 1.00   0   0 0 0  0  1   0.0
+  10 of  13 memories are empty
+lh
+quit
+ lines.log     opened 2004-01-15T11:42:41 
+quit
+ lines.log     opened 2004-01-15T14:40:53 
+jdp .1 .2 .3 -.4
+jdp show
+  Gain correction coefficients:
+ HA**0   0.10000000E+00
+ HA**1   0.20000000E+00
+ HA**2   0.30000000E+00
+ HA**3  -0.40000000E+00
+quit
+ lines.log     opened 2004-01-15T14:42:36 
+jdp .1 -.2 .3 -.4 .5 -.6 .7 -.8 .9
+jdp .1 -.2 .3 -.4
+jdp show
+  Gain correction coefficients:
+ JD-2440000**0   0.10000000E+00
+ JD-2440000**1  -0.20000000E+00
+ JD-2440000**2   0.30000000E+00
+ JD-2440000**3  -0.40000000E+00
+ls
+quit
+ lines.log     opened 2004-09-09T14:25:25 
+?
+pc 3.6 2.1 0 0 6.2 1
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+     -97.2   -53.9  -140.5         0.0  5391.0 -5391.0     1000.
+  Use NORTH + SOUTH  =    -97.2 mdeg
+  Use EAST + WEST    =      0.0 mdeg
+                                                                   
+  Amplitude correction =  1.026542
+  peak intensity if corrected =  6.364558
+  If beam offsets are in error:
+    New HA  offset = old +  0.000 deg
+    New Dec offset = old +  0.097 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000   0.000   0.097 1.026542
+db
+pc 3.6 2.1 0 0 6.2 1
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+     -97.2   -53.9  -140.5         0.0  5391.0 -5391.0     1000.
+  Use NORTH + SOUTH  =    -97.2 mdeg
+  Use EAST + WEST    =      0.0 mdeg
+                                                                   
+  Amplitude correction =  1.026542
+  peak intensity if corrected =  6.364558
+  If beam offsets are in error:
+    New HA  offset = old +  0.000 deg
+    New Dec offset = old +  0.097 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000   0.000   0.097 1.026542
+db
+quit
+ lines.log     opened 2004-09-09T15:10:26 
+pc 3.6 2.1 0 0 6.2 2
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+    -194.4  -107.9  -280.9         0.0 10781.9-10781.9     2000.
+  Use NORTH + SOUTH  =   -194.4 mdeg
+  Use EAST + WEST    =      0.0 mdeg
+                                                                   
+  Amplitude correction =  1.026542
+  peak intensity if corrected =  6.364558
+  If beam offsets are in error:
+    New HA  offset = old +  0.000 deg
+    New Dec offset = old +  0.194 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000   0.000   0.194 1.026542
+quit
+ lines.log     opened 2004-11-18T11:16:58 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+spl
+  data - splines stored in mem  12
+quit
+ lines.log     opened 2004-11-18T11:41:26 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+spl
+  data - splines stored in mem  12
+quit
+ lines.log     opened 2004-11-18T12:07:35 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+spl
+  data - splines stored in mem  12
+db
+spl
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 oh357 channel 54                   0     0 0.00   0   0 0 0  0  1   0.0
+  12 oh357 channel 54                   0     0 0.00   0   0 0 0  0  1   0.0
+  11 of  13 memories are empty
+cp 11 12
+  mem  11 copied to  12
+pl
+spl
+pl
+quit
+ lines.log     opened 2004-11-18T12:21:40 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+db
+spl
+QUIT
+ lines.log     opened 2004-11-18T12:32:27 
+SET PLOTDEV /XW
+  PLOTDEV   now /XW                 cursor=YES
+RMCA channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 1 caption L 2 colhdr L 1 to mem 12
+   stop read: line  1 non-numeric:oh357 channel 54
+  0 valid values were read
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+db
+spl
+quit
+ lines.log     opened 2004-11-18T13:01:41 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+spl
+  data - splines stored in mem  12
+pl
+exit
+quit
+ lines.log     opened 2004-11-19T11:28:19 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+cp 12 1
+  mem  12 copied to  1
+spl
+  data - splines stored in mem  12
+cp 12 2
+  mem  12 copied to  2
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 oh357 channel 54                   0     0 0.00   0   0 0 0  0  1   0.0
+   2 oh357 channel 54                   0     0 0.00   0   0 0 0  0  1   0.0
+  11 oh357 channel 54                   0     0 0.00   0   0 0 0  0  1   0.0
+  12 oh357 channel 54                   0     0 0.00   0   0 0 0  0  1   0.0
+  9 of  13 memories are empty
+rmca channel56
+  read channel56 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  251 valid values were read
+  data spacing check: rmsdev from fit =   80.4744525
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+cp 12 3
+  mem  12 copied to  3
+spl
+  data - splines stored in mem  12
+quit
+ lines.log     opened 2004-11-19T11:37:59 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca channel54
+  read channel54 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  262 valid values were read
+  data spacing check: rmsdev from fit =   80.2366246
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+spl
+cp 12 1
+  mem  12 copied to  1
+pl
+spl
+  data - splines stored in mem  12
+cp 12 2
+  mem  12 copied to  2
+pl 2
+pl 1
+rmca channel56
+  read channel56 Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  251 valid values were read
+  data spacing check: rmsdev from fit =   80.4744525
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+cp 12 3
+  mem  12 copied to  3
+spl
+  data - splines stored in mem  12
+cp 12 4
+  mem  12 copied to  4
+pl 1
+pl 2
+set
+set colour 2
+  COLOUR    now  2
+pl 3 add
+pl 4 add
+pl 2
+set colour 3
+  COLOUR    now  3
+pl 4 add
+set plotps ch54-56.ps/cps
+  PLOTPS    now ch54-56.ps/cps
+pl 3
+set plotps off
+  PLOTPS    now off
+set plotps ch54-56.ps/cps
+  PLOTPS    now ch54-56.ps/cps
+pl 2
+set colour 2
+  COLOUR    now  2
+pl 4 add
+set plotps off
+  PLOTPS    now off
+sy gv ch54-56.ps
+set
+set caption
+  CAPTION   now channels 54 and 56 - fitted splines
+pl 2
+? pl
+pl 2 cap
+set plotps ch54-56.ps/cps
+  PLOTPS    now ch54-56.ps/cps
+pl 2 cap
+set colour 3
+  COLOUR    now  3
+pl 4 add cap
+set plotps off
+  PLOTPS    now off
+sy gv ch54-56.ps &
+quit
+ lines.log     opened 2004-12-17T13:58:38 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  58 valid values were read
+  data spacing check: rmsdev from fit =   0.288599033
+  data are IRREGULARLY spaced
+  mem  11 copied to  12
+pl
+ld
+rmca
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+pl
+mf
+quit
+ lines.log     opened 2004-12-17T14:03:05 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+pl
+mf
+  filtered data stored in mem  12
+quit
+ lines.log     opened 2004-12-17T14:07:15 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+pl
+mf
+  filtered data stored in mem  12
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 median_filt_data                   0     0 0.00   0   0 0 0  0  1   0.0
+  12 median_filt_data                   0     0 0.00   0   0 0 0  0  1   0.0
+  11 of  13 memories are empty
+cp 11 1
+  mem  11 copied to  1
+pl 1
+quit
+ lines.log     opened 2004-12-17T14:10:52 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+pl
+mf
+cp 12 1
+  mem  12 copied to  1
+mf 2
+  filtered data stored in mem  12
+cp 1 12
+  mem  1 copied to  12
+mf
+ lines.log     opened 2004-12-17T14:52:21 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+pl
+db
+mf
+quit
+ lines.log     opened 2004-12-17T15:56:22 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+cp 12 1
+  mem  12 copied to  1
+pl
+db
+mf
+ lines.log     opened 2004-12-17T16:00:21 
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+db
+mf
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+mf
+  filtered data stored in mem  12
+quit
+ lines.log     opened 2004-12-20T09:24:05 
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 1 caption L 0 colhdr L 0 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+db
+mf
+mf
+  filtered data stored in mem  12
+quit
+ lines.log     opened 2004-12-20T09:43:34 
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+mf
+  filtered data stored in mem  12
+pl
+quit
+ lines.log     opened 2004-12-20T10:04:01 
+rmca median_filt_data
+  read median_filt_data Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+pl
+mf
+  filtered data stored in mem  12
+pl
+quit
+ lines.log     opened 2004-12-20T10:28:33 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+rmca ../doc/median_filt_data
+  read ../doc/median_filt_data Xcol=  1 Ycol=  2 data from L 3 caption L 1 colhdr L 2 to mem 12
+  59 valid values were read
+  data spacing check: rmsdev from fit =   0.
+  mem  11 copied to  12
+pl
+cp 12 4
+  mem  12 copied to  4
+mf 0 4
+mf 2 4
+  filtered data stored in mem  4
+pl 4
+quit
+ lines.log     opened 2004-12-20T11:21:36 
+he
+he
+ 
+db
+he
+he
+quit
+ lines.log     opened 2004-12-20T11:23:30 
+db
+he
+he
+he
+he
+ 
+quit
+ lines.log     opened 2004-12-20T11:39:36 
+he
+quit
+ lines.log     opened 2004-12-21T14:54:04 
+quit
+ lines.log     opened 2004-12-21T14:56:06 
+he
+exit
+quit
+ lines.log     opened 2005-03-31T15:11:49 
+quit
+ lines.log     opened 2005-03-31T15:37:33 
+pc2 .6 .4 .35 .65 1 .05
+ lines.log     opened 2005-03-31T15:41:17 
+db
+pc2 6 4 3.5 6.5 1 .5
+ lines.log     opened 2005-03-31T15:49:51 
+sp2 6 4 3.5 6.5 1.0456 .5432 1
+quit
+ lines.log     opened 2005-03-31T15:50:44 
+pc2 6 4 3.5 6.5 1.0456 .5432 1
+ lines.log     opened 2005-03-31T15:53:59 
+pc2 6 4 3.5 6.5 1.0456 .5432 1
+ lines.log     opened 2005-03-31T15:54:24 
+pc2 6 4 3.5 6.5 10 .3 1
+quit
+ lines.log     opened 2005-04-01T08:41:54 
+pc2 6 4 3.5 6.5 10 .3 1
+quit
+ lines.log     opened 2005-04-01T09:05:45 
+pc2 3 8 2 9 10 .2 1
+quit
+ lines.log     opened 2005-04-01T09:59:58 
+help
+ 
+quit
+ lines.log     opened 2005-10-19T11:52:27 
+lines
+ls
+quit
+ lines.log     opened 2006-07-04T14:14:39 
+ls
+pssf
+  line  1Year    Day     JD              rel eff PSS
+  4 valid values were read
+db
+pssf
+  line  1Year    Day     JD              rel eff PSS
+  4 valid values were read
+QUIT
+ lines.log     opened 2006-07-04T14:23:34 
+db
+pssf pss1720lcp.txt 3 4
+quit
+ lines.log     opened 2006-07-04T14:24:09 
+db
+pssf pss1720lcp.txt 3 4
+  line  1: Year    Day     JD              rel eff PSS
+  6 valid values were read
+quit
+ lines.log     opened 2006-07-04T14:31:40 
+db
+pssf pss1720lcp.txt 3 4
+  line  1: Year    Day     JD              rel eff PSS
+  5 valid values were read
+   JD        PSS (Jy/K)
+   3.39105301  2.05855513
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+QUIT
+ lines.log     opened 2006-07-04T14:45:29 
+db
+pssf
+  line  1: Year    Day     JD              rel eff PSS
+  32 valid values were read
+   JD        PSS (Jy/K)
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+quit
+ lines.log     opened 2006-07-04T14:47:17 
+pssf
+  line  1: Year    Day     JD              rel eff PSS
+  32 valid values were read
+   JD            PSS (Jy/K)
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+QUIT
+ lines.log     opened 2006-07-04T14:49:26 
+pssf
+  32 valid values were read
+   JD            PSS (Jy/K)
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+pssf pss1720lcp.txt 3 4
+  32 valid values were read
+   JD            PSS (Jy/K)
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+db
+pssf pss1720lcp.txt 3 4
+  32 valid values were read
+   JD            PSS (Jy/K)
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+quit
+ lines.log     opened 2006-07-04T14:57:08 
+db
+pssf
+  32 valid values were read
+   JD            PSS (Jy/K)
+   2447893.  11.
+   2451709.  10.9
+   2451720.  11.09
+   2451730.  11.09
+   2451744.  11.17
+   2451759.  11.04
+   2451787.  11.2
+   2451800.  11.26
+   2451831.  11.45
+   2451880.  11.43
+   2451902.  11.29
+   2451924.  11.22
+   2451959.  11.17
+   2451973.  11.09
+   2451999.  11.08
+   2452021.  10.97
+   2452059.  11.24
+   2452079.  11.46
+   2452113.  11.72
+   2452126.  11.69
+   2452130.  11.74
+   2452137.  11.54
+   2452141.  11.64
+   2452147.  11.7
+   2452169.  11.63
+   2452177.  11.55
+   2452185.  11.58
+   2452189.  11.42
+   2452193.  11.16
+   2452214.  11.1
+   2452223.  11.2
+   2452287.  1.
+quit
+ lines.log     opened 2007-02-20T10:31:18 
+ra spectrum_lcp.asc 1 1 new
+  read spectrum_lcp.asc from  1 to  1 in mem  12 add= T
+  warning: TELLONG=  27.6849995 but TELESCOP=
+  warning: TELLAT= -25.8859997 but TELESCOP=
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  11 ORION A                            0  6676 4.00   0   0 0 1  0  1   0.0 Ke
+  start new average spectrum in mem  12
+  mem  11 copied to  12
+quit
+ lines.log     opened 2007-10-03T09:44:42 
+?
+quit
+ lines.log     opened 2009-06-17T14:18:48 
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+quit
+ lines.log     opened 2010-01-14T09:29:11 
+?
+?
+quit
+s.log     opened 2010-01-14T09:31:41 
+pc2
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+      -3.7     3.8   -11.3        17.5    22.5    12.4      250.
+  Use NORTH + SOUTH  =     -3.7 mdeg
+  Use EAST + WEST    =     17.5 mdeg
+                                                                   
+  Amplitude correction =  1.014233
+  peak intensity if corrected =      21.424104
+  If beam offsets are in error:
+    New HA  offset = old + -0.017 deg
+    New Dec offset = old +  0.004 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000  -0.017   0.004 1.014233
+ Pointing-for-Object    DateObs           PCHAmdeg PCDCmdeg PointCor
+                                          -16.747    3.376  1.000000
+ Illegal POINTCOR=    0.979420 suggest using PC instead
+pc2
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+     -92.6   -19.7  -165.5      -196.1   -84.0  -308.2     1000.
+  Use NORTH + SOUTH  =    -92.6 mdeg
+  Use EAST + WEST    =   -196.1 mdeg
+                                                                   
+  Amplitude correction =  1.139320
+  peak intensity if corrected =      22.082414
+  If beam offsets are in error:
+    New HA  offset = old +  0.196 deg
+    New Dec offset = old +  0.093 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000   0.196   0.093 1.139320
+ Pointing-for-Object    DateObs           PCHAmdeg PCDCmdeg PointCor
+                                          143.841   77.592  1.000000
+ Illegal POINTCOR=    0.970813 suggest using PC instead
+quit
+ lines.log     opened 2011-06-22T09:23:43 
+pc
+  Inputs:     HPN          HPS          HPE          HPW           On
+   1-D Gaussian fits to HPN-On-HPS, HPE-On-HPW:
+            1.000000     2.000000     1.200000     1.700000     3.100000
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+     125.0   158.1    91.9        62.8    92.3    33.3     1000.
+  Use NORTH + SOUTH  =    125.0 mdeg
+  Use EAST + WEST    =     62.8 mdeg
+                                                                   
+  Amplitude correction =  1.055760
+  peak intensity if corrected =       3.272855
+  If beam offsets are in error:
+    New HA  offset = old + -0.063 deg
+    New Dec offset = old + -0.125 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000  -0.063  -0.125 1.055760
+quit
+ lines.log     opened 2011-06-22T09:26:45 
+pc 4.5 5.4 6.7 3.6 13.4 1
+  Inputs:     HPN          HPS          HPE          HPW           On
+            4.500000     5.400000     6.700000     3.600000    13.400000
+   1-D Gaussian fits to HPN-On-HPS, HPE-On-HPW:
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+      32.9   143.6   -77.8      -112.0     0.0  -224.0     1000.
+  Use NORTH + SOUTH  =     32.9 mdeg
+  Use EAST + WEST    =   -112.0 mdeg
+                                                                   
+  Amplitude correction =  1.038512
+  peak intensity if corrected =      13.916067
+  If beam offsets are in error:
+    New HA  offset = old +  0.112 deg
+    New Dec offset = old + -0.033 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+                                12.000   0.000   0.000   0.112  -0.033 1.038512
+quit

@@ -1,0 +1,45 @@
+<pre>
+
+WMCA [to file] [from memory]
+
+Write spectrum to multi-column ascii file for import to spreadsheets
+or plotting programs.
+
+The first line of the output file contains :
+# to make "grace" or "xmgr" ignore the line
+the name of the object, 
+the date of the observation,
+the intensity units,
+the RA and DEC of the equinox, and
+the equinox of the coordinates
+.
+
+The second line of the file contains :
+# to make "grace" or "xmgr" ignore the line
+the column headers
+
+The #'s noted above can be edited out if desired for programs less
+inflexible than "grace" or "xmgr" when importing data
+
+The third and subsequent lines of the file contain either the 
+velocity in km/s and spectrum intensity, or
+the channel number and fourier transform intensity.
+
+Files are always appended to, not over-written.
+
+If the output file name is not given, the user is prompted for it.
+A filename suffix of .MCA should be used.
+
+If the memory is not given as a parameter, the set memory is used.
+
+Sample output file:
+
+ # 12.89+0.49 on 2000-01-30T12:15:12 in Jy at RA  272.23 DEC -17.537 of 1950.
+ # VELO-LSR KM/S    FLUX_DENSITY
+   35.061000        -1.269760
+   35.122541        -0.471342
+   35.184082         1.686060
+   35.245623         0.990745
+   etc.
+
+</pre>

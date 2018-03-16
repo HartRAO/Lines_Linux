@@ -1,0 +1,33 @@
+<pre>
+
+LM [first memory] [last memory]
+
+Summarize the contents of all non-empty memories.
+
+If the first memory only is specified, it alone is listed.
+
+typical output is:
+
+Mem Object          Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  7 M17            1996-10-29 19536  4874 2.56   0  -4 0 0  3  1   0.0 K 
+  8 M17            1996-10-29 19536  4874 2.56   0  -4 0 0  3  1   0.0 K 
+  6 of  8 memories are empty
+
+where:
+
+Mem	memory number in lines
+Object	name of the object
+Date	date of the observation, YEAR-MONTH-DAY
+Scan	"Scan" or observation number
+Freq	Line rest frequency in MHz to nearest whole number
+BW	original bandwidth of the spectrum, in MHz
+Pol	polarization (0=unknown)
+HA	Hour Angle of the observation, in degrees
+S	smoothing applied to the spectrum, 0 = none
+F	has frequency-shifted spectrum been folded? 0 = no, 1 = yes
+Py	order of polynomial fitted to the spectrum baseline
+Av	number of spectra that have been averaged to form this one
+PSS	point source sensitivity in Jy/K used to scale spectrum to Jy
+BU	brightness units of the data
+
+</pre>

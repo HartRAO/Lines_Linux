@@ -1,0 +1,14 @@
+</pre>
+
+RMS [memory]
+
+   Calculate theoretical rms noise of the spectrum in the specified memory.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+   example:
+   
+   rms 3
+
+</pre>
+  

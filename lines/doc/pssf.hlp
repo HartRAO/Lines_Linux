@@ -1,0 +1,85 @@
+PSSF [from file] [JD col] [PSS col] [dPSS/dT col]
+
+Read JD, PSS starting at JD, and dPSS/dT from a multi-column ascii file
+
+The purpose is to read in values of the Point Source Sensitivity starting at
+the specified Julian Dates.  These are determined from calibrator
+observations, and would be for a specific telescope, frequency and
+polarization.
+
+After reading in the table of values, they are used to convert spectra that
+are in units of Kelvins to flux densities in units of Janskys, using the PSS
+command.
+
+If parameters are not given as part of the command string, the user is
+prompted for the three parameters.
+
+The first parameter [from file] is the name of the file to read from.  
+
+The second parameter [JD col] is the column number for the JD.  
+
+Note that to avoid any ambiguity, the full Julian Date (JD) is used, not the
+Modified Julian Date (MJD = JD - 2400000.5) .
+
+The third parameter [PSS col] is the column number for PSS in Jy/K
+
+The fourth parameter [dPSS/dT] is the column number of the gradient in PSS
+(if any) in Jy/K/day.  This is applied in the following way:
+
+PSS(JD_of_scan) = PSS_at_JD_start + dPSS/dT*(JD_of_scan - JD_start)
+
+Where JD_of_scan is the JD when the data were obtained
+      JD_start is the JD at the start of the epoch for which it is valid
+
+Thus each PSS in the file should be the PSS of the JD at which it is
+applicable, and not the PSS at JD = 0.
+
+The files read by PSSF can be space, comma or tab delimited.
+Data can be read from tables up to 50 columns wide.
+Up to 200 JD, PSS, dPSS/dT values can be read.  If this number needs to be
+increased, contact the author.
+Lines containing non-numeric data such as column headers should be ignored
+by the routine, and only lines with data in numeric format should be read.
+
+If the spectra to which you are applying the PSS values have Julian dates
+later than the last Julian date at which you have determined the PSS,
+then to keep the (very simple) PSS routine happy, the file read by PSSF needs 
+a terminating Julian date added at the end that is greater than the last 
+Julian date in the spectra to which the PSS is going to be applied.  
+In this case, set the PSS and dPSS/dT accompanying the Julian date to zero.
+
+
+example of usage
+   
+lines> pssf pss6668lcp.txt 3 4
+
+Refer to the help on PSS to see how this is then applied.
+
+sample PSS file 1:
+
+Year    Day     JD              PSS_LCP
+1990      1     2447893         11.00
+2000    165     2451709         10.90
+2000    176     2451720         11.09
+2000    186     2451730         11.09
+2000    200     2451744         11.17
+2000    215     2451759         11.04
+2000    243     2451787         11.20
+2000    256     2451800         11.26
+2000    287     2451831         11.45
+2000    336     2451880         11.43
+2000    358     2451902         11.29
+2001     14     2451924         11.22
+2001     49     2451959         11.17
+
+Sample PSS file 2:
+
+JD           PSS_12178_LCP
+2450000.0123 5.51
+2450257.3334 5.06
+2450264.6666 6.36
+2450304.1321 6.78
+2450350.4447 6.13
+2450402.5558 6.61
+
+(Note that the data in the above examples is fake.)

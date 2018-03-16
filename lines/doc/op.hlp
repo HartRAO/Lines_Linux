@@ -1,0 +1,14 @@
+
+OP [memory 1] [operator] [memory 2]
+
+   Add subtract multiply or divide the contents of the first memory by the
+   second.
+
+   If all three parameters are not specified the user is prompted for them.
+
+   The result is stored in memory 1.
+
+   example: 
+
+   op 1 + 2
+

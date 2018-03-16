@@ -1,0 +1,32 @@
+
+ATM [memory]
+
+   correct the spectrum for atmospheric absorption
+
+   At long wavelnghts (restfreq < 10GHz) this uses the SLAP formula:  
+
+      ABSORB = 1D0 / DEXP(0.0069D0*(1D0/DSIN(ALTRAD)-1D0))
+
+   Around the water vapour frequency of 22.2GHz the SKA correction
+   making use of the atmospheric precipitable water vapour [PWV, mm] is applied
+   This can be calculated approxiamtely from the ground temperature and humidity
+   but is better calculated from the GPS total zenith delay corrected for atmospheric pressure
+   for HartRAO this can be downloaded from SUOMINET
+   
+   The correction calculated for elevation  / altitude of
+   the antenna at the middle of the observation is applied,
+   using the housekeeping information with the spectrum.
+
+   If a correction has already been applied to the spectrum
+   this will be reversed before the new correction is applied.
+
+   The atmospheric correction should be applied to individual spectra, 
+   not average spectra.
+
+   To set the PWV for the atmospheric correction, use the SET command:
+
+SET PWV [value]
+
+   e.g.
+
+SET PWV 27.3

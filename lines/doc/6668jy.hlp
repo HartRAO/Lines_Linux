@@ -1,0 +1,56 @@
+6668JY [memory]
+   convert 6668 MHz CH3OH spectrum from Kelvin to Jansky, 
+   using built in table of Point Source Sensitivity as a function of date
+
+   This routine automatically applies the appropriate point source
+   sensitivity for the period of the observation to spectra obtained at
+   6668 MHz.
+
+   The calibration is for LCP spectra, scaled as though the source is
+   unpolarised, to represent the total intensity.
+
+   If the memory is not specified the default set memory is used.
+
+   known spectra sensitivity changes from HartRAO dish surface upgrade
+   derived from interpolating 3.5 and 6cm continuum calibrators
+C
+C       change takes effect at mid-day
+C
+C     Year      Day     JD              rel eff PSS
+C
+C 01    1990      1     2447893         0.999   15.72 nominal start
+C 02    2000    165     2451709         1.013   15.50
+C 03    2000    176     2451720         0.996   15.76
+C 04    2000    186     2451730         0.999   15.72
+C 05    2000    200     2451744         0.988   15.89
+C 06    2000    215     2451759         0.963   16.30
+C 07    2000    243     2451787         0.962   16.32
+C 08    2000    256     2451800         0.963   16.30
+C 09    2000    287     2451831         0.952   16.49
+C 10    2000    336     2451880         0.954   16.46
+C 11    2000    358     2451902         0.964   16.29
+C 12    2001     14     2451924         0.977   16.07
+C 13    2001     49     2451959         0.965   16.27
+C 14    2001     63     2451973         0.964   16.29
+C 15    2001     89     2451999         0.990   15.86
+C 16    2001    111     2452021         0.989   15.87
+C 17    2001    149     2452059         0.966   16.25
+C 18    2001    169     2452079         0.972   16.15
+C 19    2001    203     2452113         0.956   16.42
+C 20    2001    216     2452126         0.932   16.85
+C 21    2001    220     2452130         0.995   15.78
+C 22    2001    227     2452137         0.970   16.19
+C 23    2001    231     2452141         0.961   16.34
+C 24    2001    237     2452147         0.941   16.68
+C 25    2001    259     2452169         0.953   16.47
+C 26    2001    267     2452177         0.971   16.17
+C 27    2001    275     2452185         0.965   16.27
+C 28    2001    279     2452189         0.989   15.87
+C 29    2001    283     2452193         1.015   15.47
+C 30    2001    304     2452214         1.040   15.08
+C 31    2001    313     2452223         1.031   15.23
+C 32    2002     12     2452287         1.055   14.88
+C 33    2002     36     2452311         1.027   15.29
+C 34    2002     48     2452323         1.021   15.38
+C 35    2010      1     2455198         1.021   15.38 nominal end
+C

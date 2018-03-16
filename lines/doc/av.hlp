@@ -1,0 +1,11 @@
+
+AV [from memory] [with memory]
+
+   Combine spectra from specified memory with average in second memory.
+
+   If the memories are not specified the user is prompted for them.
+
+   example:
+   
+   AV 1 2
+   

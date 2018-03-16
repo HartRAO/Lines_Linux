@@ -1,0 +1,122 @@
+Lines subroutines
+=================
+lines.f	        main segment, calls lineinit then command loop
+lines.inc	include file defines common blocks 
+aitov.f	        calculate velocity for given spectrum array index
+altcalc.f       calculate the altitude/elevation of the telescope
+alterdat.f   AD selectively alter data
+arms.f      RMS calculate theoretical rms noise in spectrum
+ascfilav.f  RAV read spectra from ascii file and average within interval
+ascfilin.f   RA set up multiple reads from ascii file and averaging
+atmos.f     ATM correct for atmospheric attenuation using SLAP formula
+azaltg.f	calculate azimuth and altitude from Latitude, ST, RA, Dec
+b50tog.f	convert B1950 equatorial coordinates to Galactic
+b50toj20.f	convert to B1950 RA DEC to J2000 RA DEC
+cmdflopn.f  INP open an input command file
+cmdget.f        get command from user or file
+cmdparse.f      separate out command parameters from input string
+cmdselct.f      select the command to execute by its mnemonic
+commalbl.f      extract column header from comma-delim multicol ascii file
+coordcnv.f      ensure that both equatorial and galactic coords are present
+date_obs2jd.f	convert date in fits format string to Julian Date
+dm2doy.f        convert day and month to day of year 
+dtdms.f         convert real*8 dec degrees to int deg, int mins, real*8 secs
+dthms.f	        convert real*8 dec degrees to int hrs, int mins, real*8 secs
+envval.f        get value of 'LINES_' environment parameter
+er_close.f      print error ios closing file
+er_eof.f        print file ends after spectrum nspec
+er_exist.f      print file not found message
+er_open.f       print error ios opening file
+er_read.f       print error ios reading record irec in file
+er_write.f      print error ios writing to file
+fdel.f	        part of multiple gaussian fit routines, called by LGFIT2
+fixdown.f    FD fix right half of freq-shifted spectra before 1990 day 338
+fold.f       SF shift and fold frequency-shifted spectra
+fors1.f	        fft of one-dimensional, real, symmetric data
+four1.f	        one-dimensional complex FFT of array DATA
+fxrl1.f	        fix up a real or half-size complex array for FFTing
+gccorr.f     GC apply gain correction to spectrum
+gcparm.f     GCP enter gain curve polynomial coefficients
+getdate.f       get current year month and day - idea from fitsio
+gtob50.f        convert Galactic to B1950 equatorial coordinates
+hamm.f	     HM smooth spectrum with Hamming function
+helpless.f   HE or ? list help from helpfiles using LESS
+j20tob50.f      convert J2000 RA DEC to B1950 RA DEC
+j2000pm.f       create the rotation matrix to reduce coords from J2000 to JD
+j2000pr.f       convert J2000 RA DEC to RA DEC of Julian date epoch
+jd.f		convert UT to JD
+jdcorr.f     JDC apply gain correction as polynomial of JD
+jdparm.f     JDP enter coefficients of polynomial for gain vs JD
+ktojy.f	     JY convert spectrum from Kelvins to Janskys, or change Jy value
+ktojy1720.f  1720JY convert spectrum from K to Jy for 1720 MHz
+ktojy5000.f  5000JY convert spectrum from K to Jy for 5000 MHz
+ktojy6668.f  6668JY convert spectrum from K to Jy for 6668 MHz
+ktojy12178.f 12178JY convert spectrum from K to Jy for 12178 MHz
+lfft4.f	     FT set up FFT of 2*n points of real data
+lgfit2.f        multiple gaussian fitting
+lineinit.f      initialise parameters in the common blocks
+linfit.f        linear regression
+linteg.f    INT line integral calculation for spectra
+lintstat.f      calculate statistics on a line and its integral
+lintwide.f      find where data < fheight, the specified height below the peak
+lipoly.f     PO set up orthogonal polynomial fitting
+lispline.f  SPL fit Bell splines through data
+listdat.f    LD list data array to the screen
+listdir.f    LS list the directory contents
+listasca.f   LA list ascii spectra file to "lines.fla" for auto-processing
+listascf.f   LF list the contents of an ascii spectra file
+listhkp.f    LH list spectrum housekeeping to the screen
+listmem.f    LM summarise the contents of each memory
+lmsp.f	        orthogonal polynomial least squares fitting to  M  points
+locase.f        set characters to lower case in character array
+logfopen.f  LOG open the log write file
+loopcmd.f       execute the commands in the do loop command buffer
+loopparm.f   DO get do loop parameters
+memadd.f     AC add a constant to spectrum
+memav.f	     AV add to average spectrum in memory from another memory
+memclr.f    CLR clear all parameters in a memory
+memcopy.f    CP, MV copy hkeep and spectrum from one memory to another
+memmult.f    MC multiply spectrum by a constant
+memop.f	     OP add subtract multiply or divide data in two memories
+mgfit.f	     GF set up for multiple gaussian fitting using LGFIT2
+mgparm.f     GP get parameters for multiple gaussian fitting
+nchar.f	        find the number of non-blank characters in character array
+ncombine.f  CMB combine bandpass pair from NCCS spectrometer
+offset.f     PC calculate pointing corrections from spectra at HP points
+ohktojy.f  OHJY convert 18cm HBK spectrum to Jy, or change Jy value
+pause.f	  PAUSE let user pause if needed eg to view plots in do loop
+pca.f	    PCA automated calculation of pointing correction
+plconfau.f   PL automatic configuration of PGPLOT (default)
+plscale.f       determine maximum and minimum of autoscaled axis
+plcursps.f  PGC return cursor positions from PGPLOT plot
+plotdata.f   PL plot data on XY plot using PGPLOT
+plscale.f       determine maximum and minimum of autoscaled axis       
+plsetup.f       group of commands for automatic plot
+pltext.f    PTX add text to graph at points marked by user
+poblock.f    PB set velocity limits for polynomial fit to baseline
+qmemused.f      find the number of memories in use
+rdascfl.f    RA	read a spectrum from an ascii spectrum file
+rdmcafl.f  RMCA read X,Y data from a multi-column ascii file
+rdnccscsv RNCSV read CSV file created by FITS2ASC from NCCS fits sp file
+ritov.f	        calculate velocity for given spectrum array real index
+scalprod.f      compute scalar product of two vectors LC / MJG 02/09/94
+setparm.f   SET list or change set parameters
+settcont.f   TC set the continuum antenna temperature and error
+spacelbl.f      extract column header from space-delim multicol ascii file
+stfromjd.f      convert day, month, year + julian date to ST in seconds
+syscmd.f     SY send user command to system
+tmblock.f   TMV set velocity ranges for writing a time series file
+tsmidha.f  TSHA correct Tsys from end- to mid-obs ZA for data < 1990d353
+tsysch.f     TS correct Tsys and dTsys eg for OHIR data
+upcase.f        set characters to upper case in character array
+vellim.f        list the velocity and array index limits for the spectrum
+velwin.f     VW apply a velocity window to the spectrum
+vh.f         VH find height at specified velocity
+vtoai.f	        calculate spectrum array index from given velocity
+vtori.f	        calculate spectrum array index as a real from given velocity
+wrtascfl.f   WA position to end of ascii-format file to write spectrum
+wrtascf2.f      write spectrum in ascii-format file
+wrtgsfl.f    GW write data and fitted gaussians to a mca disk file
+wrtmcafl.f WMCA write data in multicolumn ascii to a disk file
+wrttmfl.f   TMW write data as time series in multicolumn ascii format
+

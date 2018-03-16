@@ -1,0 +1,56 @@
+<pre>
+12178JY [memory]
+   convert 12178 MHz CH3OH spectrum from Kelvin to Jansky, 
+   using built in table of Point Source Sensitivity as a function of date
+
+   This routine automatically applies the appropriate point source
+   sensitivity for the epoch of the observation to spectra obtained at
+   12178 MHz.
+
+   The calibration is for LCP spectra, scaled as though the source is
+   unpolarised, to represent the total intensity.
+
+   If the memory is not specified the default set memory is used.
+
+     known sensitivity changes, from surface upgrade :
+C     obtained by interpolation of 3.5 and 6cm continuum calibrator data
+C     using axum, file calsurf
+C       change takes effect at mid-day
+C
+c no.   Year       DayNo          JD      Rel2p5      PSS2p5
+c 01  1990.00        1.00  2447893.00       1.000       24.20 nominal start
+c 02  2000.00      165.00  2451709.00       1.026       23.59
+c 03  2000.00      176.00  2451720.00       1.009       23.99
+c 04  2000.00      186.00  2451730.00       1.014       23.86
+c 05  2000.00      200.00  2451744.00       0.999       24.23
+c 06  2000.00      215.00  2451759.00       0.925       26.15
+c 07  2000.00      243.00  2451787.00       0.941       25.72
+c 08  2000.00      256.00  2451800.00       0.950       25.48
+c 09  2000.00      287.00  2451831.00       0.946       25.57
+c 10  2000.00      336.00  2451880.00       0.950       25.47
+c 11  2000.00      358.00  2451902.00       0.957       25.30
+c 12  2001.00       14.00  2451924.00       0.980       24.70
+c 13  2001.00       49.00  2451959.00       0.945       25.60
+c 14  2001.00       63.00  2451973.00       0.933       25.95
+c 15  2001.00       89.00  2451999.00       0.987       24.52
+c 16  2001.00      111.00  2452021.00       0.966       25.05
+c 17  2001.00      149.00  2452059.00       0.940       25.74
+c 18  2001.00      169.00  2452079.00       0.975       24.83
+c 19  2001.00      203.00  2452113.00       0.959       25.24
+c 20  2001.00      216.00  2452126.00       0.898       26.96
+c 21  2001.00      220.00  2452130.00       0.953       25.40
+c 22  2001.00      227.00  2452137.00       0.968       25.00
+c 23  2001.00      231.00  2452141.00       0.957       25.28
+c 24  2001.00      237.00  2452147.00       0.915       26.44
+c 25  2001.00      259.00  2452169.00       0.933       25.94
+c 26  2001.00      267.00  2452177.00       0.963       25.12
+c 27  2001.00      275.00  2452185.00       0.950       25.47
+c 28  2001.00      279.00  2452189.00       0.982       24.64
+c 29  2001.00      283.00  2452193.00       1.014       23.87
+c 30  2001.00      304.00  2452214.00       1.045       23.15
+c 31  2001.00      313.00  2452223.00       1.036       23.35
+c 32  2002          12     2452287          1.078       22.45
+C 33  2002          36     2452311          1.030       23.50
+C 34  2002          48     2452323          1.026       23.59
+C 35  2010           1     2455198          1.026       23.59 nominal end
+</pre>

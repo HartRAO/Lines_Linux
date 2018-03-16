@@ -1,0 +1,30 @@
+<pre>
+
+GCP [CLEAR] [SHOW] [polynomial coefficients]
+
+enter gain curve polynomial coefficients
+
+The gain curve of the telescope is modelled as the gain as a function of
+hour angle (in degrees) for a specific declination and frequency. 
+Experimental data are fitted with a low order polynomial (<7).  This is
+used to obtain the gain correction - the reciprocal of the measured gain
+- at the hour angle of the observation.
+   
+examples:
+
+GCP 1.000 -0.035 -0.007 -0.000015 
+   	The coefficients of a fourth order polynomial fitted to the gain
+	curve 
+
+GCP clear
+   	Unset any previous entered coefficients
+ 
+GCP show
+   	show the current coefficients
+  
+GCP
+   	enter the coefficents at prompts from the routine.
+   	Terminate with a zero.
+
+</pre>
+   

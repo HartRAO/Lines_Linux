@@ -1,0 +1,185 @@
+
+RA [from file] [first spectrum] [last spectrum] [NEW/ADD] [PLOT] [to memory]
+
+   Read spectra from an ascii-format LINES file.
+
+   If parameters are not given the user is prompted for the first 
+   three parameters.
+
+   If only the first two parameters are given, a single spectrum is read.
+
+   If "NEW" is specified, the spectrum read in always replaces the contents
+   of the destination memory, without prompting the user
+
+   If "ADD" is specified, the spectrum is added to the average spectrum 
+   in the destination memory, without prompting the user.
+
+   If neither "NEW" nor "ADD" is specified, the user is prompted on whether
+   to add the spectrum read in to the average in the destination memory, 
+   or to start a new average spectrum in the destination memory.
+
+   If "PLOT" or "plot" is specified, the spectrum just read in is plotted to
+   active plotting devices in order that the spectrum can be inspected
+   before deciding whether to include it in the average spectrum.  The aim
+   is to inspect for interference, bad baseline ripple, and instrumental
+   problems.  Also compare the system temperature and uncertainty with that
+   expected at that hour angle in clear weather, in order to discard spectra
+   affected by rain.
+   
+   An example would be: 
+   	ra spectra.asc 1 6 plot
+   showing that NEW / ADD is not mandatory.
+
+   By contrast, the following syntax plots the incoming spectra but always
+   adds them to the average, without pausing and without asking the user:
+   	ra spectra.asc 1 6 add plot
+
+   In the next example, the individual spectra and changing average spectrum
+   are plotted as the user decides whether to in each read-in spectrum
+   after checking its parameters, system temperature, etc.:
+   	do i 1 10
+   		ra file.asc i i plot 	(plots new spectrum, asks to add)
+   		pl			(plots average spectrum)
+   		pause			(pause after average plot)
+   	end
+
+   If the destination memory is not specified as a parameter, 
+   the average spectrum is written to the set memory.
+
+   The memory set as MEMRD is used to store the incoming spectra.
+   It is always cleared before reading in the next spectrum.
+
+   A summary of the housekeeping for the incoming spectrum and for the
+   current average spectrum is given, in order to check that the incoming
+   spectrum is suitable to add to the average spectrum.  This is an
+   example:
+
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS BU
+ 11 G347.63+0.15 LCP    2000-03-17 16759  4765  0.64   0 -51 0 0  1  1  0.0 K
+ compare           :  new spectrum        current average
+ object            :  G347.63+0.15 LCP    G347.63+0.15 LCP
+ scan number       :  16759               16757
+ brightness units  :  K                   K
+ reference pixel   :  1                   1
+ ref pixel velocity:  -107.07             -107.07
+ pixel spacing     :   0.15727             0.15727
+ folded            :  0                   0
+        
+
+   The format of the housekeeping and data for a typical ascii-format file
+   is shown below, with explanatory comments added.
+   
+   
+BEGIN				/ start of new data set
+NAXIS   =  1			/ number of axes in data array (FITS)
+NAXIS1  =  256			/ number of values on AXIS1 (FITS)
+BUNIT   = 'K'			/ brightness units of data (FITS)
+OBJECT  = '339.88-1.26'		/ name of object (FITS)
+TELESCOP= 'HartRAO 26M'		/ telescope (FITS)
+OBSERVER= 'S. GOEDHART'		/ observer's name (FITS)
+DATE-OBS= '1999-02-13'		/ date of observation (FITS)
+DATE    = '1999-03-17T13:54:17 '/ date of creation of hdu (FITS)
+CTYPE1  = 'VELO-LSR KM/S'	/ coordinate type for axis 1 (FITS)
+CTYPE2  = 'ANTENNA_TEMP'	/ coordinate type for axis 2 (FITS?)
+CRVAL1  =  -43.193		/ value at CRPIX1 (FITS)
+CRPIX1  =  1			/ location of ref point on axis (FITS)
+CDELT1  =   0.11239		/ pixel spacing on NAXIS1 (FITS)
+RESTFREQ=   6.668518E+09	/ line rest frequency in Hz
+RA      =   252.1		/ RA of EQUINOX in degrees (FITS)
+DEC     =  -46.059		/ DEC of EQUINOX in degrees (FITS)
+RADOWN  =   252.1		/ RA of EQUINOX for down spectrum
+DECDOWN =  -46.059		/ DEC of EQUINOX for down spectrum
+EQUINOX =   1950.		/ equinox in years for coords (FITS)
+GLII    =   339.883079		/ galactic longitude
+GBII    =  -1.25706087          / galactic latitude
+GLIIDOWN=   339.883079		/ galactic longitude for down posn
+GBIIDOWN=  -1.25706087		/ galactic latitude for down posn
+JULDATE =   2451222.67		/ Julian date of SCAN
+HA      =  -19.87		/ hour angle of SCAN in degrees
+POL     =  0			/ polarization (~FITS)
+TCAL    =   14.2		/ calibration signal value
+TCALUNIT= 'K'			/ calibration signal units
+TSYS    =   59.0315             / system temperature of SCAN in TCALUNITS
+DTSYS   =   2.32639612		/ uncertainty in TSYS in TCALUNITS
+DUR     =   210.		/ total integration time of SCAN in S
+RMS     =   0.142293849		/ expected rms noise in data in BUNITS
+PSS     =   0.			/ point source sensitivity in Jy/K
+BW      =   640000.		/ original bandwidth of spectrum in Hz
+FROFFSET=   320000.		/ frequency offset for fr sw sp in Hz
+SCAN    =  31322		/ scan or observation number
+ADDED   =   2.			/ number of spectra averaged
+FIRST_CH=  1			/ first valid pixel in data
+LAST_CH =  256			/ last valid pixel in data
+POLYFIT =  3			/ order of polynomial fit to baseline
+FOLDED  =  0			/ =0 unfolded, =1 folded freq. sw.sp.
+SMOOTHED=  0			/ =0 unsmoothed =1 smoothed
+TRANSFRM=  0			/ =0 spectrum =1 transform
+ALTDEG  =  75.03                / telescope altitude (elev) in deg
+ATMCORR =  1.0013               / atmospheric atten. corr. applied
+PNTCORR =  1.07704318		/ pointing correction applied
+GAINCORR=                       / antenna gain correction applied
+END				/ end of housekeeping for data set
+0.336205E+00 0.342031E+00 0.177201E-01 -.336548E+00 
+-.878676E-02 -.546026E-01 -.264129E+00 -.471806E-03 
+0.599097E-01 -.793788E-02 -.976158E-01 0.486098E-01 
+-.281014E+00 -.325917E-01 -.141621E+00 -.498059E-02 
+-.257848E-01 0.200051E+00 0.361000E-01 -.243432E+00 
+-.855539E-01 0.280651E+00 -.243649E+00 0.255696E-01 
+-.137087E+00 0.245483E+00 -.167907E+00 0.396723E+00 
+0.229527E+00 0.136823E+01 0.110871E+01 0.132042E+01 
+0.107905E+01 0.207700E+01 0.314147E+01 0.997500E+01 
+0.216015E+02 0.389570E+02 0.682899E+02 0.991819E+02 
+0.819808E+02 0.409142E+02 0.375632E+02 0.315614E+02 
+0.302914E+02 0.302959E+02 0.255313E+02 0.144109E+02 
+0.146973E+02 0.259959E+02 0.389609E+02 0.405102E+02 
+0.316484E+02 0.217345E+02 0.197168E+02 0.195172E+02 
+0.236704E+02 0.354073E+02 0.408864E+02 0.366855E+02 
+0.313761E+02 0.206505E+02 0.139774E+02 0.795590E+01 
+0.929697E+01 0.144294E+02 0.222948E+02 0.243663E+02 
+0.249753E+02 0.317081E+02 0.381280E+02 0.436535E+02 
+0.428591E+02 0.370670E+02 0.318180E+02 0.247822E+02 
+0.182597E+02 0.151757E+02 0.971131E+01 0.736361E+01 
+0.103662E+02 0.145258E+02 0.174635E+02 0.192811E+02 
+0.169496E+02 0.123580E+02 0.830769E+01 0.442509E+01 
+0.360991E+01 0.414918E+01 0.250018E+01 0.277271E+01 
+0.323850E+01 0.251963E+01 0.260104E+01 0.315300E+01 
+0.440769E+01 0.485143E+01 0.333444E+01 0.106249E+01 
+0.606624E-01 0.105301E+00 -.424204E+00 0.225458E+00 
+-.250207E+00 -.969805E-01 -.899444E-01 -.266248E+00 
+-.419116E+00 -.187119E+00 -.182348E+00 -.713106E-01 
+-.154425E+00 -.173420E+00 0.601590E+00 0.645115E+00 
+0.762506E+00 0.167700E+00 0.563549E-01 -.167060E+00 
+0.278230E+00 0.842990E-01 0.270093E-01 -.283329E+00 
+-.275336E+00 -.253004E+00 -.632830E-01 -.350985E+00 
+-.118055E+00 -.351937E+00 -.301443E+00 0.271540E+00 
+-.126708E+00 0.280553E+00 -.101883E+00 -.600314E-01 
+0.147393E+00 -.696540E-01 0.632275E-01 0.152965E+00 
+0.131108E+00 0.465834E+00 -.140887E+00 -.390096E-01 
+0.131830E+00 0.430744E+00 0.516299E+00 0.212495E+00 
+0.596825E+00 0.324683E+00 0.504798E+00 0.569396E+00 
+0.184992E+00 0.458278E+00 0.429940E+00 0.411881E+00 
+0.847769E-01 -.188965E+00 -.100598E+01 -.120015E+01 
+-.382952E+00 -.115814E+01 -.179807E+01 -.617620E+01 
+-.176922E+02 -.323356E+02 -.586993E+02 -.935752E+02 
+-.974569E+02 -.529002E+02 -.374115E+02 -.339901E+02 
+-.299139E+02 -.307189E+02 -.275005E+02 -.173377E+02 
+-.121555E+02 -.216617E+02 -.352513E+02 -.427085E+02 
+-.352075E+02 -.241922E+02 -.192342E+02 -.188946E+02 
+-.195277E+02 -.312673E+02 -.400944E+02 -.387121E+02 
+-.333625E+02 -.225578E+02 -.143916E+02 -.764658E+01 
+-.579339E+01 -.105101E+02 -.180998E+02 -.236620E+02 
+-.221857E+02 -.283766E+02 -.345631E+02 -.417500E+02 
+-.439623E+02 -.375364E+02 -.328960E+02 -.260892E+02 
+-.175591E+02 -.142331E+02 -.982873E+01 -.464869E+01 
+-.529521E+01 -.104669E+02 -.131548E+02 -.160529E+02 
+-.150687E+02 -.987614E+01 -.613908E+01 -.150335E+01 
+0.902196E+00 -.327360E+00 0.108439E+01 0.190103E+01 
+0.135620E+01 0.154143E+01 0.256942E+01 0.194112E+01 
+0.820792E+00 -.315963E+00 0.123292E+01 0.390329E+01 
+0.571598E+01 0.531095E+01 0.584390E+01 0.656153E+01 
+0.589870E+01 0.611799E+01 0.640878E+01 0.701690E+01 
+0.716011E+01 0.710694E+01 0.689732E+01 0.720286E+01 
+0.776608E+01 0.780064E+01 0.718344E+01 0.676317E+01 
+0.702491E+01 0.723169E+01 0.815429E+01 0.786995E+01 
+0.855531E+01 0.865654E+01 0.925318E+01 0.917423E+01 
+0.889707E+01 0.961534E+01 0.956193E+01 0.963780E+01 

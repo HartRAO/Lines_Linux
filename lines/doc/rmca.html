@@ -1,0 +1,46 @@
+<pre>
+
+RMCA [from file] [X col] [Y col] [start line] [cap line] [label line] [memory]
+
+Read X,Y data from a file in multi-column ascii format
+
+If parameters are not given as part of the command string, the user is
+prompted for the first six parameters (but not for the memory to use).
+
+The first parameter [from file] is the name of the file to read from.  
+
+The second parameter [X col] is the column number containing the X values.
+
+The third parameter [Y col] is the column number containing the Y values.
+
+The fourth parameter [start line] is the number of the line at which the
+data to be read start.
+   
+The fifth parameter [cap line] is the number of the line containing the
+caption / title / name / object identifier.  If not given, it is assumed
+not to exist.
+    
+The sixth parameter [label line] is the number of the line containing the
+column names.  If not given, it is assumed not to exist.
+   
+The seventh parameter [memory] is the destination memory in which the
+data must be stored.  If this is not given, the data will be stored in
+the default set memory.  The data will replace any data previously stored
+in the destination memory.
+   
+The files can be space, comma or tab delimited.
+Data can be read from tables up to 100 columns wide.
+Up to 4096 X,Y pairs can be read in per memory.
+The X values can be unevenly spaced; however not all program functions
+may operate correctly as yet if this is so.
+
+Data reading is terminated by non-numeric data in any column up to that
+being read.  This means that where a file contains multiple data sets
+below each other, separated by new headers, reading the data terminates
+when the next header is encountered.
+  
+example:
+   
+rmca scan.mca 1 2 3 1 2
+
+</pre>

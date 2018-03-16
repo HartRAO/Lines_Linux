@@ -1,0 +1,1029 @@
+ lines.log     opened 2007-10-25T12:18:06 
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv >> nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d297_04h48m22s_Spec_mike_11304-6206.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   9.18225415E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.166203007Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d297_04h55m17s_Spec_mike_11304-6206.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.54326373E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.162487124Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.166203007 now   0.166203007Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d297_05h02m12s_Spec_mike_11304-6206.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   9.18225415E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.16325513Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d297_05h09m12s_Spec_mike_11304-6206.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.54326373E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.161215273Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.16325513 now   0.16325513Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d297_05h16m07s_Spec_mike_11304-6206.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   9.18225415E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.16177033Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d297_05h22m47s_Spec_mike_11304-6206.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.54326373E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.159892258Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.16177033 now   0.16177033Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 11304-6206          2007-10-24     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 11304-6206          2007-10-24     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+pl 1
+pl 2
+pl 3
+cp 3 12
+  mem  3 copied to  12
+quit
+ lines.log     opened 2007-10-25T12:21:30 
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv >> nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  file not found:2007d297_04h48m22s_Spec_mike_11304-6206.csv
+av 12 13
+cp 13 2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  file not found:2007d297_04h55m17s_Spec_mike_11304-6206.csv
+av 12 13
+cp 13 3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  file not found:2007d297_05h02m12s_Spec_mike_11304-6206.csv
+av 12 13
+cp 13 3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  file not found:2007d297_05h09m12s_Spec_mike_11304-6206.csv
+av 12 13
+cp 13 4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  file not found:2007d297_05h16m07s_Spec_mike_11304-6206.csv
+av 12 13
+cp 13 4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  file not found:2007d297_05h22m47s_Spec_mike_11304-6206.csv
+av 12 13
+cp 13 5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+  13 of  13 memories are empty
+pl 1
+quit
+ lines.log     opened 2007-10-25T12:22:08 
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.232024613Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h31m47s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227586853Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.232024613 now   0.232024613Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h34m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229047301Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h37m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227480903Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.229047301 now   0.229047301Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h40m37s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229236212Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d296_14h43m17s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229824709Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.229236212 now   0.229236212Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 18060-2005          2007-10-23     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+pl 1
+cp 1 12
+  mem  1 copied to  12
+po
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -12.432       3.853
+  block  2                 18.119      54.053
+  block  3                 59.705      78.143
+  polynomial coefficients :
+     0             1             2             3
+ -0.343210      2.405511E-02 -5.287425E-04  3.318138E-06
+  order  3 fit RMS error =    0.169926Kel
+  data - polynomial stored in mem  12
+pl
+cp 12 1
+  mem  12 copied to  1
+pl 2
+cp 2 12
+  mem  2 copied to  12
+po
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -11.966       3.839
+  block  2                 18.063      53.976
+  block  3                 59.683      77.947
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -12.297       8.832
+  block  2                 17.580      50.150
+  block  3                 59.436      78.278
+  polynomial coefficients :
+     0             1             2             3
+ -0.257925      2.742084E-02 -7.099521E-04  5.008297E-06
+  order  3 fit RMS error =    0.187988Kel
+  data - polynomial stored in mem  12
+pl
+cp 12 2
+  mem  12 copied to  2
+cp 3 12
+  mem  3 copied to  12
+pl
+po
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -11.966       8.756
+  block  2                 17.537      50.112
+  block  3                 59.420      77.947
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -11.966       8.756
+  block  2                 17.537      50.112
+  block  3                 59.420      77.947
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -11.966       8.756
+  block  2                 17.537      50.112
+  block  3                 59.420      77.947
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -11.966       8.668
+  block  2                 17.537      32.903
+  block  3                 32.903      32.903
+  current baseline blocks for polynomial fit
+                           Xstart        Xend
+  block  1                -12.064       3.517
+  block  2                 17.487      33.337
+  polynomial coefficients :
+     0             1             2             3             4
+ -8.793599E-02  1.810358E-02 -3.033016E-04 -3.084363E-05  8.691794E-07
+  order  4 fit RMS error =    0.112540Kel
+  data - polynomial stored in mem  12
+pl
+cp 12 3
+  mem  12 copied to  3
+pl 1
+pl 2
+pl 3
+wa sp_ns.asc 1
+  mem 1 write to sp_ns.asc as spectrum  1
+wa sp_ew.asc 2
+  mem 2 write to sp_ew.asc as spectrum  1
+wa sp_on.asc 3
+  mem 3 write to sp_on.asc as spectrum  1
+ls
+pgc
+pca2 11.44
+  automated PC:
+  PC:   NS      ON      OS          EW      OE      OW      HPBW
+     -24.9   -25.7   -24.1       -28.5   -27.7   -29.4      115.
+  Use NORTH + SOUTH  =    -24.9 mdeg
+  Use EAST + WEST    =    -28.5 mdeg
+ 18060-2005                                                        
+  Amplitude correction =  1.346989
+  peak intensity if corrected =  9.697711
+  If beam offsets are in error:
+    New HA  offset = old +  0.029 deg
+    New Dec offset = old +  0.025 deg
+ Pointing-for-Object    DateObs  UThrs   HAdeg   DCdeg PCHAdeg PCDCdeg  Correct
+ 18060-2005          2007-10-23 14.677   0.000 -20.101   0.029   0.025 1.346989
+  If source position is in error:
+  pointing-corrected coordinates for 18060-2005          2000.0
+     H  M  S      D  M  S       RA       DEC       LII      BII
+    18  9  3.8  -20  4 32.4    272.266  -20.076  G 10.336   -0.163
+ Pointing-for-Object    DateObs           PCHAmdeg PCDCmdeg PointCor
+ 18060-2005          2007-10-23T14:40:37   25.548   27.759  1.344541
+lh 3
+quit
+ lines.log     opened 2007-10-29T10:13:36 
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.232024613Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h31m47s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227586853Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.232024613 now   0.232024613Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h34m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229047301Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h37m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227480903Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.229047301 now   0.229047301Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h40m37s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229236212Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d296_14h43m17s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229824709Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.229236212 now   0.229236212Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 18060-2005          2007-10-23     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+lh 1
+quit
+ lines.log     opened 2007-10-29T10:15:25 
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.232024613Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h31m47s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227586853Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.232024613 now   0.232024613Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h34m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229047301Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h37m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227480903Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.229047301 now   0.229047301Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h40m37s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229236212Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d296_14h43m17s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229824709Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.229236212 now   0.229236212Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 18060-2005          2007-10-23     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+lh
+db
+inp reduce_pointing
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.232024613Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h31m47s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227586853Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.232024613 now   0.232024613Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h34m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229047301Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h37m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227480903Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.229047301 now   0.229047301Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h40m37s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229236212Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d296_14h43m17s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229824709Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.229236212 now   0.229236212Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 18060-2005          2007-10-23     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+lh 1
+quit
+ lines.log     opened 2007-10-29T10:19:28 
+db
+rncsv 2007d296_14h28m52s_Spec_mike_18060-2005.csv
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+quit
+ lines.log     opened 2007-10-29T10:19:58 
+ls
+db
+rncsv 2007d296_14h28m52s_Spec_mike_18060-2005.csv
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+quit
+ lines.log     opened 2007-10-29T11:47:52 
+db
+ls
+rncsv 2007d296_14h28m52s_Spec_mike_18060-2005.csv
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+QUIT
+ lines.log     opened 2007-10-29T11:56:43 
+db
+ls
+rncsv 2007d296_14h28m52s_Spec_mike_18060-2005.csv
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+lh
+db
+lh
+ls
+clr all
+  cleared mem ALL
+inp reduce_pointing
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.232024613Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h31m47s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227586853Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.232024613 now   0.232024613Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h34m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229047301Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h37m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227480903Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.229047301 now   0.229047301Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h40m37s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229236212Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d296_14h43m17s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229824709Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.229236212 now   0.229236212Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 18060-2005          2007-10-23     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+pl 1
+lh 1
+db
+cmb 1 3 5
+quit
+ lines.log     opened 2007-10-29T12:20:44 
+inp reduce_pointing
+  Input from reduce_pointing
+sy spfits2asc *.fits
+ls *.csv > nextfile
+set plotdev /xw
+  PLOTDEV   now /xw                 cursor=YES
+#
+# get pointing correction from frequency-switched spectra
+# read spectra at HPN LCP and RCP, average L+R, copy to mem 2
+rncsv nextfile
+  read NCCS csv file 2007d296_14h28m52s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.232024613Kelvins
+cp 13 2
+  mem  13 copied to  2
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h31m47s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227586853Kelvins
+cp 13 3
+  mem  13 copied to  3
+# combine N + S to one difference spectrum in mem 1
+cmb 2 3 1
+  mem  2 copied to  1
+  Mem  2 RMS noise was   0.232024613 now   0.232024613Kelvins
+# read spectrum at HPE LCP and RCP, average L+R, copy to mem 3
+rncsv nextfile
+  read NCCS csv file 2007d296_14h34m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229047301Kelvins
+cp 13 3
+  mem  13 copied to  3
+# read spectrum at HPS LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h37m42s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.227480903Kelvins
+cp 13 4
+  mem  13 copied to  4
+# combine E + W to one difference spectrum in mem 2
+cmb 3 4 2
+  mem  3 copied to  2
+  Mem  3 RMS noise was   0.229047301 now   0.229047301Kelvins
+# read first spectrum at On LCP and RCP, average L+R, copy to mem 4
+rncsv nextfile
+  read NCCS csv file 2007d296_14h40m37s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5447644E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229236212Kelvins
+cp 13 4
+  mem  13 copied to  4
+# read spectra at On LCP and RCP, average L+R, copy to mem 5
+rncsv nextfile
+  read NCCS csv file 2007d296_14h43m17s_Spec_mike_18060-2005.csv into mem 12
+  1025 valid values were read
+  data spacing check: rmsdev from fit =   2.5422572E-05
+  data are REGULARLY spaced
+  mem  11 copied to  12
+  mem  11 copied to  13
+av 12 13
+   2. spectra averaged in mem  13
+  Mem  13 RMS noise was   0. now   0.229824709Kelvins
+cp 13 5
+  mem  13 copied to  5
+# combine On + On to one difference spectrum in mem 2
+cmb 4 5 3
+  mem  4 copied to  3
+  folding mem  3: offset is  512 pixels
+  Mem  4 RMS noise was   0.229236212 now   0.229236212Kelvins
+# get pointing correction at V+1.21 from 2d gaussian fit to NSEWOn
+#pca2 +1.21
+#
+nfclose
+lm
+ Mem Object               Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   2 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   3 18060-2005          2007-10-23     0  6668 2.00   0   0 0 1  1  2   0.0 Ke
+   4 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+   5 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  11 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  12 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  0  1   0.0 Ke
+  13 18060-2005          2007-10-23     0  6668 2.00   0   0 0 0  1  2   0.0 Ke
+  5 of  13 memories are empty
+lh 1
+quit

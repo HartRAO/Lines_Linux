@@ -1,0 +1,21 @@
+#
+# Makefile for Marion's programs
+#
+# created : 31/10/95
+#
+
+INSTALL = /bootes/marion/programs/bin/linux
+#DEBUG = -g
+#LFLAGS =  -l /lib/libc.so.4
+
+calcor: calcor.o
+	g77  -o calcor calcor.o $(LFLAGS) $(DEBUG)
+
+calcor.o : calcor.f
+	g77 $(DEBUG) -c calcor.f 2>calcor.err
+
+install : 
+	mv calcor $(INSTALL)
+
+clean : 
+	rm -f *.o

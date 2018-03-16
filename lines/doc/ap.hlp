@@ -1,0 +1,16 @@
+AP [pol1 memory] [pol2 memory]
+
+Add orthogonal polarizations of the same spectrum for total intensity.
+
+The data in the second memory is added to that in the first.
+
+The date and times of the two data must match.
+
+The system temperatures are averaged and the rms noise in the total
+intensity spectrum is recalculated.
+
+If the memories are not specified the user is prompted for them.
+
+example:
+   
+ap 1 2

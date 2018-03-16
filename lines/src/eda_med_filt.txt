@@ -1,0 +1,4 @@
+fortran routines for median filtering from
+ABC's of EDA by Vellemin & Hoaglin
+
+EDA_RSM is the controlling routine

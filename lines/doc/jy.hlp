@@ -1,0 +1,15 @@
+
+JY [Kelvin to Jansky factor] [memory]
+
+   Convert the spectrum from Kelvin to Jansky, or change the K to Jy
+   conversion factor (point source sensitivity).
+
+   If an invalid K to Jy factor is given, or none is given, then the user is
+   prompted for it.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+   example:
+   
+   jy 24.2
+   

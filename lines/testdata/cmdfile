@@ -1,0 +1,8 @@
+ra spectra.asc 1
+int -100 100 m
+lm
+do loop 2 5 1
+ra am3517an.asc loop loop new loop
+int .5 2.5 m loop*1
+end
+

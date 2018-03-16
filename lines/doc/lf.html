@@ -1,0 +1,50 @@
+<pre>
+
+LF [file] [first spectrum] [last spectrum]
+
+List the contents of an ascii spectra file on screen.
+
+A brief summary of the housekeeping is given,
+at one line per spectrum.
+
+If the first and last spectra to list are not given,
+the whole file is listed.
+
+typical output is:
+
+LINES>lf m17.asc
+ list file m17.asc
+ ASCII spectra file
+ m17.asc at spectrum 1
+ Rec Object           Date       Scan  Freq   BW Pol  HA S F Py Av  PSS  BU
+   1 M17             1996-10-29 19536  4874 2.56   0  -4 0 0  1  1   0.0 K 
+ m17.asc at spectrum 2
+   2 M17             1996-10-29 19536  4874 2.56   0  -4 0 0  3  1   0.0 K 
+ file ends after spectrum  2 in m17.asc
+
+where:
+
+Mem	memory number in lines
+Object	name of the object
+Date	date of the observation, YEAR-MONTH-DAY
+Scan	"Scan" or observation number
+Freq	Line rest frequency in MHz to nearest whole number
+BW	original bandwidth of the spectrum, in MHz
+Pol	polarization (0=unknown)
+HA	Hour Angle of the observation, in degrees
+S	smoothing applied to the spectrum, 0 = none
+F	has frequency-shifted spectrum been folded? 0 = no, 1 = yes
+Py	order of polynomial fitted to the spectrum baseline
+Av	number of spectra that have been averaged to form this one
+PSS	point source sensitivity in Jy/K used to scale spectrum to Jy
+BU	brightness units of the data
+
+
+example:
+   
+lf source3.asc
+
+also see: LA
+   
+</pre>
+   

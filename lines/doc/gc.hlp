@@ -1,0 +1,36 @@
+<pre>
+
+GC [GCP] [gain correction] [memory]
+   apply gain correction to spectrum, optionally using coeffs from GCP
+   
+   The telescope gain is a function of hour angle, declination and frequency.
+   Gain curves can be constructed to give the gain relative to that at the 
+   zenith meridian for a given declination, by means of observations of a 
+   source at the given declination, from horizon to horizon.
+   These data need to be normalised to give a maximum value of unity.
+   
+   The coefficients of a polynomial fitted to the gain curve can be used to
+   compute the relative gain at the hour angle of any observation at that
+   declination.  The polynomial fit (PO) can be done using lines, after
+   reading in the hour angle and relative gain from a multi-column ascii
+   file (RMCA).
+   
+   The gain correction is the reciprocal of the measured normalised gain as
+   a function of hour angle (in degrees).  The value applied is stored in
+   the housekeeping.  The default value is unity.
+   
+   examples:
+   
+   GC GCP	apply gain correction to spectrum in default memory using
+                the coefficients read in via GCP, based on the hour angle of
+                the observation stored in the housekeeping of the spectrum.
+
+   GC 1.053     apply a gain correction of 1.053 to the spectrum in the
+		default memory
+
+   GC 1.0	restore spectrum in the default memory to its uncorrected
+                value
+
+see also: GCP
+
+</pre>

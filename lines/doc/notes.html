@@ -1,0 +1,196 @@
+<html>
+<head>
+ <title>'lines' General Notes</title>
+</head>
+
+<h2>'lines' General Notes</h2>
+
+
+<h3>Purpose of 'lines'</h3>
+
+The original purpose of the program was to reduce and analyse spectra from
+the 26-m Hartebeesthoek radio telescope.  However its scope has broadened so
+that, for example, drift scans of radio calibrator sources can be reduced. 
+Some functions are useful in the analysis of other types of data, so the
+program is able to read any data in a simple multi-column ascii format.
+
+<h3>Commands</h3>
+
+<b>Command parameters</b>. Many commands take parameters; the user is
+prompted for the parameters if they are omitted, but intelligent defaults
+are used where possible.  While commands are generally shown in the 'help
+files in upper case, this is for legibility - the commands are not case
+sensitive.  Note that file names are case-sensitive however.
+
+<p><b>System commands</b>. Any command can be passed to the operating system
+using the <a href="sy.html">SY</a> command, for example permitting command
+files to be edited or output files renamed or edited while in 'lines'. 
+System commands must be lower case.
+
+
+<h3>Importing data</h3>
+
+<b>Spectra from the HP1000</b>. The program was originally designed to read
+spectra from the HP1000 mini-computer that used to operate the 26-m
+Hartebeesthoek telescope.  These were originally recorded in a binary
+format, but were converted to a FITS-like ascii format, which are read using
+the <a href="ra.html">RA</a> / <a href="rav.html">RAV</a> commands.
+
+<p><b>General data</b>. However to make it more useful, 'lines' can also
+read data from multi-column ascii files as can be exported from
+spreadsheets, using the <a href="rmca.html">RMCA</a> command.  In this case the
+user specifies which columns contain the X and Y data.  As the housekeeping
+accompanying the HP spectra is then not available, some commands needing
+certain housekeeping will not work.
+
+<p><b>Spectra from the NCCS</b>. The 'New Control Computer System' (NCCS)
+currently controlling the 26-m telescope writes data to FITS-format files. 
+Lines cannot read these currently, but programs are available to convert
+these files to ascii files that 'lines' can read.  'spfits2asc' converts
+spectra files to ascii.  These files are read using <a
+href="rncsv.html">RNCSV</a>.  Spectra from the NCCS are normally dual
+polarization, so there are two data sets two be imported from each file, one
+for left-circular polarization and one for right-circular polarization. 
+These are read in together and stored in separate memories.  After separate
+data reduction of each polarization, they may be added to give the total
+intensity.
+
+<p><b>Continuum scans from the NCCS</b>. The simplest continuum radiometry
+mode of the NCCS is the drift scan.  'drift_fits2asc' converts drift scans
+to ascii for 'lines'.  These are read using <a href="rmca.html">RMCA</a>. 
+As noted above, these are dual polarized so there are two sets of data to
+reduce.  In addition, if scans were done to check the north-south pointing,
+there will be three pairs of data in the file, taken through the north
+half-power point of the beam, through the centre of the beam, and through
+the south half-power point of the beam.
+
+<p><b>Multiple memories</b> are available for storing data.  At present
+there are 12 memories, of which memory 11 is used to read spectra (<a
+href="set.html">SET</a> MEMRD alters this) and memory 12 is the standard
+operating memory to which operations default if the memory to use is not
+specified (<a href="set.html">SET</a> MEMSET alters this), leaving memories 1
+to 10 available for general use. Commands <a href="cp.html">CP</a> and <a
+href="mv.html">MV</a> copy and move data from one memory to another.
+
+
+
+<h3>Mouse functions in screen plots</h3>
+
+The <b>velocity window</b> ie. the range of X values that you want to work
+with, can be marked by mouse clicks on the displayed data, using the <a
+href="vw.html">VW</a> command.
+
+<p><b>Velocity limits for the line integral</b> command <a
+href="int.html">INT</a> can be marked with the mouse.
+
+<p><b>Baseline blocks for polynomial fitting</b> can be marked with the
+mouse or can be preset using <a href="pb.html">PB</a>.
+
+<p><b>Gaussian profiles</b> to be fitted can be marked by mouse clicks at
+the half power points of each Gaussian or can be preset using <a
+href="gp.html">GP</a>.
+
+
+<h3>Exporting results</h3>
+
+<b>A log file</b> of commands and results that is written
+automatically when the program runs, echoing much of what appears on screen. 
+This file is called 'lines.log' and it is appended to if the program is
+rerun.  It is not overwritten.  Logging can be turned off.
+
+<p><b>Gaussian profile output</b>. The profiles of each Gaussian fitted can
+be written to a multi-column ascii format file for post-analysis replotting
+in a spreadsheet, using the <a href="gw.html">GW</a> command.
+
+<p><b>Results of Gaussian fits</b>, as well as being shown on screen, can
+be written to a multi-column ascii format file for importation to a
+spreadsheet for further analysis or plotting.
+
+<p><b>Results of line integral calculations</b>, as well as being shown on
+screen, are automatically written to a multi-column ascii format disc file
+for importation to a spreadsheet for further analysis or plotting.
+
+
+<h3>Customising plots</h3>
+
+<b>Plot output</b> The <a href="set.html">SET</a> PLOTPS command enables
+plots to be written to disc files in postscript or other formats for later
+hardcopy or publication.
+
+<p><b>Plot page subdivision</b> Plot pages can be subdivided into any number
+of rows and columns using the <a href="set.html">SET</a> NXSUB and <a
+href="set.html">SET</a> NYSUB commands, providing multiple spectra per page.
+
+<p><b>Plot attributes</b> can be customised in a number of ways 
+using <a href="set.html">SET</a> e.g.:
+  <ul>
+  <li>line colour (SET COLOUR), 
+  <li>line style (SET LINE), 
+  <li>line width (SET WIDTH), 
+  <li>symbol drawn at each point (SET SYMBOL),
+  <li>character size (SET CHARSIZE), 
+  <li>font (SET FONT), 
+  <li>X and Y minima and maxima (SET XPMIN, SET XPMAX, SET YPMIN, SET YPMAX), 
+  <li>alternative caption (SET CAPTION)
+  <li>user identifier (SET ADDIDENT)
+  </ul>
+
+<b>Adding text to plots</b>.  Comments can be added anywhere on plots using
+the <a href="ptx.html">PTX</a> command; these comments can include super-
+and sub-scripts and Greek characters.
+
+
+<h3>Data export</h3>
+
+<b>Ascii spectra files</b>.  The original data export format is the
+FITS-like but unblocked ascii format, created by the <a
+href="wa.html">WA</a> command.  This permits many spectra to appended to one
+file, and any simple text editor can be used on these files.  The files
+comprise blocks of keywords with their attended vaues, one per line,
+followed by a block of data.
+
+<p><b>Simple multicolumn ascii format</b> files are suitable for import into
+spreadsheets or plotting programs, and are writeen via the <a
+href="wmca.html">WMCA</a> command.
+
+<p><b>Spectra output for time series analysis</b>. as a time series in
+multicolumn ascii format for import into time series analysis programs or
+phase lag analysis programs or plotting programs, by means of the <a
+href="tmv.html">TMV</a> and <a href="tmw.html">TMW</a> commands.
+
+
+<h3>Program automation</h3>
+
+<b>Command files</b>, i.e. sets of commands stored in a disk file, can
+executed at at time using the <a href="inp.html">INP</a> command.  For
+automated reduction, command files must specify all the necessary parameters
+so that processing does not hang, waiting for a response from the user.
+
+<p><b>A command file</b> can be specified in the run string e.g. "lines
+cmdfile" and this will execute on startup.
+
+<p><b>The <a href="do.html">DO</a> loop</b> command permits repetitive
+operations to be automated
+
+
+<h3>Origin of 'lines'</h3>
+
+The program originally existed in simpler form on the HP1000 minicomputer
+system, which was programmed in Fortran 77.  The program was rewritten for
+PC's running linux, but remains in Fortran 77, which is freely available on
+linux, to avoid unneccesary conversion of ported code.  The core programme
+was written by Mike Gaylard.  Various routines have been imported from
+external sources, such as <a
+href="http://www.astro.caltech.edu/~tjp/pgplot/">PGPLOT</a>, which provides
+the graphics capability.
+ 
+
+<h3>Need More Help?</h3>
+
+<b>For more help</b>, for example on the best sequence of commands to use
+for reducing particular types of data, consult the author at
+mike@hartrao.ac.za.
+
+
+
+</html>

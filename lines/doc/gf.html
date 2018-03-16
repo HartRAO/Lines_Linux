@@ -1,0 +1,85 @@
+<pre>
+
+GF [GP] [PL] [memory]
+
+Fit up to 30 Gaussian profiles to a spectrum.
+The optional parameters can be entered in any order.
+
+If any of the fit parameters are to be kept constant, this is done by
+specifying them using the GP command, which is used to preset Gaussian
+parameters for GF.
+
+If "GP" is specified as any of the command parameters, but not "PL", then
+the fit is done automatically, using the values set with GP.  The fit
+will be done without plotting to the screen, which requires user
+intervention.
+
+If both "GP" and "PL" are specified as command parameters (in any order),
+then the fit will use the parameters set in GP, but it will also be
+plotted (if plotdev has been set), requiring user intervention but
+enabling the quality of the fit to be judged visually.
+
+Alternatively, the fit can be done interactively (by omitting both GP and
+PL as command parameters).  The user then marks pairs of points at the
+half-power points of each Gaussian to be fitted.  PLOTDEV must be set
+first!
+
+How to mark points with the cursor: 
+   mouse left button or A = Add new point
+       centre button or D = Delete nearest point
+        right button or X = eXit - no more points to add
+The coordinates returned are sorted on X
+
+If the spectrum is of a single hydrogen recombination line from an HII
+region, the electron temperature will be calculated if the continuum
+antenna temperature and error estimate are present in the housekeeping,
+or were set prior to command GF, using command TC.
+
+If the memory is not given as a parameter, the user is prompted for it
+unless the set memory only has data, in which case it is used.
+
+Prior to Gaussian fitting instrumental effects must be removed by
+applying a velocity window and polynomial fitting to the spectrum
+baseline, as appropriate.
+
+If logging is on (see LOG), then the Gaussian parameters from the fit are
+automatically written to the file 'lines.log' in the current directory,
+in a multi-column ascii format suitable for importation into a
+spreadsheet.
+
+It contains:
+* housekeeping identifying the spectrum;
+* the parameters of each fitted Gaussian and their uncertainties;
+* the derived electron temperature and turbulent velocity if the line is
+  a single hydrogen recombination line and the continuum antenna
+  temperature and its uncertainty are present in the housekeeping.
+
+A new column header line is written for each fit done because the column
+header layout depends on the number of Gaussians fitted and whether the
+spectrum is of a hydrogen recombination line.  The user should therefore
+edit out unwanted column header lines before importing the file into a
+spreadsheet.
+
+Users should check that proper convergence has occurred in the Gaussian
+fitting, by examining the position, height and width listed on screen
+after each iteration cycle.  if you think proper convergence is not
+occuring, provide the MG with details.
+
+GF can be used to fit the beam from a drift scan of a point source.
+The beam shape top half is very closely modelled by a Gaussian.
+By using VW to limit the velocity window to the top half of the beam, an
+accurate fit is obtained.  For full details on how to do this, see the 
+help on GP, which is used to fix the baseline at zero before carrying out
+the Gaussian fit.  
+   
+NOTE that doing a fit to the top half of a Gaussian only is not very
+stable, and it is essential to check that that convergence to a
+reasonable fit has occurred.  An alternative method of fitting to get the
+height and position of the maximum is to fit a second order polynomial to
+the top 1/3 of the scan.  When such a parabolic fit is done, the PO
+routine will list the X,Y values of the maximum.
+
+
+   See also GP, GW, TC and PO.
+ 
+</pre>

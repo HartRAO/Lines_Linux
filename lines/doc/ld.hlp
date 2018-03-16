@@ -1,0 +1,11 @@
+
+LD [memory]
+
+   List the data in the specified memory on screen.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+   example:
+   
+   ld 3
+   

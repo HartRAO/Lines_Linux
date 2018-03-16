@@ -1,0 +1,32 @@
+      SUBROUTINE RMV (N,DATA)
+*****************************
+*  subtract best fit straight line from DATA(I) for I=1,N
+*  using first and last ISET points in DATA.
+*  REV 1991 01 29 MJG
+*
+      PARAMETER (ISET = 5)
+      REAL DATA(1)
+*
+*     mean X values of the two sets of points
+      XM1 = FLOAT(ISET+1) / 2
+      XM2 = N - XM1 + 1
+*     mean Y values of the two sets of points
+      YM1 = 0.0
+      YM2 = 0.0
+      DO J = 1,ISET
+          YM1 = YM1 + DATA(J)
+          YM2 = YM2 + DATA(N+1-J)
+      END DO
+      YM1 = YM1 / ISET
+      YM2 = YM2 / ISET
+*
+*     slope
+      A1 = (YM2 - YM1) / (XM2 - XM1)
+*     intercept
+      A0 = YM1 - A1*XM1
+*     subtract best fit line from data
+      DO I = 1,N
+          DATA(I) = DATA(I) - A1*I - A0
+      END DO
+      RETURN
+      END

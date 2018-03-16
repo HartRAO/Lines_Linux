@@ -1,0 +1,54 @@
+JDC [JDP] [gain correction] [date offset] [memory]
+   apply gain correction to spectrum, normally using coeffs from JDP
+   
+   The telescope gain as a function of time (Julian Date) may have residual
+   errors that can be modelled using a polynomial fit to data from
+   non-varying sources over the period in question.  
+   
+   The data from the non-varying sources should be normalised by dividing by
+   the mean so that each nomralised set of data has a mean of 1.  These data
+   sets can then be interleaved and fitted with a polynomial.  The units of
+   time must be Julian Days - 2440000 (JD-2440000).  This is how data are
+   are written out by function TMW in lines.
+   
+   The coefficients of a polynomial fitted to these data can be used to
+   correct the relative gain at the date any observation.
+   
+   The polynomial fit can be done using function PO in lines, after
+   reading in the JD-2440000 and relative gain from a two column ascii
+   file using function RMCA.
+   
+   The gain correction is the reciprocal of the measured normalised gain as
+   a function of JD-2440000.
+   
+   For higher order polynomial fits, the 'X' values may be too large for a
+   stable polynomial fit if X = JD-2440000.  An extra offset may be
+   subtracted to achieve a stable polynomial fit.  This value is entered 
+   as the 'date offset' parameter, in days, and must have the correct sign.
+   For example if an extra 11500 days was subtracted from JD-2440000, then
+   this value is entered as -11500.
+   
+   Note that the value of the correction applied by JDC is not stored in the
+   housekeeping when the spectrum is written to a '.asc' file.
+
+
+   examples:
+   
+   JDC JDP	apply gain correction to spectrum in default memory using
+                the coefficients read in via JDP, based on the Julian Date
+                of the observation stored in the housekeeping of the
+                spectrum.
+
+   GC 1.053     apply a gain correction of 1.053 to the spectrum in the
+		default memory
+
+   JDP  0.915 +0.0025681 -1.0586e-05 +1.3847e-08 -5.6765e-12
+   DO I 1 1000
+     RA SPECTRUM.ASC I I NEW
+     JDC JDP -11500
+     WA SPECTRUMJDC.ASC
+   END
+		set the polynomial coefficients and apply to all data 
+		in a file, writing each spectrum to a new file
+
+see also: JDP

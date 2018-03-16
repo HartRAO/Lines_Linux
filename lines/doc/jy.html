@@ -1,0 +1,35 @@
+<pre>
+
+JY [PSS in Jy/K] [memory]
+
+Convert the spectrum from Kelvin to Jansky, 
+i.e. scale by the Point Source Sensitivity, to get it into absolute units.
+   
+Or change the K to Jy conversion factor (point source sensitivity) used 
+previously.
+
+If an invalid K to Jy factor is given, or none is given, then the user is
+prompted for it.
+
+If the memory is not given as a parameter, the set memory is used.
+
+The point source sensitivity is found by observing standard calibrator
+radio sources, e.g. from Ott et al.
+
+For spectra obtained with the old correlator on the HP1000, only one
+polarization was recorded, and the spectra were multiplied by 2xPSS/Pol
+to obtain total intensity in Jy.
+   
+For data obtained with new correlator on the NCCS, both left- and
+right-handed circular polarization is normally available, and the data
+are scaled by the PSS per polarization and then added to obtain the total
+intensity.
+
+'JY' is useful when working with a few spectra, but for converting many
+spectra, using PSSF followed by PSS will be quicker.
+
+example:
+   
+jy 5.35
+
+</pre>

@@ -1,0 +1,9 @@
+
+DB Toggle debug output on/off.
+
+   Debugging output helps to verify where things may be going wrong.
+   
+   example:
+   
+   db
+   

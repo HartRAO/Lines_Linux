@@ -1,0 +1,24 @@
+VW [start velocity] [end velocity] [memory]
+
+   Change the velocity window for the spectrum in the specified memory,
+   ie the velocity range that is taken to contain valid data.
+   
+   It can be used to exclude the ends of the data where unwanted edge
+   effects or interference are present.
+
+  
+   If the start velocity and end velocity are not given, 
+   and an interactive plot device is in use,
+   the data are plotted on screen and the user is prompted to use
+   the mouse buttons to choose the wanted data range.
+
+   If the start velocity and end velocity are not given, 
+   and no interactive plot device is specified,
+   the user is prompted for them.
+
+   If the memory is not given as a parameter, the set memory is used.
+
+   example:
+   
+   vw -27 45
+   

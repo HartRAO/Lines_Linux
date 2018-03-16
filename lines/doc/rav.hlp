@@ -1,0 +1,49 @@
+
+RAV [from file] [first spectrum] [last spectrum] [to file] [interval] [memory]
+
+   Read, average within interval, and write out spectra from an ascii file.
+
+   The purpose is to average together spectra taken within a specified
+   interval - normally one day - and write the averaged spectra to an output
+   file.  This is useful for processing spectra taken in a monitoring
+   programme.  Hence if five spectra were obtained at each observing session,
+   one averaged spectrum will be produced from each set of five individual
+   spectra.  A new average spectrum is started when interval between
+   observations is greater than the specified interval.
+
+   The first parameter [from file] is the file containing the individual
+   spectra to be averaged.
+
+   The second parameter [first spectrum] is the first spectrum to add to the
+   average.
+
+   The third parameter [last spectrum] is the last spectrum to add to the
+   average.  If the whole file is to be processed, specify a number equal or
+   greater than the number of spectra in the file.
+
+   The fourth parameter [to file] is the name of the file to which the
+   averaged spectra are to be written.  If the file does not exist it will
+   be created.  If it does exist its format is checked and only LINES ascii
+   format files will be written to.  The spectra are always appended to the
+   file.
+
+   The fifth parameter [interval] is the interval in days between the date
+   of the last spectrum added to the average and the date of the current
+   spectrum.  If the this difference is exceeded the current average
+   spectrum is written to the output file and a new average spectrum is
+   started.  The default value is 1 day.
+
+   The sixth parameter [memory] is the memory in which the average spectrum
+   is to be stored.  If the memory is not specified as a parameter, the
+   average spectrum is written to the set memory.
+
+   If parameters are not given the user is prompted for the first 
+   five parameters.
+
+   In the output file, the Julian date and the hour angle will be the mean
+   of those accompanying the spectra that were averaged.
+
+   example:
+   
+   rav src.asc 1 1000 srcav.asc 
+   

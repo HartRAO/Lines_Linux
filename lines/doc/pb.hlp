@@ -1,0 +1,39 @@
+
+PB [start velocity] [end velocity] or [show] or [clear]
+
+   Set the start and end velocities of blocks for fitting a polynomial to
+   the baseline of a spectrum.
+
+   If PB is entered without parameters, the current values are shown
+   and the user is prompted for another start, end velocity pair.
+
+   If PB is entered with start and end velocities, these are added to the
+   current list of start, end pairs.
+
+   If SHOW is given as the second parameter, the current values are shown.
+
+   If CLEAR is given as the second parameter, all values are cleared.
+
+   Baseline block limits must be set prior to an automated polynomial fit. 
+   These may be present from a previous fit, and can be seen using PB SHOW;
+   otherwise they must be entered using PB, or set via a previous PO fit.+
+
+   After carrying out a polynomial fit, the baseline blocks that were used
+   are stored and can be reused.  Executing PB after PO will show the start
+   and end values of each block.  This can be exploited when processing many
+   spectra of the same source:
+   * use RAV to average many or all of the spectra, to obtain a high
+     signal to noise ratio and show up weak features; 
+   * use PO to fit a polynomial to the average spectrum; 
+   * use a DO loop to:
+	* read the individual spectra;
+        * fit polynomials to the spectra using PO with PB option;
+        * write out each spectrum to a new file
+
+   example:
+   
+   pb -100 -45
+   pb -30 -10
+   pb 0.5 90
+   
+   

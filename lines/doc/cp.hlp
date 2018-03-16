@@ -1,0 +1,14 @@
+<pre>
+
+CP [from memory] [to memory]
+
+   Copy a spectrum from one memory to another,
+   so that the same data are now in both memories.
+
+   If the memories are not specified the user is prompted for them.
+
+   example:
+   
+   cp 12 1
+
+</pre>

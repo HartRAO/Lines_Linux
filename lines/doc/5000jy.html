@@ -1,0 +1,61 @@
+<pre>
+
+5000JY [memory]
+
+convert 4500 - 5000 MHz spectrum from Kelvin to Jansky, 
+using built in table of Point Source Sensitivity as a function of date
+
+This routine automatically applies the appropriate point source
+sensitivity for the period of the observation to spectra obtained at
+4500 - 5000 MHz.
+
+The calibration is for LCP spectra, scaled as though the source is
+unpolarised, to represent the total intensity.
+
+If the memory is not specified the default set memory is used.
+
+Known sensitivity changes from HartRAO dish surface upgrade
+derived from 6cm continuum calibrators
+
+C
+C       change takes effect at mid-day
+C
+C     Year      Day     JD              rel eff PSS
+C
+C 01    1990      1     2447893         1.003   14.06 nominal start
+C 02    2000    165     2451709         1.009   13.97
+C 03    2000    176     2451720         0.992   14.21
+C 04    2000    186     2451730         0.992   14.21
+C 05    2000    200     2451744         0.985   14.31
+C 06    2000    215     2451759         0.996   14.16
+C 07    2000    243     2451787         0.982   14.36
+C 08    2000    256     2451800         0.977   14.43
+C 09    2000    287     2451831         0.961   14.67
+C 10    2000    336     2451880         0.962   14.66
+C 11    2000    358     2451902         0.974   14.48
+C 12    2001     14     2451924         0.980   14.39
+C 13    2001     49     2451959         0.985   14.31
+C 14    2001     63     2451973         0.992   14.21
+C 15    2001     89     2451999         0.997   14.14
+C 16    2001    111     2452021         1.010   13.96
+C 17    2001    149     2452059         0.991   14.23
+C 18    2001    169     2452079         0.975   14.46
+C 19    2001    203     2452113         0.958   14.72
+C 20    2001    216     2452126         0.963   14.64
+C 21    2001    220     2452130         0.959   14.70
+C 22    2001    227     2452137         0.977   14.43
+C 23    2001    231     2452141         0.969   14.55
+C 24    2001    237     2452147         0.965   14.61
+C 25    2001    259     2452169         0.974   14.48
+C 26    2001    267     2452177         0.982   14.36
+C 27    2001    275     2452185         0.980   14.39
+C 28    2001    279     2452189         0.995   14.17
+C 29    2001    283     2452193         1.018   13.85
+C 30    2001    304     2452214         1.041   13.54
+C 31    2001    313     2452223         1.032   13.66
+C 32    2002     12     2452287         1.044   13.51
+C 33    2002     36     2452311         1.031   13.68
+C 34    2002     48     2452323         1.023   13.78 last data
+C 35    2010      1     2455198                  1.00 nominal end
+
+</pre>

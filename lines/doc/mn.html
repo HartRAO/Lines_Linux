@@ -1,0 +1,29 @@
+<pre>
+
+MN [start velocity] [end velocity] [memory]
+
+Calculate the mean and standard deviation of the data within the
+specified range of X values in the specified memory
+
+Change the velocity window for the spectrum in the specified memory,
+ie the velocity range that is taken to contain valid data.
+   
+If the start velocity and end velocity are not given, 
+and an interactive plot device is in use,
+the data are plotted on screen and the user is prompted to use
+the mouse buttons to choose the wanted data range.
+
+If the start velocity and end velocity are not given, 
+and no interactive plot device is specified,
+the user is prompted for them.
+
+If the memory is not given as a parameter, the set memory is used.
+
+example:
+   
+mn -27 45		non-interactively compute results
+   
+mn			interactively select data range to use
+   
+</pre>   
+   

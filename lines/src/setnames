@@ -1,0 +1,18 @@
+*
+*     option to change caption and axis labels
+*
+  252 PRINT *,'OJECT is :'
+      PRINT *,OBJECT(MEM)(1:NCHAR(OBJECT(MEM))
+      PRINT *,'Press Enter to use it, or type a new one'
+      READ  '(A)',LBUF
+      IF (NCHAR(LBUF) .GT. 1) OBJECT(MEM) = LBUF
+*
+      PRINT *,'X axis label (Enter="',
+     &    CTYPE1(MEM)(1:NCHAR(CTYPE1(MEM)),'") ?'
+      READ  '(A)',LBUF
+      IF (NCHAR(LBUF) .GT. 1) CTYPE1(MEM) = LBUF
+*
+      PRINT *,'Y axis label (Enter="',
+     &    CTYPE2(MEM)(1:NCHAR(CTYPE2(MEM)),'") ?'
+      READ  '(A)',LBUF
+      IF (NCHAR(LBUF) .GT. 1) CTYPE2(MEM) = LBUF

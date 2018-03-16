@@ -1,0 +1,35 @@
+***********************************************
+      SUBROUTINE DOY2DM (IYEAR,IDOY,MONTH,IDOM)
+***********************************************
+*     convert day of year to day and month   MJG <930617.1007>
+      IMPLICIT NONE
+      INTEGER
+     &        IYEAR,                  ! input  year
+     &        IDOY,                   ! input  day of year
+     &        MONTH,                  ! output month
+     &        IDOM,                   ! output day of month
+     &        MDAYS(12)               ! local  days in month
+*
+      LOGICAL
+     &        NOTYET                  ! local  loop test
+*
+      DATA
+*                     1  2  3  4  5  6  7  8  9 10 11 12
+     &        MDAYS /31,28,31,30,31,30,31,31,30,31,30,31/
+*
+*     leap year ? 2000 is a leap year so this is okay until 2100
+      IF ((IYEAR/4)*4 .EQ. IYEAR) MDAYS(2) = 29
+      IDOM = IDOY
+      MONTH = 1
+      NOTYET = .TRUE.
+      DO WHILE (NOTYET)
+          IF (IDOM .LE. MDAYS(MONTH)) THEN
+              NOTYET = .FALSE.
+          ELSE
+              IDOM = IDOM - MDAYS(MONTH)
+              MONTH = MONTH + 1
+          END IF
+      END DO
+      RETURN
+      END
+*********

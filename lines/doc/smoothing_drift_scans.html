@@ -1,0 +1,215 @@
+<h2>Smoothing drift scans</h2>
+
+Shown below is a typical drift scan across a continuum radio source, in this
+case through the calibrator 3C123 at 13cm wavelength using the 26m
+radio telescope.
+
+<p>
+<center>
+<img alt="data_unsmoothed.png" src="data_unsmoothed.png" height=586
+width=740>
+</center>
+<p>
+
+In this case we are fortunate in that there are no radio frequency
+interference (RFI) spikes that we might want to remove using the median
+filter <a href="mf.html">mf 2</a>.
+
+<p> We want to measure the height of the scan above the first nulls, in
+order to determine the antenna temperature of the source, and get an
+estimate of the uncertainty in the measurement.
+
+<p>We can fit a parabola (polynomial of order 2) through the top of the peak
+to measure its height Ta using <a href="po.html">po</a>, and the fitting
+routine will give an error estimate based on the (assumed white) noise in
+the scan:
+
+<p>
+Ta = 2.8581 +- 0.0489 K
+<p>
+
+These data were sampled at intervals of 0.08 seconds, ie 12 samples per
+second.  However the radiometer sensitivity equation tells us:
+<br>
+<pre>
+  dTa = Tsys / sqrt (receiver bandwidth * post-detection integration time)
+</pre>
+
+<p>
+We can digitally reduce the noise in the data by increasing the
+post-detection integration time, i.e. smoothing the data.  Three useful
+options built into 'lines' are:
+<br>
+* hamming smoothing (<a href="hm.html">hm</a>) <br>
+* median filtering (<a href="mf.html">mf</a>) <br>
+* smoothing with a running mean of N points (<a href="sm.html">sm</a>).
+<p>
+
+The first two operators (hm and mf) are of fixed, relatively short length.
+With sm any desired smoothing length up to the length of the data set could
+be specified; but is there an upper limit to the smoothing length that
+should be used?
+
+<p>
+Experimentation shows that smoothing the data so that there are just 10
+smoothing lengths across the half-power beamwidth reduces the estimate of
+the peak height by less than 1 percent.  We can test this with these data.
+
+<p> In the example shown, there are about 1100 points  across the half-power
+beamwidth. This was determined using the lines function '<a
+href="pgc.html">pgc</a>', which gives the left half-power point at pixel ~900
+and the right half-power point at pixel ~2000.
+
+We therefore make the following test comparisons, fitting a
+second order polynomial to the data unsmoothed versus the the data smoothed
+by hm, mf 2, sm 50 (about 20 smoothing lengths across the half-power
+beamwidth) and sm 110 (about 10 smoothing lengths across the half-power
+beamwidth):
+<br>
+<pre>
+unsmoothed: Ta = 2.8581 +- 0.0489 K
+hm:         Ta = 2.8584 +- 0.0409 K
+mf 2:       Ta = 2.8579 +- 0.0376 K
+sm 50:      Ta = 2.8565 +- 0.0075 K
+sm 110:     Ta = 2.8533 +- 0.0035 K
+</pre>
+
+<p>Even the very heavy smoothing with a 110 point running mean has had a
+very small effect on the measured Ta, but the uncertainty in the estimate is
+much smaller.  
+
+<p>But lets check what happens if we smooth even more:<br>
+<pre>
+sm 500:     Ta = 2.7385 +- 0.0014 K
+sm 1000:    Ta = 2.4242 +- 0.0007 K
+</pre>
+
+<p>A smoothing length of 500 points produces a very small statistical error,
+but it has oversmoothed the data, reducing the peak height by 0.12 K = 4%.  The
+effect is even worse with a smoothing length of 1000 points.  Hence it is
+important not to oversmooth.
+
+<p>We need to note that the sample data used here do not show any effects from
+weather or receiver gain variations.  These effects may dominate the
+measurement uncertainty over the statistical random fluctuations,
+particularly for weak sources. 
+
+<p>Two important points to remember that affect the smoothing length to use are:
+<ul>
+<li>The telescope beamwidth is proportional to the observing wavelength. 
+The example shown was taken at 13cm wavelength.  For example, at 6cm
+wavelength, the beamwidth is roughly half, and there will be only half as
+many points across the half-power beamwidth.  At 1.3cm wavelength there will
+only be one tenth as many points across the half-power beamwidth!
+<li>The length of the drift scan depends on 1/cosine(source declination). 
+So a drift scan across an object at 60 degrees south will take twice as long
+as one at 0 declination, and there will be twice as many points across the
+half-power beamwidth.
+</ul>
+
+<p>
+Plots of the data smoothed by the different methods are shown below,
+followed by plots of the parabola fits.
+
+
+<p>
+<center>
+<img alt="data_hamming_smoothed.png" src="data_hamming_smoothed.png" height=586
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="data_median_filter_2.png" src="data_median_filter_2.png" height=586
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="data_smoothed_50.png" src="data_smoothed_50.png" height=586
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="data_smoothed_110.png" src="data_smoothed_110.png" height=586
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="data_smoothed_500.png" src="data_smoothed_500.png" height=586
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="data_smoothed_1000.png" src="data_smoothed_1000.png" height=586
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="po2_unsmoothed.png" src="po2_unsmoothed.png" height=275
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="po2_hamming_smoothed.png" src="po2_hamming_smoothed.png"
+height=275
+width=740>
+</center>
+<p>
+
+<p>
+<center>
+<img alt="po2_mf_2.png" src="po2_mf_2.png" height=275
+width=740>
+</center>
+<p>
+
+<p>
+<center>
+<img alt="po2_smoothed_50.png" src="po2_smoothed_50.png" height=275
+width=740>
+</center>
+<p>
+
+<p>
+<center>
+<img alt="po2_smoothed_110.png" src="po2_smoothed_110.png" height=275
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="po2_smoothed_500.png" src="po2_smoothed_500.png" height=275
+width=740>
+</center>
+<p>
+
+
+<p>
+<center>
+<img alt="po2_smoothed_500.png" src="po2_smoothed_500.png" height=275
+width=740>
+</center>
+<p>
+

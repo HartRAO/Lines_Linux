@@ -1,0 +1,7 @@
+set plotdev /xwin
+do iii 1 4 1
+   ra oh4p7.asc iii iii new iii
+   set plotps plot$iii.gif/gif
+   pl iii
+   set plotps off
+end

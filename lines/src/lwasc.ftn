@@ -1,0 +1,1046 @@
+FTN77
+$FILES 0,1
+      PROGRAM LWASC
+*******************
+*     for spectral line analysis programs
+*     write ASCII data files for export
+*     version <930620.2029>
+*
+      INTEGER*2   IPRAM(5), LBUF(1600), IDATA(750)
+      COMMON /IDATA/ IDATA
+*
+*     pick up input parameters and the spectrum
+      CALL RMPAR (IPRAM)
+      CALL EXEC (14,1,IDATA,750)
+*     set up large buffer for I/O
+      CALL LGBUF (LBUF,1600)
+*     assign standard I/O devices
+      CALL FSYSU (1,1)
+*
+  10  PRINT '(a)',
+     & 'File formats for exporting spectra are :',
+     & '1  MS Fortran free format ASCII for PC',
+     & '2  Jodrell Bank SLAP-like ASCII format',
+     & '3  two column spreadsheet ASCII format',
+     & '4  FITS ASCII housekeeping + binary data format',
+     & '5  DRAWSPEC ASCII format for PC',
+     & '      Wanted format (/ exits) ? _'
+      ISTYLE = 0
+      READ *,ISTYLE
+*
+      IF (ISTYLE .EQ. 0) THEN
+          STOP
+      ELSE IF (ISTYLE .EQ. 1) THEN
+          CALL  STYLE1
+      ELSE IF (ISTYLE .EQ. 2) THEN
+          CALL STYLE2
+      ELSE IF (ISTYLE .EQ. 3) THEN
+          CALL STYLE3
+      ELSE IF (ISTYLE .EQ. 4) THEN
+          CALL STYLE4
+      ELSE IF (ISTYLE .EQ. 5) THEN
+          CALL STYLE5
+      ELSE
+          PRINT *,'invalid format specified...'
+          GO TO 10
+      END IF
+      STOP
+      END
+*********************************
+      SUBROUTINE STYLE1
+*
+*     ASCII output for free format read by fortran program
+*
+      CHARACTER  BUFFER*80,  SRCNAME*20, UNITS*2,
+     &           INFILE*64, OUTFILE*64,
+     &           POLBUF*40, COMMENTBUF*40
+      LOGICAL*2  EXISTS, FOLDED
+      INTEGER*2  IDATA(750), IPRAM(5), FCHAR, POLCHAR,
+     &           CCHAR
+      REAL*4      DATA(350)
+      REAL*8     DDATA(175)
+*
+      EQUIVALENCE (IDATA,DATA), (IDATA,DDATA),
+     &            (INFILE,IDATA(701)),   ! input filename
+     &            (SRCNAME,IDATA(517)),  ! source name
+     &            (UNITS,IDATA(538)),    ! spectrum units
+     &            (FOLDED,IDATA(539))    ! spectrum folded?
+*
+      COMMON /IDATA/ IDATA
+*
+      CALL GETNAME (INFILE,OUTFILE,'MSF')
+*
+*     we need to record the polarization
+      PRINT *,'Spectrum Polarization (40 characters max) ?'
+      READ  '(A)',POLBUF
+      POLCHAR = NCHAR (POLBUF)
+*
+      PRINT *,'Any comments on the spectrum (40 characters max) ?'
+      READ  '(A)', COMMENTBUF
+      CCHAR = NCHAR (COMMENTBUF)
+*
+   10 FCHAR = NCHAR (OUTFILE)
+*
+*     Write data to ASCII disc file
+*     -----------------------------
+  200 INQUIRE (FILE=OUTFILE,EXIST=EXISTS)
+*
+      IF (EXISTS) THEN
+*         old file
+          OPEN (99,FILE=OUTFILE,IOSTAT=IOS,ERR=900,STATUS='OLD')
+          PRINT 2100, OUTFILE(1:FCHAR+1)
+*
+*         read ASCII records to end of file
+          IDSET = 0
+          DO LRECORD = 1, 32767
+              READ (99,'(A)',IOSTAT=IOS,ERR=910,END=220) BUFFER
+*             start of each record marked by string of >>>>
+              IF (BUFFER(3:6) .EQ. '>>>>') THEN
+                  IDSET = IDSET + 1
+                  IF (BUFFER(2:2) .EQ. '>') THEN
+*                     this in SLAP format rather than Fortran free format
+                      PRINT 2500
+                      STOP
+                  END IF
+              END IF
+          END DO
+*
+*         next data set number in binary file
+  220     IDSET = IDSET + 1
+      ELSE
+*         new file
+          OPEN (99,FILE=OUTFILE,IOSTAT=IOS,ERR=900,STATUS='NEW')
+          PRINT 2200, OUTFILE(1:FCHAR+1)
+          IDSET = 1
+      END IF
+*
+*     if it already exists, is this an ASCII export file ?
+      IF (EXISTS .AND. IDSET .EQ. 1) THEN
+*         the >>>> has not been found, must be wrong file type
+          PRINT 2400, OUTFILE(1:FCHAR+1)
+          STOP
+      END IF
+*
+*     always append to end of file
+*     record header
+      WRITE (99,*,IOSTAT=IOS,ERR=920)
+     &    '''>>>>>> SET''', IDSET
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''NAME      ''',' ','''',SRCNAME,''''
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''COMMENTS :''',' ','''',COMMENTBUF(1:CCHAR),''''
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''TIME UT   ''',(IDATA(I), I = 527, 531)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''SMOOTH    ''',IDATA(532)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''OBS       ''',IDATA(533)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''NPTS, S, E''',(IDATA(I), I = 535, 537)
+*
+      IF (DDATA(164) .EQ. 0D0) THEN
+*         spectrum did not use frequency shifting
+          WRITE (99,*,iostat=ios,err=920)
+     &        '''FOLDED ? ''',' ','''N/A'''
+      ELSE
+*         spectrum did use frequency shifting
+          IF (.NOT. FOLDED) THEN
+              WRITE (99,*,iostat=ios,err=920)
+     &            '''FOLDED ?  ''',' ','''NO'''
+          ELSE
+              WRITE (99,*,iostat=ios,err=920)
+     &            '''FOLDED ?  ''',' ','''YES'''
+          END IF
+      END IF
+*
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''INT SECS  ''',DATA(292)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''ADDED     ''',DATA(295)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''POLARIZED ''',' ','''',POLBUF(1:POLCHAR),''''
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''TSYS A, B ''',DATA(293), DATA(294)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''JY / K    ''',DATA(296)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''TRMS      ''',DATA(297)*1000
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''UNITS     ''',' ','''m',UNITS,''''
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''RA DC A, B''',(DATA(I), I = 300, 303)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''RFREQ MHZ ''',DDATA(162)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''BW MHZ    ''',DATA(291)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''FOFAB MHZ ''',DDATA(163)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''FOF B MHZ ''',DDATA(164)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''ZVEL INDX ''',DATA(298)
+      WRITE (99,*,iostat=ios,err=920)
+     &    '''AI TO KM/S''',DATA(299)
+*     now for the spectrum, with 8 points per line
+      NLINES = IDATA(535) / 8
+      DO I = 1, NLINES
+          WRITE (99,'(8(F9.1,1X))',iostat=ios,err=920)
+     &        (DATA(J)*1000, J = 1+(I-1)*8, I*8)
+      END DO
+*
+      PRINT 2300, IDSET, OUTFILE(1:FCHAR+1)
+      ENDFILE (99)
+      CLOSE (99,ERR=500,IOSTAT=IOS)
+*
+  500 STOP
+*
+*     error points
+*     ------------
+*     open file error
+  900 CALL  OPENERROR (OUTFILE,IOS)
+      go to 500
+*
+*     read file error
+  910 CALL READERROR (OUTFILE,IOS)
+      go to 500
+*
+*     write file error
+  920 CALL WRITERROR (OUTFILE,IOS)
+*
+ 2100 format ('opened file ',a)
+ 2200 format ('created new file ',a)
+ 2300 format ('data set ',I4,' added to ASCII export file ',a)
+ 2400 FORMAT (A,' is not an ASCII export file - write not done')
+ 2500 FORMAT ('This is a SLAP-type file - write not done')
+      END
+***********************************************************************
+      SUBROUTINE STYLE2
+*
+*     ASCII output in SLAP-like format (Jodrell Style)
+*
+      CHARACTER  BUFFER*80,  SRCNAME*20, UNITS*2,
+     &           INFILE*64,  OUTFILE*64,
+     &           POLBUF*40, COMMENTBUF*40
+      LOGICAL*2  EXISTS, FOLDED
+      INTEGER*2  IDATA(750), IPRAM(5), FCHAR, POLCHAR,
+     &           CCHAR
+      REAL*4      DATA(350)
+      REAL*8     DDATA(175)
+*
+      EQUIVALENCE (IDATA,DATA), (IDATA,DDATA),
+     &            (INFILE,IDATA(701)),   ! input filename
+     &            (SRCNAME,IDATA(517)),  ! source name
+     &            (UNITS,IDATA(538)),    ! spectrum units
+     &            (FOLDED,IDATA(539))    ! spectrum folded?
+*
+      COMMON /IDATA/IDATA
+*
+      CALL GETNAME (INFILE, OUTFILE,'JOD')
+*
+*     we need to record the polarization
+      PRINT *,'Spectrum Polarization (40 characters max) ?'
+      READ  '(A)',POLBUF
+      POLCHAR = NCHAR (POLBUF)
+*
+      PRINT *,'Any comments on the spectrum (40 characters max) ?'
+      READ  '(A)', COMMENTBUF
+      CCHAR = NCHAR (COMMENTBUF)
+*
+   10 FCHAR = NCHAR (OUTFILE)
+*
+*     Write data to ASCII disc file
+*     -----------------------------
+  200 INQUIRE (FILE=OUTFILE,EXIST=EXISTS)
+*
+      IF (EXISTS) THEN
+*         old file
+          OPEN (99,FILE=OUTFILE,IOSTAT=IOS,ERR=900,STATUS='OLD')
+          PRINT 2100, OUTFILE(1:FCHAR+1)
+*
+*         read ASCII records to end of file
+          IDSET = 0
+          DO LRECORD = 1, 32767
+              READ (99,'(A)',IOSTAT=IOS,ERR=910,END=220) BUFFER
+*             start of each record marked by string of >>>>
+              IF (BUFFER(3:6) .EQ. '>>>>') THEN
+                  IDSET = IDSET + 1
+                  IF (BUFFER(2:2) .NE. '>') THEN
+*                     this in Fortran free format rather than SLAP format
+                      PRINT 2500
+                      STOP
+                  END IF
+              END IF
+          END DO
+*
+*         next data set number in binary file
+  220     IDSET = IDSET + 1
+      ELSE
+*         new file
+          OPEN (99,FILE=OUTFILE,IOSTAT=IOS,ERR=900,STATUS='NEW')
+          PRINT 2200, OUTFILE(1:FCHAR+1)
+          IDSET = 1
+      END IF
+*
+*     if it already exists, is this an ASCII export file ?
+      IF (EXISTS .AND. IDSET .EQ. 1) THEN
+*         the >>>> has not been found, must be wrong file type
+          PRINT 2400, OUTFILE(1:FCHAR+1)
+          STOP
+      END IF
+*
+*     always append to end of file
+*     record header
+      WRITE (99,*,iostat=ios,err=920) '>>>>>> SET', IDSET
+      WRITE (99,*,iostat=ios,err=920) 'NAME       ',SRCNAME
+      WRITE (99,*,iostat=ios,err=920) 'COMMENTS : ',COMMENTBUF(1:CCHAR)
+      WRITE (99,*,iostat=ios,err=920) 'TIME UT   ',
+     &    (IDATA(I), I = 527, 531)
+      WRITE (99,*,iostat=ios,err=920) 'SMOOTH    ',IDATA(532)
+      WRITE (99,*,iostat=ios,err=920) 'OBS       ',IDATA(533)
+      WRITE (99,*,iostat=ios,err=920) 'NPTS, S, E',
+     &    (IDATA(I), I = 535, 537)
+*
+      IF (DDATA(164) .EQ. 0D0) THEN
+*         spectrum did not use frequency shifting
+          WRITE (99,*,iostat=ios,err=920) 'FOLDED ?   N/A'
+      ELSE
+*         spectrum did use frequency shifting
+          IF (.NOT. FOLDED) THEN
+              WRITE (99,*,iostat=ios,err=920) 'FOLDED ?   NO'
+          ELSE
+              WRITE (99,*,iostat=ios,err=920) 'FOLDED ?   YES'
+          END IF
+      END IF
+*
+      WRITE (99,*,iostat=ios,err=920) 'INT SECS  ',DATA(292)
+      WRITE (99,*,iostat=ios,err=920) 'ADDED     ',DATA(295)
+      WRITE (99,*,iostat=ios,err=920) 'POLARIZED  ',POLBUF(1:POLCHAR)
+      WRITE (99,*,iostat=ios,err=920) 'TSYS A, B ',DATA(293), DATA(294)
+      WRITE (99,*,iostat=ios,err=920) 'JY / K    ',DATA(296)
+      WRITE (99,*,iostat=ios,err=920) 'TRMS      ',DATA(297)*1000
+      WRITE (99,*,iostat=ios,err=920) 'UNITS      m',UNITS
+      WRITE (99,*,iostat=ios,err=920) 'RA DC A, B',
+     &    (DATA(I), I = 300, 303)
+      WRITE (99,*,iostat=ios,err=920) 'RFREQ MHZ ',DDATA(162)
+      WRITE (99,*,iostat=ios,err=920) 'BW MHZ    ',DATA(291)
+      WRITE (99,*,iostat=ios,err=920) 'FOFAB MHZ ',DDATA(163)
+      WRITE (99,*,iostat=ios,err=920) 'FOF B MHZ ',DDATA(164)
+      WRITE (99,*,iostat=ios,err=920) 'ZVEL INDX ',DATA(298)
+      WRITE (99,*,iostat=ios,err=920) 'AI TO KM/S',DATA(299)
+*     now for the spectrum, with 8 points per line
+      NLINES = IDATA(535) / 8
+      DO I = 1, NLINES
+          WRITE (99,'(8(F9.1,1X))',iostat=ios,err=920)
+     &        (DATA(J)*1000, J = 1+(I-1)*8, I*8)
+      END DO
+*
+      PRINT 2300, IDSET, OUTFILE(1:FCHAR+1)
+      ENDFILE (99)
+      CLOSE (99)
+*
+  500 STOP
+*
+*     error points
+*     ------------
+*     open file error
+  900 CALL OPENERROR (OUTFILE,IOS)
+      go to 500
+*
+*     read file error
+  910 CALL READERROR (OUTFILE,IOS)
+      go to 500
+*
+*     write file error
+  920 CALL WRITERROR (OUTFILE,IOS)
+*
+ 2100 FORMAT ('Opened file ',a)
+ 2200 FORMAT ('Created new file ',a)
+ 2300 FORMAT ('Data set ',I4,' added to ASCII export file ',a)
+ 2400 FORMAT (A,' is not an ASCII export file - write not done')
+ 2500 FORMAT ('This is a Fortran type export file - write not done')
+      END
+***********************************************************************
+      SUBROUTINE STYLE3
+*
+*     ASCII output in columns for spread sheets
+*
+      CHARACTER  BUFFER*80, SRCNAME*20, UNITS*2,
+     &           INFILE*64, OUTFILE*64
+      LOGICAL*2  EXISTS
+      INTEGER*2  IDATA(750), IPRAM(5), FCHAR, POLCHAR
+      REAL*4      DATA(350)
+      REAL*8     DDATA(175)
+*
+      EQUIVALENCE (IDATA,DATA), (IDATA,DDATA),
+     &            (INFILE, IDATA(701)),  ! input filename
+     &            (SRCNAME,IDATA(517)),  ! source name
+     &            (N1,   IDATA(536)),    ! array index of start of spectrum
+     &            (N2,   IDATA(537)),    ! array index of end   of spectrum
+     &            (UNITS,IDATA(538)),    ! spectrum units
+     &            (RA,    DATA(300)),    ! 1950 RA
+     &            (DEC,   DATA(301))     ! 1950 DEC
+*
+      COMMON /IDATA/ IDATA
+*
+      CALL GETNAME (INFILE,OUTFILE,'SPR')
+   10 FCHAR = NCHAR (OUTFILE)
+*
+*     Write data to ASCII spreadsheet style file
+*     ------------------------------------------
+  200 INQUIRE (FILE=OUTFILE,EXIST=EXISTS)
+*
+      IF (EXISTS) THEN
+*         old file
+          OPEN (99,FILE=OUTFILE,IOSTAT=IOS,ERR=900,STATUS='OLD')
+          PRINT 2100, OUTFILE(1:FCHAR+1)
+*
+*         read ASCII records to end of file
+          DO LRECORD = 1, 32767
+              READ (99,'(A)',IOSTAT=IOS,ERR=910,END=220) BUFFER
+          END DO
+  220     CONTINUE
+      ELSE
+*         new file
+          OPEN (99,FILE=OUTFILE,IOSTAT=IOS,ERR=900,STATUS='NEW')
+          PRINT 2200, OUTFILE(1:FCHAR+1)
+          IDSET = 1
+      END IF
+*
+*     always append to end of file
+*     record header
+      WRITE (99,*,IOSTAT=IOS,ERR=920) SRCNAME,
+     &    ' at',(IDATA(I), I = 527, 531),' RA',RA,' DEC',DEC,' _'
+*
+      IF (DATA(296) .GT. 0.0)THEN
+          WRITE (99,*,IOSTAT=IOS,ERR=920) 'PSS',DATA(296),' Jy/K'
+      ELSE
+          WRITE (99,*,IOSTAT=IOS,ERR=920) ' '
+      END IF
+*
+*     now for the spectrum, Vlsr then Ta/S
+      WRITE (99,'(2(A16,1X))',IOSTAT=IOS,ERR=920) 'VLSR',UNITS
+      DO I = N1, N2
+*         velocity of this point in the spectrum
+          X =  (FLOAT(I)-DATA(298))*DATA(299)
+          WRITE (99,'(2(F16.6,1X))',iostat=ios,err=920) X, DATA(I)
+      END DO
+*
+      PRINT 2300, OUTFILE(1:FCHAR+1)
+      ENDFILE (99)
+      CLOSE (99,ERR=500,IOSTAT=IOS)
+  500 STOP
+*
+*     error points
+*     ------------
+*     open file error
+  900 CALL OPENERROR (OUTFILE,IOS)
+      GO TO 500
+*
+*     read file error
+  910 CALL READERROR (OUTFILE,IOS)
+      GO TO 500
+*
+*     write file error
+  920 CALL WRITERROR (OUTFILE,IOS)
+      GO TO 500
+*
+ 2100 FORMAT ('Opened file ',A)
+ 2200 FORMAT ('Created new file ',A)
+ 2300 FORMAT ('Spectrum added to spreadsheet export file ',A)
+      END
+***********************************************************************
+      SUBROUTINE STYLE4
+*
+*  Convert HP binary spectra files to FITS files
+*  for documentation of FITS see :
+*     DC Wells, EW Greisen, RH Harten, 1981, AASuppl 44, 363
+*     EW Greisen, RH Harten, 1981, AASuppl, 44, 371
+*
+*  based on /MIKE/PROGS/LI2FITS.FTN
+*
+      LOGICAL   FOLDED,
+     &          IEXISTS,
+     &          DEXISTS,
+     &          FEXISTS,
+     &          NOTPERIOD
+*
+      CHARACTER
+     &          INFILE*64,
+     &          FITSFILE*64,
+     &          SRCNAME*20,
+     &          ANSWER*1,
+     &          TUNIT*2,
+     &          CDATE*30,
+     &          OBSBUF*20,
+     &          BUF*2880
+*
+      INTEGER*2 IDATA(750),
+     &          ITNOW(5),
+     &          LBUF(1600),
+     &          IDOUT(1440),
+     &          IPB(10)
+*
+      REAL*4    RDATA(350),
+     &          DATAMAX, DATAMIN, BSCALE, BZERO
+*
+      REAL*8    DDATA(175),
+     &          DSYNON, DSYNOF, DFREQ, DFOF, DFOFB, DXMC, DJ
+*
+*     rdata = idata = ddata hold the spectrum and housekeeping info.
+*
+      EQUIVALENCE
+     & (RDATA(1), IDATA(1)),           ! real*4 & integer*2 arrays
+     & (RDATA(1), DDATA(1)),           ! real*8 & real*4    arrays
+     & (INFILE,  IDATA(701)),          ! input filename
+*
+     & (SRCNAME, IDATA(517)),          ! source name, 20 characters
+     & (IY,      IDATA(527)),          ! start of obs, year
+     & (ID,      IDATA(528)),          ! start of obs, day (UT)
+     & (IH,      IDATA(529)),          ! start of obs, hour
+     & (IM,      IDATA(530)),          ! start of obs, minute
+     & (IS,      IDATA(531)),          ! start of obs, second
+     & (ISMOOTH, IDATA(532)),          ! smoothing window type
+     & (INDEX,   IDATA(533)),          ! observation number
+     & (IPOLY,   IDATA(534)),          ! degree of baseline polynomial
+     & (N,       IDATA(535)),          ! number of points in spectrum
+     & (N1,      IDATA(536)),          ! array index of start of spectrum
+     & (N2,      IDATA(537)),          ! array index of end   of spectrum
+     & (TUNIT,   IDATA(538)),          ! intensity unit, K or JY, 2 char
+     & (FOLDED,  IDATA(539)),          ! spectrum folded, logical check
+     & (IPB(1),  IDATA(540)),          ! array indecies of poly fit blocks
+*
+     & (BW,      RDATA(291)),           ! correlator bandwidth, MHz
+     & (TINT,    RDATA(292)),           ! integration time, seconds on source
+     & (TSYSA,   RDATA(293)),           ! system temperature on A
+     & (TSYSb,   RDATA(294)),           ! system temp on B
+     & (AD,      RDATA(295)),           ! number of spectra averaged
+     & (SCALEJY, RDATA(296)),           ! K to JY conversion (Jy/K)
+     & (TRMS,    RDATA(297)),           ! theoretical RMS noise in spectrum
+     & (ZVLINDEX,RDATA(298)),           ! array index of 0 Vlsr
+     & (AITOKM,  RDATA(299)),           ! array index to Km/s conversion
+     & (RA50A,   RDATA(300)),           ! ra  1950 of position A
+     & (DC50A,   RDATA(301)),           ! dec 1950 of position A
+     & (RA50B,   RDATA(302)),           ! ra  1950 of position B
+     & (DC50B,   RDATA(303)),           ! dec 1950 of position B
+     & (ANTHA,   RDATA(304)),           ! ha  at end of observation
+     & (ANTDC,   RDATA(305)),           ! dec at end of observation
+     & (HABOFF,  RDATA(306)),           ! ha  beam offset
+     & (DCBOFF,  RDATA(307)),           ! dec beam offset
+     & (YSCALE,  RDATA(308)),           ! y axis plot scale
+     & (YOFSET,  RDATA(309)),           ! y axis plot offset
+     & (DTSYSA,  RDATA(310)),           ! error in A spectrum system temp
+     & (DTSYSB,  RDATA(311)),           ! error in B spectrum system temp
+     & (AIRTEMP, RDATA(312)),           ! outside air temperature in deg C
+     & (AIRHUM,  RDATA(313)),           ! outside air humidity in %
+*
+     & (DSYNON,  DDATA(160)),           ! synth freq on A (MHz)
+     & (DSYNOF,  DDATA(161)),           ! synth freq on B (MHz)
+     & (DFREQ,   DDATA(162)),           ! line rest freq  (MHz)
+     & (DFOF,    DDATA(163)),           ! rf freq offset for A & B  (MHz)
+     & (DFOFB,   DDATA(164)),           ! rf freq offset for B only (MHz)
+     & (DXMC,    DDATA(165)),           ! LO multiplier
+     & (DJ,      DDATA(166))            ! Julian date of start of obs.
+*
+      COMMON /IDATA/ IDATA
+*
+*     current date / time
+      CALL EXEC (11,ITNOW,IYNOW)
+*
+*     get the name for a FITS file which does not already exist
+      FEXISTS = .TRUE.
+      DO WHILE (FEXISTS)
+          CALL GETNAME (INFILE,FITSFILE,'FTS')
+          IFCHAR = NCHAR(FITSFILE)
+          INQUIRE (FILE=FITSFILE,EXIST=FEXISTS)
+          IF (FEXISTS) THEN
+              PRINT *,' Output file exists, cannot append to it'
+          END IF
+      END DO
+*
+*     get observer's name for all data
+      PRINT *,' Observers name ? _'
+      READ  '(A)', OBSBUF(1:20)
+*
+*     open fits file
+      OPEN (99,FILE=FITSFILE,IOSTAT=IOS,ERR=909)
+*
+*     create fits header block from housekeeping
+      DO I = 1,2880
+          BUF(I:I) = ' '
+      END DO
+*
+      BUF(1:9)       = 'SIMPLE  ='
+      BUF(30:30)     = 'T'
+      BUF(41:62)     = '/ STANDARD FITS BY MJG'
+*
+      BUF(81:89)     = 'BITPIX  ='
+      BUF(109:110)   = '16'
+      BUF(121:148)   = '/ 2-BYTE TWOS-COMPL INTEGERS'
+*
+      BUF(161:169)   = 'NAXIS   ='
+      BUF(190:190)   = '1'
+      BUF(201:216)   = '/ NUMBER OF AXES'
+*
+      BUF(241:249)   = 'NAXIS1  ='
+      NAXIS1 = N2 - N1 + 1
+      WRITE (BUF(266:270),'(I5)') NAXIS1
+      BUF(281:300)   = '/ POINTS IN SPECTRUM'
+*
+      BUF(321:334)   = 'BUNIT   = ''  '''
+      BUF(332:333)   = TUNIT
+      BUF(361:378)   = '/ BRIGHTNESS UNITS'
+*
+*     define scaling factors applied to data
+*     datamax =  32767 * bscale + bzero
+*     datamin = -32768 * bscale + bzero
+      DATAMAX = RDATA(1)
+      DATAMIN = RDATA(1)
+      DO I = N1+1,N2
+          DATAMAX = MAX(DATAMAX,RDATA(I))
+          DATAMIN = MIN(DATAMIN,RDATA(I))
+      END DO
+      BSCALE = (DATAMAX - DATAMIN) / 65535D0
+      BZERO  = DATAMAX - 32767D0 * BSCALE
+*
+      BUF(401:409)   = 'BSCALE  ='
+      WRITE (BUF(411:430),'(1PE20.12)') BSCALE
+      BUF(441:465)   = '/ REAL=PIXEL*BSCALE+BZERO'
+*
+      BUF(481:489)   = 'BZERO   ='
+      WRITE (BUF(491:510),'(1PE20.12)') BZERO
+*
+      BUF(561:569)   = 'OBJECT  ='
+      WRITE (BUF(571:592),'(A1,A20,A1)')
+     &    '''',SRCNAME(1:20),''''
+      BUF(601:613)   = '/ OBJECT NAME'
+*
+      BUF(641:660)   = 'TELESCOP= ''Hart 26M'''
+*
+      BUF(721:731)   = 'OBSERVER= '''
+      BUF(732:751) = OBSBUF(1:20)
+      BUF(752:752) = ''''
+*
+      BUF(801:820)   = 'DATE-OBS= ''dd/mm/yy'''
+*     get month and day of month of observation
+      CALL DOY2DM (IY,ID,MONTH,IDOM)
+      WRITE (BUF(812:813),'(I2)') IDOM
+      WRITE (BUF(815:816),'(I2)') MONTH
+      WRITE (BUF(818:819),'(I2)') IY-1900
+*
+      BUF(881:900)   = 'DATE    = ''dd/mm/yy'''
+*     get current month and day of month
+      CALL DOY2DM (IYNOW,ITNOW(5),MONTHNOW,IDOMNOW)
+      WRITE (BUF(892:893),'(I2)') IDOMNOW
+      WRITE (BUF(895:896),'(I2)') MONTHNOW
+      WRITE (BUF(898:899),'(I2)') IYNOW-1900
+*
+      BUF(961:980)   = 'CTYPE1  = ''VELO-LSR'''
+      BUF(1001:1017) = '/ COORDINATE TYPE'
+*
+      BUF(1041:1049) = 'CRVAL1  ='
+      CRVAL1 = AITOV (FLOAT(N1),ZVLINDEX,AITOKM) ! km/s
+      WRITE (BUF(1051:1070),'(1PE20.12)') CRVAL1*1000
+      BUF(1081:1117) = '/ VELOCITY AT CRPIX1 IN METERS/SECOND'
+*
+      BUF(1121:1129) = 'CRPIX1  ='
+      BUF(1150:1150) = '1'
+      BUF(1161:1177) = '/ REF POINT PIXEL'
+*
+      BUF(1201:1209) = 'CDELT1  ='
+      WRITE (BUF(1211:1230),'(1PE20.12)') AITOKM*1000
+      BUF(1241:1272) = '/ PIXEL SPACING IN METERS/SECOND'
+*
+      BUF(1281:1289) = 'RESTFREQ='
+      WRITE (BUF(1291:1310),'(4PE20.12)') DFREQ*1D6
+      BUF(1321:1350) = '/ LINE REST FREQUENCY IN HERTZ'
+*
+      BUF(1361:1369) = 'RA      ='
+      WRITE (BUF(1375:1390),'(F16.3)') RA50A
+      BUF(1401:1432) = '/ RA OF "UP" SPECTRUM IN DEGREES'
+*
+      BUF(1441:1449) = 'DEC     ='
+      WRITE (BUF(1455:1470),'(F16.3)') DC50A
+      BUF(1481:1513) = '/ DEC OF "UP" SPECTRUM IN DEGREES'
+*
+      BUF(1521:1529) = 'RADOWN  ='
+      WRITE (BUF(1535:1550),'(F16.3)') RA50B
+      BUF(1561:1594) = '/ RA OF "DOWN" SPECTRUM IN DEGREES'
+*
+      BUF(1601:1609) = 'DECDOWN ='
+      WRITE (BUF(1615:1630),'(F16.3)') DC50B
+      BUF(1641:1675) = '/ DEC OF "DOWN" SPECTRUM IN DEGREES'
+*
+      BUF(1681:1689) = 'EPOCH   ='
+      BUF(1705:1710) = '1950.0'
+      BUF(1721:1738) = '/ COORDINATE EPOCH'
+*
+      CALL CTOG (1,RA50A,DC50A,GLON,GLAT)
+*
+      BUF(1761:1769) = 'GLON    ='
+      WRITE (BUF(1775:1790),'(F16.3)') GLON
+      BUF(1801:1820) = '/ GALACTIC LONGITUDE'
+*
+      BUF(1841:1849) = 'GLAT    ='
+      WRITE (BUF(1855:1870),'(F16.3)') GLAT
+      BUF(1881:1899) = '/ GALACTIC LATITUDE'
+*
+      BUF(1921:1929) = 'TSYS    ='
+      WRITE (BUF(1935:1950),'(F16.3)') TSYSA
+      BUF(1961:1985) = '/ SYSTEM TEMPERATURE IN K'
+*
+      BUF(2001:2009) = 'DTSYS   ='
+      WRITE (BUF(2015:2030),'(F16.3)') DTSYSA
+      BUF(2041:2065) = '/ UNCERTAINTY IN TSYS (K)'
+*
+      BUF(2081:2089) = 'DUR     ='
+      WRITE (BUF(2095:2110),'(F16.3)') TINT*2
+      BUF(2121:2141) = '/ DURATION IN SECONDS'
+*
+      BUF(2161:2169) = 'RMS     ='
+      WRITE (BUF(2175:2190),'(F16.6)') TRMS
+      BUF(2201:2220) = '/ RMS NOISE EXPECTED'
+*
+      BUF(2241:2249) = 'JULDATE ='
+      WRITE (BUF(2255:2270),'(F16.6)') DJ
+      BUF(2281:2302) = '/ JULIAN DATE AT START'
+*
+      BUF(2321:2329) = 'SCAN    ='
+      WRITE (BUF(2346:2350),'(I5)') INDEX
+      BUF(2361:2380) = '/ OBSERVATION NUMBER'
+*
+      BUF(2401:2409) = 'PSS     ='
+      WRITE (BUF(2415:2430),'(F16.6)') SCALEJY
+      BUF(2441:2472) = '/ POINT SOURCE SENSITIVITY KTOJY'
+*
+      BUF(2481:2489) = 'ADDED   ='
+      WRITE (BUF(2495:2510),'(F16.6)') AD
+      BUF(2521:2548) = '/ NUMBER OF SPECTRA AVERAGED'
+*
+      BUF(2561:2567) = 'HISTORY'
+      IF (FOLDED) THEN
+          BUF(2569:2574) = 'FOLDED'
+      END IF
+*
+      BUF(2641:2647) = 'HISTORY'
+      WRITE (BUF(2649:2669),'(A19,I2)')
+     &    'POLYNOMIAL ORDER = ',IPOLY
+*
+      BUF(2721:2727) = 'HISTORY'
+      IF (ISMOOTH .GT. 0) THEN
+          BUF(2729:2736) = 'SMOOTHED'
+      END IF
+*
+      BUF(2801:2803) = 'END'
+*
+*     write fits header to fits file
+      WRITE (99,'(A)') BUF(1:2880)
+*
+*     create fits data block from spectrum
+      J = 0
+      DO I = N1, N2
+          J = J + 1
+          IDOUT(J) = (RDATA(I) - BZERO) / BSCALE
+      END DO
+      DO K = J+1,1440
+          IDOUT(J) = 0
+      END DO
+*
+*     write fits data block to fits file
+      WRITE (99) (IDOUT(I), I = 1, 1440)
+*
+*     close fits file after writing one spectrum to it
+      CLOSE (99, ERR=310, IOSTAT=IOS)
+  310 CONTINUE
+      STOP
+*
+*     error points
+*     ------------
+*     error opening file
+  909 CALL OPENERROR (FITSFILE,IOS)
+      STOP
+*
+*     write file error
+  929 CALL WRITERROR (FITSFILE,IOS)
+      STOP
+      END
+***********************************************************************
+      SUBROUTINE STYLE5
+*
+*  Convert HP binary spectra files to DRAWSPEC ascii files
+*  for documentation see DRAWSPEC SCANASCI utility help file:
+*
+*  based on program  /MIKE/PROGS/LI2DRAW.FTN
+*
+*     length of keyword character buffers BUF
+      PARAMETER (IBCHAR=30)
+*
+      LOGICAL   FOLDED,
+     &          IEXISTS,
+     &          DEXISTS,
+     &          REXISTS,
+     &          NOTPERIOD
+*
+      CHARACTER INFILE*64,
+     &          DRAWFILE*64,
+     &          SRCNAME*20,
+     &          ANSWER*1,
+     &          TUNIT*2,
+     &          BUF(18)*30
+*
+      INTEGER*2 IDATA(750),
+     &          ITNOW(5),
+     &          IPB(10)
+*
+      REAL*4    RDATA(350)
+*
+      REAL*8    DDATA(175),
+     &          STFROMUT,
+     &          DSYNON, DSYNOF, DFREQ, DFOF, DFOFB, DXMC, DJ
+*
+*     rdata = idata = ddata hold the spectrum and housekeeping info.
+*
+      EQUIVALENCE
+     & (RDATA(1), IDATA(1)),           ! real*4 & integer*2 arrays
+     & (RDATA(1), DDATA(1)),           ! real*8 & real*4    arrays
+     & (INFILE,   IDATA(701)),         ! input file name
+*
+     & (SRCNAME, IDATA(517)),          ! source name, 20 characters
+     & (IY,      IDATA(527)),          ! start of obs, year
+     & (ID,      IDATA(528)),          ! start of obs, day (UT)
+     & (IH,      IDATA(529)),          ! start of obs, hour
+     & (IM,      IDATA(530)),          ! start of obs, minute
+     & (IS,      IDATA(531)),          ! start of obs, second
+     & (ISMOOTH, IDATA(532)),          ! smoothing window type
+     & (INDEX,   IDATA(533)),          ! observation number
+     & (IPOLY,   IDATA(534)),          ! degree of baseline polynomial
+     & (N,       IDATA(535)),          ! number of points in spectrum
+     & (N1,      IDATA(536)),          ! array index of start of spectrum
+     & (N2,      IDATA(537)),          ! array index of end   of spectrum
+     & (TUNIT,   IDATA(538)),          ! intensity unit, K or JY, 2 char
+     & (FOLDED,  IDATA(539)),          ! spectrum folded, logical check
+     & (IPB(1),  IDATA(540)),          ! array indecies of poly fit blocks
+*
+     & (BW,      RDATA(291)),           ! correlator bandwidth, MHz
+     & (TINT,    RDATA(292)),           ! integration time, seconds on source
+     & (TSYSA,   RDATA(293)),           ! system temperature on A
+     & (TSYSb,   RDATA(294)),           ! system temp on B
+     & (AD,      RDATA(295)),           ! number of spectra averaged
+     & (SCALEJY, RDATA(296)),           ! K to JY conversion (Jy/K)
+     & (TRMS,    RDATA(297)),           ! theoretical RMS noise in spectrum
+     & (ZVLINDEX,RDATA(298)),           ! array index of 0 Vlsr
+     & (AITOKM,  RDATA(299)),           ! array index to Km/s conversion
+     & (RA50A,   RDATA(300)),           ! ra  1950 of position A
+     & (DC50A,   RDATA(301)),           ! dec 1950 of position A
+     & (RA50B,   RDATA(302)),           ! ra  1950 of position B
+     & (DC50B,   RDATA(303)),           ! dec 1950 of position B
+     & (ANTHA,   RDATA(304)),           ! ha  at end of observation
+     & (ANTDC,   RDATA(305)),           ! dec at end of observation
+     & (HABOFF,  RDATA(306)),           ! ha  beam offset
+     & (DCBOFF,  RDATA(307)),           ! dec beam offset
+     & (YSCALE,  RDATA(308)),           ! y axis plot scale
+     & (YOFSET,  RDATA(309)),           ! y axis plot offset
+     & (DTSYSA,  RDATA(310)),           ! error in A spectrum system temp
+     & (DTSYSB,  RDATA(311)),           ! error in B spectrum system temp
+     & (AIRTEMP, RDATA(312)),           ! outside air temperature in deg C
+     & (AIRHUM,  RDATA(313)),           ! outside air humidity in %
+*
+     & (DSYNON,  DDATA(160)),           ! synth freq on A (MHz)
+     & (DSYNOF,  DDATA(161)),           ! synth freq on B (MHz)
+     & (DFREQ,   DDATA(162)),           ! line rest freq  (MHz)
+     & (DFOF,    DDATA(163)),           ! rf freq offset for A & B  (MHz)
+     & (DFOFB,   DDATA(164)),           ! rf freq offset for B only (MHz)
+     & (DXMC,    DDATA(165)),           ! LO multiplier
+     & (DJ,      DDATA(166))            ! Julian date of start of obs.
+*
+      COMMON /IDATA/ IDATA
+*
+*     current date / time
+      CALL EXEC (11,ITNOW,IYNOW)
+*
+      CALL GETNAME (INFILE,DRAWFILE,'DRW')
+*
+*     see if drawspec file exists
+      IFCHAR = NCHAR(DRAWFILE)
+      INQUIRE (FILE=DRAWFILE,EXIST=REXISTS)
+      IF (REXISTS) THEN
+          PRINT *,' Appending to _'
+*         open drawspec file
+          OPEN (99,FILE=DRAWFILE,IOSTAT=IOS,ERR=909,STATUS='OLD')
+          DO WHILE (.TRUE.)
+              READ (99,'(A)',END=100) ANSWER
+          END DO
+  100     CONTINUE
+      ELSE
+          PRINT *,' Creating _'
+*         open drawspec file
+          OPEN (99,FILE=DRAWFILE,IOSTAT=IOS,ERR=909,STATUS='NEW')
+      END IF
+      PRINT *,' DRAWSPEC file ',DRAWFILE(1:IFCHAR)
+*
+*     initialise drawspec keyword blocks
+      DO I = 1,18
+          DO J = 13,IBCHAR
+              BUF(I)(J:J) = ' '
+          END DO
+      END DO
+*
+      BUF(1)(1:12)    = 'SOURCE     ='
+      WRITE (BUF(1)(14:27),'(A1,A12,A1)')
+     &    '''',SRCNAME(1:12),''''
+*
+      BUF(2)(1:12)    = 'DATE-OBS   ='
+*     get month and day of month of observation
+      CALL DOY2DM (IY,ID,MONTH,IDOM)
+      WRITE (BUF(2)(14:23),'(A1,I2.2,A1,I2.2,A1,I2.2,A1)')
+     &    '''',MONTH,'/',IDOM,'/',IY-1900,''''
+*
+      BUF(3)(1:12)    = 'DATE-KEPT  ='
+*     get current month and day of month
+      CALL DOY2DM (IYNOW,ITNOW(5),MONTHNOW,IDOMNOW)
+      WRITE (BUF(3)(14:23),'(A1,I2.2,A1,I2.2,A1,I2.2,A1)')
+     &    '''',MONTHNOW,'/',IDOMNOW,'/',IYNOW-1900,''''
+*
+      BUF(4)(1:12)    = 'LST        ='
+*     get local siderial time in seconds from UT parameters
+      STS = STFROMUT(IY,ID,IH,IM,IS,0)
+*     convert LST to hh mm ss
+      CALL DTHMS (STS/240,ISTH,ISTM,STS)
+      WRITE (BUF(4)(14:23),'(A1,I2.2,A1,I2.2,A1,I2.2,A1)')
+     &    '''',ISTH,':',ISTM,':',STS,''''
+*
+      BUF(5)(1:12)    = 'SCAN       ='
+      WRITE (BUF(5)(14:18),'(I5)') INDEX
+*
+      BUF(6)(1:12)    = 'RA         ='
+      CALL DTHMS (RA50A,IRAH,IRAM,RAS)
+      WRITE (BUF(6)(15:24),'(I2,A1,I2.2,I5.5)')
+     &    IRAH,'.',IRAM,RAS*1000
+*
+      BUF(7)(1:12)    = 'DEC        ='
+      CALL DTDMS (DC50A,IDCD,IDCM,DCS)
+      WRITE (BUF(7)(14:24),'(SP,I3,SS,A1,I2.2,I5.5)')
+     &    IDCD,'.', IDCM,DCS*1000
+*
+      CALL CTOG (1,RA50A,DC50A,GLON,GLAT)
+*
+      BUF(8)(1:12)    = 'L          ='
+      WRITE (BUF(8)(14:20),'(F7.3)') GLON
+*
+      BUF(9)(1:12)    = 'B          ='
+      WRITE (BUF(9)(14:20),'(F7.3)') GLAT
+*
+      BUF(10)(1:12)   = 'TSYS       ='
+      WRITE (BUF(10)(14:29),'(F16.3)') TSYSA
+*
+      BUF(11)(1:12)   = 'DUR        ='
+      WRITE (BUF(11)(14:29),'(F16.3)') TINT*2
+*
+      BUF(12)(1:12)   = 'NCH        ='
+      NCH = N2 - N1 + 1
+      WRITE (BUF(12)(14:18),'(I5)') NCH
+*
+      BUF(13)(1:12)   = 'RMS        ='
+      WRITE (BUF(13)(14:29),'(F16.6)') TRMS
+*
+      BUF(14)(1:12)    = 'VELDEF     ='
+      BUF(14)(13:25)   = ''' LSR RADIO'''
+*
+      BUF(15)(1:12)   = 'V          ='
+      CENT = (N2 - N1)/2 + N1 - 1
+      VCENT = AITOV (CENT,ZVLINDEX,AITOKM)
+      WRITE (BUF(15)(14:29),'(F16.9)') VCENT
+*
+      BUF(16)(1:12)   = 'DV         ='
+      WRITE (BUF(16)(14:29),'(F16.9)') AITOKM
+*
+* Warning this is LRF not freq in rest frame in center channel
+      BUF(17)(1:12)   = 'NU         ='
+      WRITE (BUF(17)(14:29),'(4PE16.9)') DFREQ
+*
+      BUF(18)(1:12)   = 'DNU        ='
+      WRITE (BUF(18)(14:29),'(4PE16.9)') -BW/256
+*
+*     write keywords to drawspec file
+      DO J = 1,18
+          WRITE (99,'(A)') BUF(J)(1:IBCHAR)
+      END DO
+*
+*     write fits data block to fits file
+      WRITE (99,'(A)') 'DATA'
+      DO J = N1,N2
+          WRITE (99,*) RDATA(J)
+      END DO
+      WRITE (99,'(A)') 'END'
+*
+*     close DRAWSPEC file after writing spectra to it
+      CLOSE (99, ERR=520, IOSTAT=IOS)
+  520 CONTINUE
+      STOP
+*
+*     error points
+*     ------------
+*     error opening file
+  909 CALL OPENERROR (DRAWFILE,IOS)
+      STOP
+*
+*     error reading file
+  918 CALL READERROR (DATAFILE,IOS)
+      STOP
+*
+*     write file error
+  929 CALL WRITERROR (DRAWFILE,IOS)
+      STOP
+      END
+***********************************************************************
+      FUNCTION AITOV (RN,ZVLINDEX,AITOKM)
+*  Convert spectrum array index to velocity
+*
+      AITOV = (RN - ZVLINDEX) * AITOKM
+      RETURN
+      END
+***********************************************************************
+      SUBROUTINE OPENERROR (FILENAME,IOS)
+      CHARACTER FILENAME*(*)
+      INTEGER   IOS
+*
+      PRINT *,' Error ',IOS, ' opening ',FILENAME
+      RETURN
+      END
+***********************************************************************
+      SUBROUTINE READERROR (FILENAME,IOS)
+      CHARACTER FILENAME*(*)
+      INTEGER   IOS
+*
+      PRINT *,' Error ',IOS, ' reading ',FILENAME
+      RETURN
+      END
+***********************************************************************
+      SUBROUTINE WRITERROR (FILENAME,IOS)
+      CHARACTER FILENAME*(*)
+      INTEGER   IOS
+*
+      PRINT *,' Error ',IOS, ' writing to ',FILENAME
+      RETURN
+      END
+***********************************************************************
+      SUBROUTINE GETNAME (INFILE,OUTFILE,SUFFIX)
+*
+      CHARACTER INFILE*64, OUTFILE*64, SUFFIX*3
+*
+      PRINT *,'Spectrum is from file ',INFILE(1:NCHAR(INFILE))
+      PRINT *,'Recommended output file suffix is .',SUFFIX
+      PRINT *,'Name for output file (/ exits) ? _'
+      READ '(A)',OUTFILE
+      IF (OUTFILE(1:1) .EQ. '/' .AND. NCHAR(OUTFILE) .EQ. 1) STOP
+      CALL UPCASE (OUTFILE)
+      RETURN
+      END
+*************
+      INCLUDE NCHAR.SUB      ! number of characters in string
+      INCLUDE UPCASE.SUB     ! characters to upper case
+      INCLUDE CTOG.SUB       ! ra, dec <> lii, bii
+      INCLUDE DOY2DM.SUB     ! day of year to month, day of month
+      INCLUDE DTHMS.SUB      ! deg to h m s
+      INCLUDE DTDMS.SUB      ! deg to d ' "
+      INCLUDE STFROMUT.SUB   ! local siderial time from UT
+*************

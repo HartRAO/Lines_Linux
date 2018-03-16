@@ -1,0 +1,34 @@
+<pre>
+   Pause can be used in two ways:
+   1. Sleep for a specified number of seconds.
+      This allows automated scanning of plots without having to press "Enter'
+
+   2. Continue processing on pressing Enter, or press [Q] to return control to user
+      In this case 'sleep-seconds' was not given as a command-line parameter
+
+   Pause is used in a DO loop, for instance when viewing plots on screen repeatedly,
+   these will otherwise scroll too fast to be seen by the user.
+
+   examples:
+
+   DO I 1 100 1
+	RA SPECTRA.ASC I I NEW 
+	PL
+*       resume when user presses Enter or Q Enter
+	PAUSE
+   END
+
+   DO I 1 100 1
+	RA SPECTRA.ASC I I NEW 
+	PL
+*       timed sleep for three seconds
+	PAUSE 3
+   END
+
+   Can also be used during the processing of a command file.
+   
+   If "Q" is typed before pressing the "Enter" key, control will revert
+   to the user.
+
+</pre>
+   

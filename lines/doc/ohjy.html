@@ -1,0 +1,47 @@
+<pre>
+
+OHJY [Kelvin to Jansky factor] [memory]
+
+convert 18cm OH spectrum from Kelvin to Jansky, or change K to Jy value
+
+This routine automatically applies the appropriate point source
+sensitivity for the period of the observation to spectra obtained at
+1612, 1665 and 1667 MHz.
+
+If the memory is not specified the default set memory is used.
+
+known 18 cm OH spectra sensitivity changes :
+
+PERIOD          PSS (Jy/K)  SUBREF TILTED   FLANGE ON  CORR INPUT
+                1666  1612
+start
+1978 d  1 : 12H =   JD 2443509.000
+to              15.8  19.0      no            yes       1.0 V NON-AGC VIDEO
+1986 d 105 9H 58M = JD 2446536.138
+to              12.8  15.4      no            yes       1.7 V      "
+1990 d 61 12H =     JD 2447953.000
+to              13.4  16.1      no            no        1.7 V      "
+1990 d 215 12H =    JD 2448107.000
+to              12.8  15.4      no            yes       1.7 V      "
+1990 d 229 12H =    JD 2448121.000
+to              10.3  12.0      yes           yes       1.7/1.5 V  "
+1991 d  90 12H =    JD 2448347.000
+to              10.3  12.0      yes           yes       1.0 V AGC VIDEO
+1992 d  86 12H =    JD 2448708.000 High Level noise diode replaced low level
+to              10.3  12.0      yes           yes       1.0 V     "
+1994 d 183 9H 58M = JD 2449535.915 Noise Adding Noise diode added
+onwards         10.3  12.0      yes           yes       1.0 V     "
+1999 d  0 : 12H   = JD 2451179.000
+
+summary: changes in point source sensitivity
+
+Year      Day   Time (UT)   JD           1666 MHz   1612 MHz
+
+1978        1   12H 00M     2443509.000    15.8       19.0
+1986      105   09H 58M     2446536.138    12.8       15.4
+1990       61   12H 00M     2447953.000    13.4       16.1
+1990      215   12H 00M     2448107.000    12.8       15.4
+1990      229   12H 00M     2448121.000    10.3       12.0
+1999        0   12H 00M     2451179.000    10.3       12.0
+
+</pre>

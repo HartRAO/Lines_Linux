@@ -1,0 +1,22 @@
+      FUNCTION STFROMUT (IYR,ID,IH,IM,IS,MS)
+************************************************************************
+*     Convert UT to ST in seconds MJG <930618.1219>
+*
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER  IYR,ID,IH,IM,IS,MS
+      REAL*8   STFROMUT
+      DATA BASEOF/84 806.882d0/, LSTDAY/0/, RATE/0.002 737 909 3d0/
+*
+*     UT calculation
+         dTIME = DBLE(IH*60 + IM)*60D0 + DBLE(IS) + DBLE(MS)/100D0
+*
+*     ST calculation, returns mean, not apparent ST
+         IF (ID .NE. LSTDAY)
+     *      OFFSET = DBLE((IYR-1979)*365 + (IYR-1977)/4 + ID - 258)
+     *               * 236.55536d0 + BASEOF + 6644.4d0
+         dTIME = dTIME + dTIME * RATE + OFFSET
+         dTIME = dTIME - DBLE(IDINT(dTIME/86400.0d0)) * 86400.0d0
+         STFROMUT = DTIME
+         RETURN
+         END
+************

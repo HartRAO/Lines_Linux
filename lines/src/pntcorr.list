@@ -1,0 +1,14 @@
+listhkp.f:102:      WRITE (BUF(1:),*) 'PNTCORR = ',PNTCORR(MEM)
+memav.f:115:      PNTCORR(TM)   = PNTCORR(FM)
+memclr.f:101:          PNTCORR(TM)   = 1.0
+memcopy.f:101:      PNTCORR(TM)   = PNTCORR(FM)
+memmult.f:35:                  PNTCORR(MEM) = POINTCOR
+memmult.f:36:                  IF (DB) PRINT *,'PNTCORR=',PNTCORR(MEM)
+rdascfl.f:73:      PNTCORR(MEMRD)  = 1.0
+rdascfl.f:271:              ELSE IF (BUF(1:8) .EQ. 'PNTCORR ') THEN
+rdascfl.f:272:              	  READ (BUF(11:),*,IOSTAT=IOS,ERR=920) PNTCORR(MEMRD)
+wrtascf2.f:240:      IF (PNTCORR(MEM) .NE. 1D0) THEN
+wrtascf2.f:241:          BUF(1:10) = 'PNTCORR  ='
+wrtascf2.f:242:          WRITE (BUF(11:),*) PNTCORR(MEM)
+wrttmfl.f:192:     &            'PNTCORR'
+wrttmfl.f:314:     &        PNTCORR(MEMRD)
